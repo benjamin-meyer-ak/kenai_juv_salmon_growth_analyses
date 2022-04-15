@@ -1,6 +1,6 @@
 --- 
-title: "A Minimal Book Example"
-author: "Yihui Xie"
+title: "Landscape characteristics influence projected growth rates of stream-resident juvenile salmon in the face of climate change in the Kenai River watershed, southcentral Alaska"
+author: "Benjamin Meyer"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
@@ -12,21 +12,16 @@ github-repo: rstudio/bookdown-demo
 description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
 ---
 
-# Prerequisites
+# Introduction
 
-This is a _sample_ book written in **Markdown**. You can use anything that Pandoc's Markdown supports, e.g., a math equation $a^2 + b^2 = c^2$.
+This document records selected analyses undertaken in the Transactions of the American Fisheries Society (TAFS) manuscript by Meyer et al., in review April 2022. The document outlines the modifications to analyses requested by the anonymous reviewers.
 
-The **bookdown** package can be installed from CRAN or Github:
+The original submitted manuscript can be accessed here:
 
-```{r eval=FALSE}
-install.packages("bookdown")
-# or the development version
-# devtools::install_github("rstudio/bookdown")
-```
+The current draft in progress of the manuscript can be accessed here: 
 
-Remember each Rmd file contains one and only one chapter, and a chapter is defined by the first-level heading `#`.
+The Response to Revisions letter to TAFS can be accessed here: 
 
-To compile this example to PDF, you need XeLaTeX. You are recommended to install TinyTeX (which includes XeLaTeX): <https://yihui.name/tinytex/>.
 
 ```{r include=FALSE}
 # automatically create a bib database for R packages
