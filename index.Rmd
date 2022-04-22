@@ -16,11 +16,12 @@ description: "This is a minimal example of using the bookdown package to write a
 
 This document records selected analyses undertaken in the Transactions of the American Fisheries Society (TAFS) manuscript by Meyer et al., in review April 2022. The document outlines the modifications to analyses requested by the anonymous reviewers.
 
-The original submitted manuscript can be accessed here:
 
-The current draft in progress of the manuscript can be accessed here: 
+The current draft in progress of the manuscript, along with the draft response to the TAFS decision letter, can be accessed at this link: https://bit.ly/bmeyer_tafs_submission
 
-The Response to Revisions letter to TAFS can be accessed here: 
+### General approach
+
+2015-2016 inputs to generate p-values, use p-values and projected water temperatures for simulations of 2030-2039 and 2060-2069 growth.
 
 
 ```{r include=FALSE}
