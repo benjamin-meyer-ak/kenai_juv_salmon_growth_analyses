@@ -17,6 +17,8 @@ library(lubridate)
 library(anytime)
 library(plotrix)
 library(readxl)
+library(xfun)
+library(janitor)
 suppressMessages(library(dplyr))
 #detach("package:MASS", unload=TRUE) #pkg masks some dplyr functions
 
@@ -30,7 +32,7 @@ select <- dplyr::select
 
 ## Generate inputs for bioenergetics modeling, 2015-2016 inputs
 
-The following files are required as inputs for an individual simulation in Fishbioenergetics 4.0:
+The following files are required as inputs for an individual growth simulation in Fishbioenergetics 4.0:
 
 1.  Temperature.csv; cols: day (DOY), temperature (C)
 
@@ -41,6 +43,9 @@ The following files are required as inputs for an individual simulation in Fishb
 4.  Indigestible_Prey.csv, cols: day (DOY), diet1, diet2, diet3... (proportion indigestable)
 
 5.  Diet_Prop.csv; cols: day (DOY), diet1, diet2, diet3... (diet proportions)
+
+
+
 
 In the following section, we will generate input files using observed data from the 2015 and 2016 field seasons for individual cohorts (individual year, river, species, and age; e.g. "2015 Beaver Creek Age 1 Coho").
 
@@ -196,6 +201,32 @@ diet <- diet %>%
                              "Mid-Summer" = "2",
                              "Late Summer" = "3",
                              "Fall" = "4")) 
+
+# save to local directory
+write.csv(diet,"other/outputs/diet_v1.csv",row.names = F)
+```
+
+<br>
+
+At this stage of analysis all prey items have an estimated dry mass value, which we acquired by measuring each item's length and applying the formula W = aL^b, where "a" and "b" are parameters derived from the literature. These values are available for download:
+
+```{r}
+embed_file("other/outputs/diet/diet_v1.csv",text = "Download Original Version of Diet Dry Mass Inputs (v1.0)")
+```
+
+<br>
+
+However, to use these prey item mass values as inputs in our bioenergetics model, we need them in wet weight rather than dry mass. To perform this transformation, we will apply wet/dry ratio values from the manuscript McCarthy 2009 (Table 2).
+
+```{r}
+
+# General approach:
+# We will generate and export a table of unique prey types (n = 127), then for each type manually assign one of the eight prey type categories from McCarthy et al 2009 Table 2
+
+# generate csv of unique prey types
+unique_prey <- data.frame(unique(diet$prey)) %>%
+  clean_names()
+write.csv(unique_prey,"other/outputs/diet/mass_conversion/prey_types.csv",row.names = F)
 
 
 ## at this step, we need to convert prey dry mass in to wet mass and use that for the input

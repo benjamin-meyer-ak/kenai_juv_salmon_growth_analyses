@@ -14,14 +14,26 @@ description: "This is a minimal example of using the bookdown package to write a
 
 # Introduction
 
-This document records selected analyses undertaken in the Transactions of the American Fisheries Society (TAFS) manuscript by Meyer et al., in review April 2022. The document outlines the modifications to analyses requested by the anonymous reviewers.
+This document describes selected analyses undertaken in the Transactions of the American Fisheries Society (TAFS) manuscript by Meyer et al., in review April 2022. 
+
+The document outlines the modifications to analyses requested by the reviewers and editors.
 
 
-The current draft in progress of the manuscript, along with the draft response to the TAFS decision letter, can be accessed at this link: https://bit.ly/bmeyer_tafs_submission
+The current draft in progress of the manuscript, along with the draft response to the TAFS decision letter, can be accessed in this project's GitHib repo at https://bit.ly/bmeyer_tafs_submission_2022.
 
 ### General approach
 
-2015-2016 inputs to generate p-values, use p-values and projected water temperatures for simulations of 2030-2039 and 2060-2069 growth.
+We used field and lab observations from 2015-2016 to generate inputs for a bioenergetics model for juvenile Chinook and Coho Salmon in the Kenai River watershed, then used projected water temperatures from 2030-2039 and 2060-2069 to simulate their future summer growth.
+
+We used the 2015-2016 observations of diet, water temperature, and fish size as bioenergetics model inputs to generate P - values, or "proportions of maximum consumption" (values range 0 - 1) for fish cohorts in the study (unique stream/species/age). Next, to simulate fish growth under future water temperature conditions, we used observed fish size, P-values, and projected water temperatures to simulate future summer growth.
+
+#### Edits to Manuscript for June 2022 Resubmission
+
+The following corrections are outlined in this document...
+
+--  In the manuscript draft submitted to TAFS in Spring 2022, the model inputs erroneously used dry weights of prey items, rather than wet weights as required by the model. In this re-submission, dry weights of prey items are instead used.
+
+--  Others... see letter
 
 
 ```{r include=FALSE}
