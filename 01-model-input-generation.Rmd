@@ -246,6 +246,8 @@ kable(tbl) %>%
 
 </summary>
 
+5/11/2022 -- need to import & attach fish age & size data before proceeding here. see old fb4_v2 file line 238
+
 ```{r echo = F}
 
 # General approach:
@@ -281,15 +283,21 @@ diet %<>% mutate(wm_mg = dm_mg / wet_dry_ratio)
 # summarise wet mass by diet category
 diet %<>%
   select(-preycat) %>%
-  group_by(diet,PreyCategory_ED,energy_density_jg) %>%
+  group_by(river,spp,###AGE diet,PreyCategory_ED,energy_density_jg) %>%
   summarise(sum_wm_mg = sum(wm_mg))
 
 # convert wet masses to diet category proportions
-z <- diet %>%
-  group_by(diet,PreyCategory_ED,energy_density_jg,sum_wm_mg) %>%
-  summarise(wm_total_sum_mg = sum(sum_wm_mg))
-  mutate(wm_total_sum_mg = sum(sum_wm_mg))
+# and create column for summed wet mass of all prey categories
+wm_sum_tot <- diet %>%
+  ungroup() %>%
+  summarise(tot_sum_wm_mg = sum(sum_wm_mg)) %>%
+  as.numeric()
 
+z <- diet %>%
+  mutate(tot_sum_wm_mg = wm_sum_tot) %>%
+  mutate(diet_wm_prop = sum_wm_mg / tot_sum_wm_mg) %>%
+  select(PreyCategory_ED,diet_wm_prop) %>%
+  pivot_wider()
 
 # only categories not matching are non-diet items (empty, destroyed, bait, etc)
 
