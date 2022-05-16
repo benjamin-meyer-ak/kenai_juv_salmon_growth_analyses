@@ -70,7 +70,6 @@ daily_mean_temps <- read.csv("other/inputs/temperature/observed_water_temp/daily
   rename(site = Site) %>%
   transform(year = as.factor(year),
             Date = as.Date(Date))
-
 ```
 
 </details>
@@ -203,23 +202,25 @@ diet <- diet %>%
 
 # save to local directory
 write.csv(diet,"other/outputs/diet_v1.csv",row.names = F)
+
+rm(diet15,diet16)
 ```
 
 </details>
 
 <br>
 
-At this stage of analysis all prey items have an estimated dry mass value, which we acquired by measuring each item's length and applying the formula W = aL\^b, where "a" and "b" are parameters derived from the literature. These estimated dry mass values are available for download below:
+At this stage of analysis all prey items have an estimated dry mass value, which we acquired by measuring each item's length and applying the formula W = aL\^b, where "a" and "b" are parameters derived from the literature. These calculations of estimated dry mass values are available for download below:
 
-```{r, echo - F}
+```{r, echo = F}
 embed_file("other/outputs/diet/diet_v1.csv",text = "Download Original Version of Diet Dry Mass Inputs (v1.0)")
 ```
 
 <br>
 
-However, to use these prey item mass values as inputs in our bioenergetics model, **we need them in wet weight rather than dry mass**. The original manuscript submitted to TAFS used dry weights.
+However, to use these prey item mass values as inputs in our bioenergetics model, **we need them in wet weight rather than dry mass**. The original manuscript submitted to TAFS erroneously used dry weights.
 
-To perform this needed transformation from dry mass to wet mass of prey items, we will apply wet/dry ratio values from the manuscript McCarthy 2009 , along with four other literature sources. The table below summarises these wet/dry mass conversion and energy density values.
+To perform this needed transformation from dry mass to wet mass of prey items, we will apply wet/dry ratio values from the manuscript McCarthy 2009, along with four other literature sources. The table below summarises these wet/dry mass conversion and energy density values.
 
 <br>
 
@@ -246,9 +247,7 @@ kable(tbl) %>%
 
 </summary>
 
-5/11/2022 -- need to import & attach fish age & size data before proceeding here. see old fb4_v2 file line 238
-
-```{r echo = F}
+```{r}
 
 # General approach:
 # We will generate and export a table of unique prey types (n = 127), then for each type manually assign one of the twelve prey type categories from McCarthy et al 2009 (+ several other lit sources)
@@ -281,23 +280,23 @@ diet <- left_join(diet,dm_convert_vals,by = "prey") %>%
 diet %<>% mutate(wm_mg = dm_mg / wet_dry_ratio)
 
 # summarise wet mass by diet category
-diet %<>%
-  select(-preycat) %>%
-  group_by(river,spp,###AGE diet,PreyCategory_ED,energy_density_jg) %>%
-  summarise(sum_wm_mg = sum(wm_mg))
+#diet %<>%
+ # select(-preycat) %>%
+  #group_by(river,spp,###AGE diet,PreyCategory_ED,energy_density_jg) %>%
+  #summarise(sum_wm_mg = sum(wm_mg))
 
 # convert wet masses to diet category proportions
 # and create column for summed wet mass of all prey categories
-wm_sum_tot <- diet %>%
-  ungroup() %>%
-  summarise(tot_sum_wm_mg = sum(sum_wm_mg)) %>%
-  as.numeric()
+#wm_sum_tot <- diet %>%
+ # ungroup() %>%
+#  summarise(tot_sum_wm_mg = sum(sum_wm_mg)) %>%
+ # as.numeric()
 
-z <- diet %>%
-  mutate(tot_sum_wm_mg = wm_sum_tot) %>%
-  mutate(diet_wm_prop = sum_wm_mg / tot_sum_wm_mg) %>%
-  select(PreyCategory_ED,diet_wm_prop) %>%
-  pivot_wider()
+#z <- diet %>%
+#  mutate(tot_sum_wm_mg = wm_sum_tot) %>%
+#  mutate(diet_wm_prop = sum_wm_mg / tot_sum_wm_mg) %>%
+#  select(PreyCategory_ED,diet_wm_prop) %>%
+#  pivot_wider()
 
 # only categories not matching are non-diet items (empty, destroyed, bait, etc)
 
@@ -321,20 +320,26 @@ z <- diet %>%
 
 
 # remove temporary objects
-rm(diet15,diet16,ED)
+#rm(diet15,diet16,ED)
 ```
 
 </details>
 
 <br>
 
-#### Other
+At this stage, we have estimated wet weights and energy density for each diet item from each gastric lavage sample.
+
+<br>
+
+### Fish size and age
+
+We will import fish size and age, then associate each fish with its wet mass diet data.
 
 <details>
 
 <summary>
 
-*Show/Hide Code used to prepare miscellaneous input details from 2015-2016 observations*
+*Show/Hide Code used prepare fish age and size data inputs from 2015-2016 observations*
 
 </summary>
 
@@ -387,6 +392,8 @@ fish_ages16 <- read_excel(SCTC2016, sheet = "C 2016 Diet & LW Data") %>%
 #join 2015 and 2016 data
 fish_ages <- bind_rows(fish_ages15,fish_ages16)
 
+rm(fish_ages15,fish_ages16)
+
 #prep dataframe containing age data
 fish_ages <- fish_ages %>% 
   separate(sample.event, c("reach","year","sample.event.num"), sep = "-", remove = F) %>%
@@ -408,18 +415,27 @@ fish_ages <- fish_ages %>%
  # age 2 fish: this cohort is sparse and likely departing for the ocean.
  #filter(age != 2) 
 
+fish_ages %<>%
+  select(sample.id,Date,age,wt_g,len_mm)
+
 #eliminate duplicate rows
 ## this code was not hashtagged in the original analysis ...
 #fish_ages <- unique(fish_ages)
 
-# join fish ages date with diet data
-diet <- left_join(diet_fnl, fish_ages, by = "sample.id" )
+# join fish ages date with diet data      
+diet <- left_join(diet, fish_ages, by = c("sample.id"))  %>%
+  select(-date)
 
 ```
 
 </details>
 
 <br>
+
+Before proceeding with preparing diet proportions, we have a bit more work to do finalizing this data.
+
+For example, a few fish have diet data but no age. We will remove these fish.
+
 
 ##### How many fish have diet samples, but no age designation?
 
@@ -438,7 +454,6 @@ diet_no_age <- diet %>%
   filter(is.na(age)) %>%
   distinct(sample.id)
 diet_no_age <- nrow(diet_no_age)
-diet_no_age
 
 #exclude these individuals
 diet <- diet %>%
@@ -452,11 +467,11 @@ There are `r diet_no_age` fish with diet samples but no age manually assigned. T
 
 <br>
 
-##### Define scale of diet and growth input pooling/segregation
+### Define scale of diet and growth input pooling/segregation
 
 We will group fish diet and growth data at the space/time scale of:
 
--   Individual River (ppol data among sites)
+-   Individual River (pool data among sites within each river)
 
 -   Species (segregate Chinook vs coho)
 
@@ -472,10 +487,12 @@ For example, an individual cohort of fish could be "Beaver Creek Age 1 Coho."
 
 </summary>
 
+WORKING HERE -- convert code to WET mass
+
 ```{r}
 
 #create sum of pooled prey DM for each prey category by fish species and sample event 
-dm_sum_by_event <- diet %>%
+wm_sum_by_event <- diet %>%
   
   # choose level of diet input segregation here
   group_by(
@@ -484,31 +501,46 @@ dm_sum_by_event <- diet %>%
     #season,
     river,
     spp,
-    preycat_ed,
+    PreyCategory_ED,
     age) %>%
-  summarise(sum(dm_mg)) %>%
-  rename(dm_sum =`sum(dm_mg)`) %>%
-  spread(preycat_ed,dm_sum) %>%
+  summarise(sum(wm_mg)) %>%
+  rename(wm_sum =`sum(wm_mg)`) %>%
+  spread(PreyCategory_ED,wm_sum) %>%
   rowwise() %>%
-  mutate(dm_tot = sum(FishEggs,    # create column for summed dry mass of all prey categories
+  # create column for summed dry mass of all prey categories
+  mutate(wm_tot = sum(InvertTerrestrial,
                       InvertAquatic_AqOrigin,
-                      InvertTerrestrial,
                       InvertTerrestrial_AqOrigin,
-                      InvertUnknown,
+                      FishEggs,    
                       SalmonEggs, 
                       na.rm = TRUE)) %>%
-  mutate(FishEggs = FishEggs/dm_tot,
+  mutate(FishEggs = FishEggs/wm_tot,
          # change prey quantities to relative proportions by category
-         InvertAquatic_AqOrigin = InvertAquatic_AqOrigin/dm_tot,  
-         InvertTerrestrial = InvertTerrestrial/dm_tot,
-         InvertTerrestrial_AqOrigin = InvertTerrestrial_AqOrigin/dm_tot,
-         InvertUnknown = InvertUnknown/dm_tot,
-         SalmonEggs = SalmonEggs/dm_tot) %>%
-  rename(Stream_Name = river) 
+         InvertAquatic_AqOrigin = InvertAquatic_AqOrigin/wm_tot,  
+         InvertTerrestrial = InvertTerrestrial/wm_tot,
+         InvertTerrestrial_AqOrigin = InvertTerrestrial_AqOrigin/wm_tot,
+         SalmonEggs = SalmonEggs/wm_tot) %>%
+  rename(Stream_Name = river) %>%
+  select(-wm_tot) %>%
+  # show only 3 decimal places
+  mutate(across(where(is.numeric), round, 3))
 
 ```
 
 </details>
+
+<br>
+
+Show table of diet proportions -- MAKE THIS JUST DOWNLOADABLE INSTEAD :)
+
+YOU'RE DOING A GREAT JOB!!!
+
+```{r ,fig.cap="Wet mass diet proportions by prey category.",echo = F}
+
+kable(wm_sum_by_event) %>%
+  kable_styling(latex_options = "striped") %>%
+  kable_styling(latex_options = "scale_down")
+```
 
 <br>
 
@@ -520,11 +552,11 @@ Explanation here...
 
 <summary>
 
-*Show/Hide Code*
+*Show/Hide Code used to determine temporal length of fish growth simulations*
 
 </summary>
 
-```{r}
+```{r, eval = F}
 # Define temporal extents of proposed simulations
 
 # NOTE 1/22/18: this code also exists as a script at "/Users/bmeyer/Google Drive/Thesis/R Analysis/Thesis Analyses R Project/Overall_scripts_2015_2016/sampling_periods.R".  Attempted to just source("\path") this script in to the markdown document but, 'source' function prevents knitting through markdown for some reason.  
@@ -668,7 +700,7 @@ rm(t_end15,t_end15_1,t_end16,t_end16_1,mpc_2016_3)
 
 
 # match temporal extent of simulated diet proportion data to simulation date if it exists. 
-diet_prop_seasons <- left_join(dm_sum_by_event,sim_extents_by_site) %>%
+diet_prop_seasons <- left_join(wm_sum_by_event,sim_extents_by_site) %>%
   transform(days = as.double(days))
 
 
@@ -696,17 +728,18 @@ sim_diet_days <- left_join(sim_diet_days,daily_mean_temps,by=c("Date","site","St
   rename(avg_temp = daily_avg_temp)
 
 
+
 # arrange and rename columns to format identical as in "InputFileTemplate" for bioenergetics modeling
 sim_diet_days <- sim_diet_days %>%
   rename(diet1 = FishEggs,
          diet2 = InvertAquatic_AqOrigin,
          diet3 = InvertTerrestrial,
          diet4 = InvertTerrestrial_AqOrigin,
-         diet5 = InvertUnknown,
-         diet6 = SalmonEggs,
+         diet5 = SalmonEggs,
          Temp = avg_temp) %>%
   # add in blank columns 7-10 to match InputFileTemplate format
-  mutate(diet7 = 0,
+  mutate(diet6 = 0,
+        diet7 = 0,
          diet8 = 0,
          diet9 = 0,
          diet10 = 0) %>%
@@ -735,6 +768,9 @@ sim_diet_days <- sim_diet_days %>%
 ```
 
 </details>
+
+
+
 
 ```{r nice-fig, fig.cap='Here is a nice figure!', out.width='80%', fig.asp=.75, fig.align='center', echo = F, eval = F}
 #You can label chapter and section titles using `{#label}` after them, e.g., we can reference Chapter \@ref(intro). If you do not manually label them, there will be automatic labels anyway, e.g., Chapter \@ref(methods).
