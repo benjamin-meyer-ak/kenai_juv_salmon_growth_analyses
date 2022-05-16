@@ -230,12 +230,10 @@ tbl <- read_excel("other/outputs/diet/mass_conversion/prey_types_manual_edit.xls
 ```
 
 
-```{r vals,fig.cap="Dry mass conversion values and energy densities of prey item categories.",echo = F}
-
-kable(tbl) %>%
-  kable_styling(latex_options = "striped") %>%
-  kable_styling(latex_options = "scale_down")
+```{r, echo = F}
+embed_file("other/outputs/diet/mass_conversion/prey_types_manual_edit.xlsx",sheet = "data_validation",text = "Download dry/wet mass conversion values and energy densities of prey item categories.")
 ```
+
 
 <br>
 
@@ -243,7 +241,7 @@ kable(tbl) %>%
 
 <summary>
 
-*Show/Hide Code used prepare revised fish diet data inputs from 2015-2016 observations (e.g. diet data converted to wet mass inputs)*
+*Show/Hide Code used prepare revised fish diet data inputs from 2015-2016 observations (e.g. diet data being converted to wet mass inputs)*
 
 </summary>
 
@@ -487,8 +485,6 @@ For example, an individual cohort of fish could be "Beaver Creek Age 1 Coho."
 
 </summary>
 
-WORKING HERE -- convert code to WET mass
-
 ```{r}
 
 #create sum of pooled prey DM for each prey category by fish species and sample event 
@@ -531,16 +527,13 @@ wm_sum_by_event <- diet %>%
 
 <br>
 
-Show table of diet proportions -- MAKE THIS JUST DOWNLOADABLE INSTEAD :)
 
-YOU'RE DOING A GREAT JOB!!!
+```{r, echo = F}
+write.csv(wm_sum_by_event,"other/outputs/diet/wet_mass_diet_proportions.csv",row.names = F)
 
-```{r ,fig.cap="Wet mass diet proportions by prey category.",echo = F}
-
-kable(wm_sum_by_event) %>%
-  kable_styling(latex_options = "striped") %>%
-  kable_styling(latex_options = "scale_down")
+embed_file("other/outputs/diet/wet_mass_diet_proportions.csv",text = "Download wet mass diet proportions by prey  ategory for each fish cohort.")
 ```
+
 
 <br>
 
@@ -769,6 +762,171 @@ sim_diet_days <- sim_diet_days %>%
 
 </details>
 
+
+<br>
+
+
+
+```{r, echo = F}
+# temperature data munging ... can we delete this whole code chunk?
+
+# assign season names to each temperature observation
+
+# remove non-simulation period temperature data 
+filtered_temperature_data  <- 
+    daily_mean_temps %>% 
+    rowwise() %>% 
+    mutate(present = any(Date >= sim_extents_by_site$sim.start & Date <= sim_extents_by_site$sim.end)) %>% 
+    filter(present) %>% 
+    data.frame() %>%
+    select(-present)
+
+# create dataframe to specify simulation extents rounded to 15 minute intervals
+z <- sim_extents_by_site %>%
+  select(site,year,season,sim.start) %>%
+  rename(DateTime = sim.start) %>%
+  transform(DateTime = round_date(DateTime, unit = "15 min")) %>%
+  mutate(Date = anydate(DateTime))
+
+# QUESTION: do we need the df (z1) generated below?
+
+# assign season names to each temperature observation  
+# z1 <- left_join(filtered_temperature_data,z,by = c("Date","year","site")) %>%
+#  fill(season, .direction = "down") %>%
+ # remove any missing temperature data
+#  filter(!is.na(season),
+#         !is.na(daily_avg_temp)) %>%
+#  select(-DateTime)
+
+# remove temporary objects
+rm(z,z1,filtered_temperature_data)
+
+# export sim extent summary data to googlesheet
+# gs_delete(gs_title("sim_extents_by_site"))
+# gs_new("sim_extents_by_site", input = sim_extents_by_site)
+
+```
+
+<br>
+
+```{r, echo = F}
+
+# choose data for subset of simulations selected in script "fish_growth_size.Rmd"
+# this list has been subset from the overall data using criteria described in "the above script "fish_growth_size_v4.Rmd".
+
+# a.) import sheet with list of simulations subsetted (output table from "fish_growth_size_v4.Rmd")
+sim_size_inputs_list <- read_excel("other/inputs/diet_size_other/sim_size_inputs_v2.xlsx",sheet = "lw_data") %>%
+  select(sim)
+
+
+## reduce the "sim_diet_days" df to contain only sims specificied in "sim_diet_inputs_list"
+# a.) prep a sim_name_mod column in "sim_diet_days" for use in an inner_join with "sim_size_inputs_list"
+z <- sim_diet_days %>%
+  rename(sim = sim_name)
+
+# b.) Filter table of diet proportion data to include only chosen subset of simulations
+sim_diet_days <- inner_join(z,sim_size_inputs_list,by="sim") %>%
+  distinct() %>%
+  rename(sim_name = sim)
+
+# dataframe containing all viable simulation inputs (as selected in script "fish_growth_size_v4.Rmd" is now present in "sim_diet_days")
+
+```
+
+<br>
+
+How many unique simulations are included? There `r n_sims` unique simulations based on fish age, species, and river.
+
+```{r , echo= F}
+n_sims <- sim_diet_days %>%
+  select(sim_name) %>% 
+  distinct() %>%
+  nrow()
+
+# write and make available for download all unique simulations
+write.csv(unique(sim_diet_days$sim_name),"other/outputs/all_simulations.csv",row.names = F)
+
+embed_file("other/outputs/all_simulations.csv",text = "Download list of all unique fish growth simulations.")
+
+```
+
+<br>
+
+### Export files to be used as inputs in Fishbioenergetics 4.0
+
+<br>
+
+#### Water temperature csv file export prep
+
+<details>
+
+<summary>
+
+*Show/Hide Code used to prepare water temperature input files*
+
+</summary>
+
+```{r}
+# export water temperature csv files
+
+## select desired variables
+watertemps <- sim_diet_days %>%
+  select(SimDay,Temp,sim_name,spp) %>%
+  rename(day = SimDay,
+         temperature = Temp) %>%
+#recreate grouping variable
+  group_by(sim_name)
+
+# create individual dataframes for each species
+watertemps_coho <- watertemps %>%
+  filter(spp == "Coho") %>%
+  select(-spp)
+
+watertemps_chnk <- watertemps %>%
+  filter(spp == "Chinook") %>%
+  select(-spp)
+
+# split up all data in to lists of individual simulations by year, river, species, age, and season
+watertemps_list_coho <- split.data.frame(watertemps_coho, watertemps_coho$sim_name)
+watertemps_list_chnk <- split.data.frame(watertemps_chnk, watertemps_chnk$sim_name)
+
+# remove column containing name of simulation from all objects in list
+watertemps_list_coho <- lapply(watertemps_list_coho, function(x) x[!(names(x) %in% c("sim_name"))])
+watertemps_list_chnk <- lapply(watertemps_list_chnk, function(x) x[!(names(x) %in% c("sim_name"))])
+
+```
+
+</details>
+
+presumption -- the odd sequence of tasks in the old _v2 file probably is as such for a reason ....?
+
+
+
+
+
+
+```{r, eval = F}
+
+# format for making code foldable
+
+##Explanation here...
+
+ ##<details>
+
+##<summary>
+
+##*Show/Hide Code used to determine temporal length of fish growth simulations*
+
+##</summary>
+
+### code chunk here
+
+## </details>
+
+
+
+
+```
 
 
 
