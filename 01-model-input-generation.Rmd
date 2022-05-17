@@ -464,7 +464,7 @@ There are `r diet_no_age` fish with diet samples but no age manually assigned. T
 
 ### Define scale of diet and growth input pooling/segregation
 
-We will group fish diet and growth data at the space/time scale of:
+We will group fish growth data at the space/time scale of:
 
 -   Individual River (pool data among sites within each river)
 
@@ -472,7 +472,11 @@ We will group fish diet and growth data at the space/time scale of:
 
 -   Fish age (age 0 vs 1)
 
-For example, an individual cohort of fish could be "Beaver Creek Age 1 Coho."
+-   Year (2015 or 2016)
+
+Diet data, however is pooled among years (2015 and 2016) due to the heterogenous nature of this type of data.
+
+For example, an individual cohort of fish could be "2015 Beaver Creek Age 1 Coho." Diet data for this simulation is averaged from between 2015 and 2016.
 
 <details>
 
