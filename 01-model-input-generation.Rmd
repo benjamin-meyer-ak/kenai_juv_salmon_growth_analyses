@@ -854,6 +854,8 @@ Outcome of this step: export csv files of diet proportions and water temperature
 
 Each simulation will have a named folder containing the files "Diet_prop.csv" and "Temperature.csv." Other input files are generated in subsequent steps.
 
+[Access final bioenergetics simulation input files here.](https://github.com/benjamin-meyer-ak/kenai_juv_salmon_growth_analyses/tree/main/other/outputs/simulations)
+
 <details>
 
 <summary>
@@ -1108,7 +1110,6 @@ Other input files required for bioenergetics simulations remain static throughou
 
 -   Prey_E.csv
 
-
 We will generate these files and place them within each simulation folder.
 
 <details>
@@ -1118,7 +1119,6 @@ We will generate these files and place them within each simulation folder.
 *Show/Hide Code used to prepare static input files for bioenergtics simulations*
 
 </summary>
-
 
 ```{r}
 # write the three constant Main Input files to local directory folder
@@ -1210,8 +1210,6 @@ Map(file.copy,
 ```
 
 </details>
-
-
 
 ```{r, eval = F}
 

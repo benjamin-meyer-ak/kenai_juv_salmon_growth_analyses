@@ -25,7 +25,7 @@ The current draft in progress of the manuscript, along with the draft response t
 
 We used field and lab observations from 2015-2016 to generate inputs for a bioenergetics model for juvenile Chinook and Coho Salmon in the Kenai River watershed, then used projected water temperatures from 2030-2039 and 2060-2069 to simulate their future summer growth.
 
-We used the 2015-2016 observations of diet, water temperature, and fish size as bioenergetics model inputs to generate P - values, or "proportions of maximum consumption" (values range 0 - 1) for fish cohorts in the study (unique stream/species/age). Next, to simulate fish growth under future water temperature conditions, we used observed fish size, P-values, and projected water temperatures to simulate future summer growth.
+We used the 2015-2016 observations of diet, water temperature, and fish size as bioenergetics model inputs to generate P - values, or "proportions of maximum consumption" (values range 0 - 1) for fish cohorts in the study (unique stream/year/species/age). Next, to simulate fish growth under future water temperature conditions, we used observed fish size, P-values, and projected water temperatures to simulate future summer growth.
 
 #### Edits to Manuscript for June 2022 Resubmission
 
