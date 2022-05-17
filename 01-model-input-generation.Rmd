@@ -229,11 +229,9 @@ tbl <- read_excel("other/outputs/diet/mass_conversion/prey_types_manual_edit.xls
   filter(!is.na(prey_type))
 ```
 
-
 ```{r, echo = F}
 embed_file("other/outputs/diet/mass_conversion/prey_types_manual_edit.xlsx",sheet = "data_validation",text = "Download dry/wet mass conversion values and energy densities of prey item categories.")
 ```
-
 
 <br>
 
@@ -434,7 +432,6 @@ Before proceeding with preparing diet proportions, we have a bit more work to do
 
 For example, a few fish have diet data but no age. We will remove these fish.
 
-
 ##### How many fish have diet samples, but no age designation?
 
 <details>
@@ -527,13 +524,11 @@ wm_sum_by_event <- diet %>%
 
 <br>
 
-
 ```{r, echo = F}
 write.csv(wm_sum_by_event,"other/outputs/diet/wet_mass_diet_proportions.csv",row.names = F)
 
 embed_file("other/outputs/diet/wet_mass_diet_proportions.csv",text = "Download wet mass diet proportions by prey  ategory for each fish cohort.")
 ```
-
 
 <br>
 
@@ -762,10 +757,7 @@ sim_diet_days <- sim_diet_days %>%
 
 </details>
 
-
 <br>
-
-
 
 ```{r, echo = F}
 # temperature data munging ... can we delete this whole code chunk?
@@ -856,18 +848,24 @@ embed_file("other/outputs/all_simulations.csv",text = "Download list of all uniq
 
 <br>
 
-#### Water temperature csv file export prep
+#### Diet proportion and water temperature csv file export prep
+
+Outcome of this step: export csv files of diet proportions and water temperature at scale of year/river/spp/age by day w/ water temp, each stored in project directory folder named after the simulation.
+
+Each simulation will have a named folder containing the files "Diet_prop.csv" and "Temperature.csv." Other input files are generated in subsequent steps.
 
 <details>
 
 <summary>
 
-*Show/Hide Code used to prepare water temperature input files*
+*Show/Hide Code used to prepare diet proportion and water temperature input files*
 
 </summary>
 
+761 - 1023
+
 ```{r}
-# export water temperature csv files
+# a.) export water temperature csv files
 
 ## select desired variables
 watertemps <- sim_diet_days %>%
@@ -894,14 +892,324 @@ watertemps_list_chnk <- split.data.frame(watertemps_chnk, watertemps_chnk$sim_na
 watertemps_list_coho <- lapply(watertemps_list_coho, function(x) x[!(names(x) %in% c("sim_name"))])
 watertemps_list_chnk <- lapply(watertemps_list_chnk, function(x) x[!(names(x) %in% c("sim_name"))])
 
+
+# b.) diet proportion csv file export prep
+
+# export diet proportion csv files
+
+## select desired variables
+dietprops <- sim_diet_days %>%
+  select(-Temp) %>%
+  rename(day = SimDay) %>%
+#recreate grouping variable
+  group_by(sim_name)
+
+# create individual dataframes for each species
+dietprops_coho <- dietprops %>%
+  filter(spp == "Coho") %>%
+  select(-spp)
+
+dietprops_chnk <- dietprops %>%
+  filter(spp == "Chinook") %>%
+  select(-spp)
+
+# split up all data in to lists of individual simulations by year, river, species, age, and season
+dietprops_list_coho <- split.data.frame(dietprops_coho, dietprops_coho$sim_name)
+dietprops_list_chnk <- split.data.frame(dietprops_chnk, dietprops_chnk$sim_name)
+
+# remove column containing name of simulation from all objects in list
+dietprops_list_coho <- lapply(dietprops_list_coho, function(x) x[!(names(x) %in% c("sim_name"))])
+dietprops_list_chnk <- lapply(dietprops_list_chnk, function(x) x[!(names(x) %in% c("sim_name"))])
+
+
+# eliminate overall existing directory and contents if applicable
+unlink("other/outputs/simulations", recursive = T)
+
+# create overall directory destination for input files
+dir.create("other/outputs/simulations")
+
+# name directory paths
+chnk_dir <- "other/outputs/simulations/chnk/"
+coho_dir <- "other/outputs/simulations/coho/"
+
+# eliminate existing sub-directory and contents if applicable
+unlink(chnk_dir, recursive = T)
+unlink(coho_dir, recursive = T)
+
+# create directory destinations for input files
+dir.create(chnk_dir)
+dir.create(coho_dir)
+
+
+# c.) export chinook diet proportions to csv files
+
+# get names of all simulations in a list
+dietprops_names_chnk <- dietprops_chnk %>%
+  select(sim_name) %>%
+  distinct()
+dietprops_names_chnk <- as.list(dietprops_names_chnk)
+
+# create sub-directory for each simulation
+## get simulation names
+### chinook
+dietprops_names_chnk <- as.data.frame(dietprops_names_chnk) %>%
+  mutate(folder_dir = paste0(chnk_dir,sim_name),
+         diet_csv_dir1 = paste0(chnk_dir,"Diet_prop_",sim_name,".csv"), 
+         diet_csv_dir2 = paste0(folder_dir,"/","Diet_prop_",sim_name,".csv"),
+         diet_csv_dir3 = paste0(folder_dir,"/","Diet_prop",".csv"))
+
+# create individual folders named after each simulation
+Map(dir.create,
+    dietprops_names_chnk$folder_dir)
+
+# write diet proportion csv files
+mapply(write.table,row.names = F, sep=",",
+       dietprops_list_chnk, file = paste0(chnk_dir,"Diet_prop","_", names(dietprops_list_chnk),".csv"))
+
+# move output files from chnk directory to individual simulation folders
+Map(file.rename,
+    from = dietprops_names_chnk$diet_csv_dir1,
+    to = dietprops_names_chnk$diet_csv_dir2)
+
+# rename each diet proportion csv file as "Diet_prop" to prepare for input to FB4
+Map(file.rename,
+    from = dietprops_names_chnk$diet_csv_dir2,
+    to = dietprops_names_chnk$diet_csv_dir3)
+
+# results: "Diet_prop.csv" exists in a named folder for each simulation
+
+
+# d.) export chinook temperature data to csv files
+
+# get names of all simulations in a list
+watertemps_names_chnk <- watertemps_chnk %>%
+  select(sim_name) %>%
+  distinct()
+watertemps_names_chnk <- as.list(watertemps_names_chnk)
+
+# create sub-directory for each simulation
+## get simulation names
+### chinook
+watertemps_names_chnk <- as.data.frame(watertemps_names_chnk) %>%
+  mutate(folder_dir = paste0(chnk_dir,sim_name),
+         diet_csv_dir1 = paste0(chnk_dir,"Temperature_",sim_name,".csv"), 
+         diet_csv_dir2 = paste0(folder_dir,"/","Temperature_",sim_name,".csv"),
+         diet_csv_dir3 = paste0(folder_dir,"/","Temperature",".csv"))
+
+# create individual folders named after each simulation
+Map(dir.create,
+    watertemps_names_chnk$folder_dir)
+
+# write temperature csv files
+mapply(write.table,row.names = F, sep=",",
+       watertemps_list_chnk, file = paste0(chnk_dir,"Temperature","_", names(watertemps_list_chnk),".csv"))
+
+# move output files from chnk directory to individual simulation folders
+Map(file.rename,
+    from = watertemps_names_chnk$diet_csv_dir1,
+    to = watertemps_names_chnk$diet_csv_dir2)
+
+# rename each temperature csv file as "Temperature" to prepare for input to FB4
+Map(file.rename,
+    from = watertemps_names_chnk$diet_csv_dir2,
+    to = watertemps_names_chnk$diet_csv_dir3)
+
+# results: "Temperature.csv" exists in a named folder for each simulation
+
+
+
+# e.) export coho diet proportions to csv files
+# get names of all simulations in a list
+dietprops_names_coho <- dietprops_coho %>%
+  select(sim_name) %>%
+  distinct()
+dietprops_names_coho <- as.list(dietprops_names_coho)
+
+# create sub-directory for each simulation
+## get simulation names
+dietprops_names_coho <- as.data.frame(dietprops_names_coho) %>%
+  mutate(folder_dir = paste0(coho_dir,sim_name),
+         diet_csv_dir1 = paste0(coho_dir,"Diet_prop_",sim_name,".csv"), 
+         diet_csv_dir2 = paste0(folder_dir,"/","Diet_prop_",sim_name,".csv"),
+         diet_csv_dir3 = paste0(folder_dir,"/","Diet_prop",".csv"))
+
+# create individual folders named after each simulation
+Map(dir.create,
+    dietprops_names_coho$folder_dir)
+
+# write diet proportion csv files
+mapply(write.table,row.names = F, sep=",",
+       dietprops_list_coho, file = paste0(coho_dir,"Diet_prop","_", names(dietprops_list_coho),".csv"))
+
+# move output files from coho directory to individual simulation folders
+Map(file.rename,
+    from = dietprops_names_coho$diet_csv_dir1,
+    to = dietprops_names_coho$diet_csv_dir2)
+
+# rename each diet proportion csv file as "Diet_prop" to prepare for input to FB4
+Map(file.rename,
+    from = dietprops_names_coho$diet_csv_dir2,
+    to = dietprops_names_coho$diet_csv_dir3)
+
+# results: "Diet_prop.csv" exists in a named folder for each simulation
+
+
+
+# f.) export coho temperature data to csv files
+
+# get names of all simulations in a list
+watertemps_names_coho <- watertemps_coho %>%
+  select(sim_name) %>%
+  distinct()
+watertemps_names_coho <- as.list(watertemps_names_coho)
+
+# create sub-directory for each simulation
+## get simulation names
+watertemps_names_coho <- as.data.frame(watertemps_names_coho) %>%
+  mutate(folder_dir = paste0(coho_dir,sim_name),
+         diet_csv_dir1 = paste0(coho_dir,"Temperature_",sim_name,".csv"), 
+         diet_csv_dir2 = paste0(folder_dir,"/","Temperature_",sim_name,".csv"),
+         diet_csv_dir3 = paste0(folder_dir,"/","Temperature",".csv"))
+
+# create individual folders named after each simulation
+Map(dir.create,
+    watertemps_names_coho$folder_dir)
+
+# write temperature csv files
+mapply(write.table,row.names = F, sep=",",
+       watertemps_list_coho, file = paste0(coho_dir,"Temperature","_", names(watertemps_list_coho),".csv"))
+
+# move output files from coho directory to individual simulation folders
+Map(file.rename,
+    from = watertemps_names_coho$diet_csv_dir1,
+    to = watertemps_names_coho$diet_csv_dir2)
+
+# rename each diet proportion csv file as "Temperature" to prepare for input to FB4
+Map(file.rename,
+    from = watertemps_names_coho$diet_csv_dir2,
+    to = watertemps_names_coho$diet_csv_dir3)
+
+# results: "Temperature.csv" exists in a named folder for each simulation
+
+
 ```
 
 </details>
 
-presumption -- the odd sequence of tasks in the old _v2 file probably is as such for a reason ....?
+<br>
+
+#### Other input files generation
+
+Other input files required for bioenergetics simulations remain static throughout all simulations. These file types include:
+
+-   Indigestable_Prey.csv
+
+-   Pred_E.csv
+
+-   Prey_E.csv
+
+
+We will generate these files and place them within each simulation folder.
+
+<details>
+
+<summary>
+
+*Show/Hide Code used to prepare static input files for bioenergtics simulations*
+
+</summary>
+
+
+```{r}
+# write the three constant Main Input files to local directory folder
+
+## Indigestible prey
+day <- c(1,365)
+diet1 <- .03
+diet2 <- .17
+diet3 <- .17
+diet4 <- .17
+diet5 <-  0.3  
+diet6 <- 0
+diet7 <- 0
+diet8 <- 0 
+diet9 <- 0
+diet10 <- 0
+
+# collate to data frame
+Indigestible_Prey <- data.frame(day,diet1,diet2,diet3,diet4,diet5,
+                                diet6,diet7,diet8,diet9,diet10)
+
+# create folder for static inputs
+dir.create("other/outputs/simulations/static_inputs_master")
+
+# write file
+write.csv(Indigestible_Prey, "other/outputs/simulations/static_inputs_master/Indigestible_Prey.csv", row.names = F)
+
+  
+## Pred_E.csv
+predator <- 5000
+# collate to data frame
+Pred_E <- data.frame(day,predator)
+# write file
+write.csv(Pred_E, "other/outputs/simulations/static_inputs_master/Pred_E.csv", row.names = F)
+
+
+## Prey_E.csv
+### see sheet "EPSCoR_SCTC_Prey_Energy_Densities"
+diet1 <- 5235 # FishEggs
+diet2 <- 3365 # InvertAquatic_AqOrigin
+diet3 <- 5250 # InvertTerrestrial
+diet4 <- 4225 # InvertTerrestrial_AqOrigin
+diet5 <- 9000 # SalmonEggs
+diet6 <- 0 
+diet7 <- 0
+diet8 <- 0
+diet9 <- 0
+diet10 <- 0
+  
+Prey_E <- data.frame(day,diet1,diet2,diet3,diet4,diet5,
+                     diet6,diet7,diet8,diet9,diet10)
+
+write.csv(Prey_E, "other/outputs/simulations/static_inputs_master/Prey_E.csv", row.names = F)
 
 
 
+####################################################################
+
+## Place static files in each simulation folder
+## Approach: same as other csv exports; create list of dataframes and use mapply to export
+
+## proceed by individual species and file type
+
+# chinook - Indigestible Prey
+
+# get master copy file directory for indigestible prey
+ip_dir <- "other/outputs/simulations/static_inputs_master/Indigestible_Prey.csv"
+
+# Get list of folders in directory destination
+z <- as.data.frame(list.dirs(path = chnk_dir)) 
+z <- as.data.frame(z[-1, ], drop = F) 
+colnames(z) <- "sim_dir"
+z <- z %>%
+  mutate(simx = str_replace(z$sim_dir,"//","/")) %>%
+  select(-sim_dir) %>%
+  mutate(sim_dir = paste0(simx,"/","Indigestible_Prey",".csv")) %>%
+  select(-simx)
+  
+# write same csv file to all simulation sub-folders
+Map(file.copy,
+    from = ip_dir,
+    to = z$sim_dir,
+    overwrite = T)
+
+# working here, continuing to copy/paste from line 1121
+
+
+
+```
+
+</details>
 
 
 
@@ -927,8 +1235,6 @@ presumption -- the odd sequence of tasks in the old _v2 file probably is as such
 
 
 ```
-
-
 
 ```{r nice-fig, fig.cap='Here is a nice figure!', out.width='80%', fig.asp=.75, fig.align='center', echo = F, eval = F}
 #You can label chapter and section titles using `{#label}` after them, e.g., we can reference Chapter \@ref(intro). If you do not manually label them, there will be automatic labels anyway, e.g., Chapter \@ref(methods).
