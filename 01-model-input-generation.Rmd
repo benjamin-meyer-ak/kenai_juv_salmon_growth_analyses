@@ -1145,10 +1145,11 @@ Indigestible_Prey <- data.frame(day,diet1,diet2,diet3,diet4,diet5,
                                 diet6,diet7,diet8,diet9,diet10)
 
 # create folder for static inputs
-dir.create("other/outputs/simulations/static_inputs_master")
+static_inputs_dir <- "other/outputs/simulations/static_inputs_master/"
+dir.create(static_inputs_dir)
 
 # write file
-write.csv(Indigestible_Prey, "other/outputs/simulations/static_inputs_master/Indigestible_Prey.csv", row.names = F)
+write.csv(Indigestible_Prey,paste0(static_inputs_dir,"Indigestible_Prey.csv"), row.names = F)
 
   
 ## Pred_E.csv
@@ -1156,7 +1157,7 @@ predator <- 5000
 # collate to data frame
 Pred_E <- data.frame(day,predator)
 # write file
-write.csv(Pred_E, "other/outputs/simulations/static_inputs_master/Pred_E.csv", row.names = F)
+write.csv(Pred_E, paste0(static_inputs_dir,Pred_E.csv), row.names = F)
 
 
 ## Prey_E.csv
@@ -1175,13 +1176,13 @@ diet10 <- 0
 Prey_E <- data.frame(day,diet1,diet2,diet3,diet4,diet5,
                      diet6,diet7,diet8,diet9,diet10)
 
-write.csv(Prey_E, "other/outputs/simulations/static_inputs_master/Prey_E.csv", row.names = F)
+write.csv(Prey_E, paste0(static_inputs_dir,"Prey_E.csv"), row.names = F)
 
 
 
 ####################################################################
 
-## Place static files in each simulation folder
+## Place static value files in each simulation folder
 ## Approach: same as other csv exports; create list of dataframes and use mapply to export
 
 ## proceed by individual species and file type
@@ -1189,7 +1190,7 @@ write.csv(Prey_E, "other/outputs/simulations/static_inputs_master/Prey_E.csv", r
 # chinook - Indigestible Prey
 
 # get master copy file directory for indigestible prey
-ip_dir <- "other/outputs/simulations/static_inputs_master/Indigestible_Prey.csv"
+ip_dir <- paste0(static_inputs_dir,"Indigestible_Prey.csv")
 
 # Get list of folders in directory destination
 z <- as.data.frame(list.dirs(path = chnk_dir)) 
@@ -1207,13 +1208,130 @@ Map(file.copy,
     to = z$sim_dir,
     overwrite = T)
 
-# working here, continuing to copy/paste from line 1121
+
+# chinook - Pred_E.csv file export
+
+# get master copy file directory for indigestible prey
+pe_dir <- paste0(static_inputs_dir,"Pred_E.csv")
+
+# Get list of folders in directory destination
+z <- as.data.frame(list.dirs(path = chnk_dir)) 
+z <- as.data.frame(z[-1, ], drop = F) 
+colnames(z) <- "sim_dir"
+z <- z %>%
+  mutate(simx = str_replace(z$sim_dir,"//","/")) %>%
+  select(-sim_dir) %>%
+  mutate(sim_dir = paste0(simx,"/","Pred_E",".csv")) %>%
+  select(-simx)
+  
+# write same csv file to all simulation sub-folders
+Map(file.copy,
+    from = pe_dir,
+    to = z$sim_dir,
+    overwrite = T)
+  
+
+
+# chinook - Prey_E.csv export
+# get master copy file directory for indigestible prey
+
+pred_dir <- paste0(static_inputs_dir,"Prey_E.csv")
+
+# Get list of folders in directory destination
+z <- as.data.frame(list.dirs(path = chnk_dir)) 
+z <- as.data.frame(z[-1, ], drop = F) 
+colnames(z) <- "sim_dir"
+z <- z %>%
+  mutate(simx = str_replace(z$sim_dir,"//","/")) %>%
+  select(-sim_dir) %>%
+  mutate(sim_dir = paste0(simx,"/","Prey_E",".csv")) %>%
+  select(-simx)
+  
+# write same csv file to all simulation sub-folders
+Map(file.copy,
+    from = pred_dir,
+    to = z$sim_dir,
+    overwrite = T)
+
+
+
+
+# coho - Indigestible prey csv export
+
+# get master copy file directory for indigestible prey
+ip_dir <- paste0(static_inputs_dir,"Indigestible_Prey.csv")
+
+# Get list of folders in directory destination
+z <- as.data.frame(list.dirs(path = coho_dir)) 
+z <- as.data.frame(z[-1, ], drop = F) 
+colnames(z) <- "sim_dir"
+z <- z %>%
+  mutate(simx = str_replace(z$sim_dir,"//","/")) %>%
+  select(-sim_dir) %>%
+  mutate(sim_dir = paste0(simx,"/","Indigestible_Prey",".csv")) %>%
+  select(-simx)
+  
+# write same csv file to all simulation sub-folders
+Map(file.copy,
+    from = ip_dir,
+    to = z$sim_dir,
+    overwrite = T)
+
+# coho - Pred_E.csv export
+
+# get master copy file directory for indigestible prey
+pe_dir <- paste0(static_inputs_dir,"Pred_E.csv")
+
+# Get list of folders in directory destination
+z <- as.data.frame(list.dirs(path = coho_dir)) 
+z <- as.data.frame(z[-1, ], drop = F) 
+colnames(z) <- "sim_dir"
+z <- z %>%
+  mutate(simx = str_replace(z$sim_dir,"//","/")) %>%
+  select(-sim_dir) %>%
+  mutate(sim_dir = paste0(simx,"/","Pred_E",".csv")) %>%
+  select(-simx)
+  
+# write same csv file to all simulation sub-folders
+Map(file.copy,
+    from = pe_dir,
+    to = z$sim_dir,
+    overwrite = T)
+
+
+# coho - Prey_E.csv export
+
+# get master copy file directory for indigestible prey
+pred_dir <- paste0(static_inputs_dir,"Prey_E.csv")
+
+# Get list of folders in directory destination
+z <- as.data.frame(list.dirs(path = coho_dir)) 
+z <- as.data.frame(z[-1, ], drop = F) 
+colnames(z) <- "sim_dir"
+z <- z %>%
+  mutate(simx = str_replace(z$sim_dir,"//","/")) %>%
+  select(-sim_dir) %>%
+  mutate(sim_dir = paste0(simx,"/","Prey_E",".csv")) %>%
+  select(-simx)
+  
+# write same csv file to all simulation sub-folders
+Map(file.copy,
+    from = pred_dir,
+    to = z$sim_dir,
+    overwrite = T)
 
 
 
 ```
 
 </details>
+
+<br>
+
+Prepare "Initial Settings" file for Fishbioenergetics run, start/end weights for multiple simulations. File prep for format in FB 4.1.1 version 5/15/2018. Fit simulations to final weight.
+
+Working here at line 1272 ... hopefully can use artisinal version of FB4.1 ...>?!
+
 
 ```{r, eval = F}
 
