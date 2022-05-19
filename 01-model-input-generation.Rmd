@@ -1330,7 +1330,70 @@ Map(file.copy,
 
 Prepare "Initial Settings" file for Fishbioenergetics run, start/end weights for multiple simulations. File prep for format in FB 4.1.1 version 5/15/2018. Fit simulations to final weight.
 
-Working here at line 1272 ... hopefully can use artisinal version of FB4.1 ...>?!
+```{r}
+
+sim_size_inputs_FB4.1 <- read_excel("other/inputs/diet_size_other/sim_size_inputs_v2.xlsx",sheet = "lw_data") %>%
+  # create a "species column"
+  separate(sim,into = c("year","season","site","spp","foo","age"),sep="\\_",remove = F) %>%
+  select(-one_of("year","site","age","season","foo")) %>%
+  rename(Simulation = sim,
+         # using mean backcalculated weight values by spp/age/sample.event
+         Init_W = wt_start) %>%
+  mutate(fit.to = "Weight",
+         # This input set is formatted to use final lm weight as fitting values
+         fitting_value = wt_end,   
+         Sp_label = "salmon (adult)",
+         Sp = paste(spp,Sp_label),
+         First_day = 1,
+         Last_day = sim.end.doy - sim.start.doy,
+         Ind = 1,
+         Oxycal = 13560,
+         calc.nut = "FALSE",
+         calc.contaminant = "FALSE",
+         X_Pred = "NA",
+         CONTEQ = 1,
+         calc.pop_mort = "FALSE",
+         calc.spawn = "FALSE") %>%
+  # species abbreviations for folder names
+  mutate(spp2 = ifelse(spp == "Chinook", "chnk", ifelse(spp == "Coho", "coho",spp))) %>%
+  # create file path for input folders
+  mutate(input_folder = paste0("inputs/",spp2,"/",Simulation)) %>%
+  # select final column names for input file
+  select(Simulation, Sp, input_folder,	
+         fit.to,	Init_W, fitting_value ,
+         First_day, Last_day, Ind, Oxycal,
+         calc.nut, calc.contaminant, X_Pred, 
+         CONTEQ, calc.pop_mort, calc.spawn)
+
+## save input csv to local directory
+# name directory location
+input_csv_dir <- "other/outputs/simulations/sim_size_inputs_FB4.1.csv"
+
+# remove any previous output versions
+file.remove(input_csv_dir)
+
+# write new csv file
+write.csv(sim_size_inputs_FB4.1, input_csv_dir, row.names = T)
+
+
+```
+
+</details>
+
+Final outcome: a csv for simulation size inputs is stored at
+"other/outputs/simulations/", and a folder directory with 5 csv file for each simulation is stored at "other/outputs/simulations/sim_size_inputs_FB4.1.csv".
+
+```{r, echo = F}
+
+# 5/19/22 - status: custom version of FB4.1 won't run, throws error "Error in if (input_file_list %in% list.files(folder)) { : 
+#  the condition has length > 1"
+# code is in "global.R" file
+
+# next steps: try to figure out new public release of fb4, which has "design" function for multiple simulations?
+
+```
+
+
 
 
 ```{r, eval = F}
