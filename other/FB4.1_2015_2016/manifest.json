@@ -1,0 +1,2149 @@
+{
+	"version" : 1,
+	"locale" : "en_GB",
+	"platform" : "3.4.3",
+	"metadata" : {
+		"appmode" : "shiny",
+		"primary_rmd" : null,
+		"primary_html" : null,
+		"content_category" : null,
+		"has_parameters" : false
+	},
+	"packages" : {
+		"BH" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "BH",
+				"Type" : "Package",
+				"Title" : "Boost C++ Header Files",
+				"Version" : "1.66.0-1",
+				"Date" : "2018-02-12",
+				"Author" : "Dirk Eddelbuettel, John W. Emerson and Michael J. Kane",
+				"Maintainer" : "Dirk Eddelbuettel <edd@debian.org>",
+				"Description" : "Boost provides free peer-reviewed portable C++ source \n libraries.  A large part of Boost is provided as C++ template code\n which is resolved entirely at compile-time without linking.  This \n package aims to provide the most useful subset of Boost libraries \n for template use among CRAN package. By placing these libraries in \n this package, we offer a more efficient distribution system for CRAN \n as replication of this code in the sources of other packages is \n avoided. As of release 1.65.0-1, the following Boost libraries are\n included: 'algorithm' 'align' 'any' 'atomic' 'bimap' 'bind'\n 'circular_buffer' 'compute' 'concept' 'config' 'container' 'date'_'time'\n 'detail' 'dynamic_bitset' 'exception' 'filesystem' 'flyweight' 'foreach'\n 'functional' 'fusion' 'geometry' 'graph' 'heap' 'icl' 'integer'\n 'interprocess' 'intrusive' 'io' 'iostreams' 'iterator' 'math' 'move' 'mpl'\n 'multiprcecision' 'numeric' 'pending' 'phoenix' 'preprocessor'\n 'propery_tree' 'random' 'range' 'scope_exit' 'smart_ptr' 'sort' 'spirit'\n 'tuple' 'type_traits' 'typeof' 'unordered' 'utility' 'uuid'.",
+				"License" : "BSL-1.0",
+				"BugReports" : "https://github.com/eddelbuettel/bh/issues",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2018-02-12 19:11:19.852233 UTC; deddelbuettel",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2018-02-13 23:48:11 UTC",
+				"Built" : "R 3.4.3; ; 2018-02-14 05:30:04 UTC; unix"
+			}
+		},
+		"MASS" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "MASS",
+				"Priority" : "recommended",
+				"Version" : "7.3-48",
+				"Date" : "2017-12-24",
+				"Revision" : "$Rev: 3474 $",
+				"Depends" : "R (>= 3.1.0), grDevices, graphics, stats, utils",
+				"Imports" : "methods",
+				"Suggests" : "lattice, nlme, nnet, survival",
+				"Authors@R" : "c(person(\"Brian\", \"Ripley\", role = c(\"aut\", \"cre\", \"cph\"),\n                    email = \"ripley@stats.ox.ac.uk\"),\n\t     person(\"Bill\", \"Venables\", role = \"ctb\"),\n\t     person(c(\"Douglas\", \"M.\"), \"Bates\", role = \"ctb\"),\n\t     person(\"Kurt\", \"Hornik\", role = \"trl\",\n                     comment = \"partial port ca 1998\"),\n\t     person(\"Albrecht\", \"Gebhardt\", role = \"trl\",\n                     comment = \"partial port ca 1998\"),\n\t     person(\"David\", \"Firth\", role = \"ctb\"))",
+				"Description" : "Functions and datasets to support Venables and Ripley,\n  \"Modern Applied Statistics with S\" (4th edition, 2002).",
+				"Title" : "Support Functions and Datasets for Venables and Ripley's MASS",
+				"LazyData" : "yes",
+				"ByteCompile" : "yes",
+				"License" : "GPL-2 | GPL-3",
+				"URL" : "http://www.stats.ox.ac.uk/pub/MASS4/",
+				"Contact" : "<MASS@stats.ox.ac.uk>",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2017-12-24 13:56:45 UTC; ripley",
+				"Author" : "Brian Ripley [aut, cre, cph],\n  Bill Venables [ctb],\n  Douglas M. Bates [ctb],\n  Kurt Hornik [trl] (partial port ca 1998),\n  Albrecht Gebhardt [trl] (partial port ca 1998),\n  David Firth [ctb]",
+				"Maintainer" : "Brian Ripley <ripley@stats.ox.ac.uk>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-12-25 17:40:49 UTC",
+				"Built" : "R 3.4.3; x86_64-apple-darwin15.6.0; 2017-12-26 05:42:05 UTC; unix"
+			}
+		},
+		"R6" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "R6",
+				"Title" : "Classes with Reference Semantics",
+				"Version" : "2.2.2",
+				"Authors@R" : "person(\"Winston\", \"Chang\", role = c(\"aut\", \"cre\"), email = \"winston@stdout.org\")",
+				"Description" : "The R6 package allows the creation of classes with reference\n    semantics, similar to R's built-in reference classes. Compared to reference\n    classes, R6 classes are simpler and lighter-weight, and they are not built\n    on S4 classes so they do not require the methods package. These classes\n    allow public and private members, and they support inheritance, even when\n    the classes are defined in different packages.",
+				"Depends" : "R (>= 3.0)",
+				"Suggests" : "knitr, microbenchmark, pryr, testthat, ggplot2, scales",
+				"License" : "MIT + file LICENSE",
+				"URL" : "https://github.com/wch/R6/",
+				"LazyData" : "true",
+				"VignetteBuilder" : "knitr",
+				"RoxygenNote" : "6.0.1",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2017-06-12 18:48:43 UTC; winston",
+				"Author" : "Winston Chang [aut, cre]",
+				"Maintainer" : "Winston Chang <winston@stdout.org>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-06-17 08:22:59 UTC",
+				"Built" : "R 3.4.0; ; 2017-06-18 04:09:19 UTC; unix"
+			}
+		},
+		"RColorBrewer" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "RColorBrewer",
+				"Version" : "1.1-2",
+				"Date" : "2014-12-07",
+				"Title" : "ColorBrewer Palettes",
+				"Authors@R" : "c(person(given = \"Erich\", family = \"Neuwirth\", role = c(\"aut\",\n        \"cre\"), email = \"erich.neuwirth@univie.ac.at\"))",
+				"Author" : "Erich Neuwirth [aut, cre]",
+				"Maintainer" : "Erich Neuwirth <erich.neuwirth@univie.ac.at>",
+				"Depends" : "R (>= 2.0.0)",
+				"Description" : "Provides color schemes for maps (and other graphics)\n        designed by Cynthia Brewer as described at http://colorbrewer2.org",
+				"License" : "Apache License 2.0",
+				"Packaged" : "2014-12-06 23:59:42 UTC; neuwirth",
+				"NeedsCompilation" : "no",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2014-12-07 08:28:55",
+				"Built" : "R 3.4.0; ; 2017-04-21 21:23:41 UTC; unix"
+			}
+		},
+		"Rcpp" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "Rcpp",
+				"Title" : "Seamless R and C++ Integration",
+				"Version" : "0.12.16",
+				"Date" : "2018-03-08",
+				"Author" : "Dirk Eddelbuettel, Romain Francois, JJ Allaire, Kevin Ushey, Qiang Kou,\n Nathan Russell, Douglas Bates and John Chambers",
+				"Maintainer" : "Dirk Eddelbuettel <edd@debian.org>",
+				"Description" : "The 'Rcpp' package provides R functions as well as C++ classes which\n offer a seamless integration of R and C++. Many R data types and objects can be\n mapped back and forth to C++ equivalents which facilitates both writing of new\n code as well as easier integration of third-party libraries. Documentation \n about 'Rcpp' is provided by several vignettes included in this package, via the \n 'Rcpp Gallery' site at <http://gallery.rcpp.org>, the paper by Eddelbuettel and \n Francois (2011, <doi:10.18637/jss.v040.i08>), the book by Eddelbuettel (2013,\n <doi:10.1007/978-1-4614-6868-4>) and the paper by Eddelbuettel and Balamuta (2017,\n <doi:10.7287/peerj.preprints.3188v1>); see 'citation(\"Rcpp\")' for details.",
+				"Depends" : "R (>= 3.0.0)",
+				"Imports" : "methods, utils",
+				"Suggests" : "RUnit, inline, rbenchmark, knitr, rmarkdown, pinp, pkgKitten\n(>= 0.1.2)",
+				"VignetteBuilder" : "knitr",
+				"URL" : "http://www.rcpp.org, http://dirk.eddelbuettel.com/code/rcpp.html,\nhttps://github.com/RcppCore/Rcpp",
+				"License" : "GPL (>= 2)",
+				"BugReports" : "https://github.com/RcppCore/Rcpp/issues",
+				"MailingList" : "Please send questions and comments regarding Rcpp to\nrcpp-devel@lists.r-forge.r-project.org",
+				"RoxygenNote" : "6.0.1",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2018-03-08 17:04:51.131351 UTC; edd",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2018-03-13 22:46:12 UTC",
+				"Built" : "R 3.4.4; x86_64-apple-darwin15.6.0; 2018-03-14 05:22:17 UTC; unix",
+				"RemoteType" : "cran",
+				"RemoteSha" : "0.12.16",
+				"RemoteRepos" : "structure(\"https://cran.rstudio.com/\", .Names = \"CRAN\")",
+				"RemotePkgType" : "binary"
+			}
+		},
+		"assertthat" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "assertthat",
+				"Title" : "Easy Pre and Post Assertions",
+				"Version" : "0.2.0",
+				"Authors@R" : "\n  person(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", c(\"aut\", \"cre\"))",
+				"Description" : "assertthat is an extension to stopifnot() that makes it\n    easy to declare the pre and post conditions that you code should\n    satisfy, while also producing friendly error messages so that your\n    users know what they've done wrong.",
+				"License" : "GPL-3",
+				"Imports" : "tools",
+				"Suggests" : "testthat",
+				"Collate" : "'assert-that.r' 'on-failure.r' 'assertions-file.r'\n'assertions-scalar.R' 'assertions.r' 'base.r'\n'base-comparison.r' 'base-is.r' 'base-logical.r' 'base-misc.r'\n'utils.r' 'validate-that.R'",
+				"RoxygenNote" : "6.0.1",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2017-04-10 19:00:43 UTC; hadley",
+				"Author" : "Hadley Wickham [aut, cre]",
+				"Maintainer" : "Hadley Wickham <hadley@rstudio.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-04-11 21:28:45 UTC",
+				"Built" : "R 3.4.0; ; 2017-04-21 21:17:22 UTC; unix"
+			}
+		},
+		"bindr" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "bindr",
+				"Title" : "Parametrized Active Bindings",
+				"Version" : "0.1",
+				"Authors@R" : "c(\n    person(\"Kirill\", \"Müller\", role = c(\"aut\", \"cre\"), email = \"krlmlr+r@mailbox.org\"),\n    person(\"RStudio\", role = \"cph\")\n    )",
+				"Description" : "Provides a simple interface for creating active bindings where the\n    bound function accepts additional arguments.",
+				"Suggests" : "testthat",
+				"LazyData" : "true",
+				"Date" : "2016-11-12",
+				"BugReports" : "https://github.com/krlmlr/bindr/issues",
+				"URL" : "https://github.com/krlmlr/bindr, https://krlmlr.github.io/bindr",
+				"RoxygenNote" : "5.0.1.9000",
+				"License" : "MIT + file LICENSE",
+				"Encoding" : "UTF-8",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2016-11-12 22:17:21 UTC; muelleki",
+				"Author" : "Kirill Müller [aut, cre],\n  RStudio [cph]",
+				"Maintainer" : "Kirill Müller <krlmlr+r@mailbox.org>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2016-11-13 01:48:48",
+				"Built" : "R 3.4.0; ; 2017-04-22 01:29:35 UTC; unix"
+			}
+		},
+		"bindrcpp" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "bindrcpp",
+				"Title" : "An 'Rcpp' Interface to Active Bindings",
+				"Description" : "Provides an easy way to fill an environment with active bindings\n    that call a C++ function.",
+				"Authors@R" : "c(\n    person(\"Kirill\", \"Müller\", role = c(\"aut\", \"cre\"), email = \"krlmlr+r@mailbox.org\"),\n    person(\"RStudio\", role = \"cph\")\n    )",
+				"Version" : "0.2",
+				"Date" : "2017-06-15",
+				"URL" : "https://github.com/krlmlr/bindrcpp,\nhttps://krlmlr.github.io/bindrcpp",
+				"BugReports" : "https://github.com/krlmlr/bindrcpp/issues",
+				"Imports" : "Rcpp, bindr",
+				"Suggests" : "testthat",
+				"LinkingTo" : "Rcpp, plogr",
+				"RoxygenNote" : "6.0.1",
+				"LazyData" : "true",
+				"License" : "MIT + file LICENSE",
+				"Encoding" : "UTF-8",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2017-06-15 20:53:22 UTC; muelleki",
+				"Author" : "Kirill Müller [aut, cre],\n  RStudio [cph]",
+				"Maintainer" : "Kirill Müller <krlmlr+r@mailbox.org>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-06-17 23:52:40 UTC",
+				"Built" : "R 3.4.0; x86_64-apple-darwin15.6.0; 2017-06-18 06:32:00 UTC; unix"
+			}
+		},
+		"cli" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "cli",
+				"Title" : "Helpers for Developing Command Line Interfaces",
+				"Version" : "1.0.0",
+				"Authors@R" : "c(\n    person(\"Gábor\", \"Csárdi\", , \"csardi.gabor@gmail.com\", c(\"aut\", \"cre\")),\n    person(\"Hadley\", \"Wickham\", role = c(\"ctb\")),\n    person(\"Kirill\", \"Müller\", role = c(\"ctb\"))\n    )",
+				"Description" : "A suite of tools designed to build attractive command line\n    interfaces ('CLIs'). Includes tools for drawing rules, boxes, trees, and\n    'Unicode' symbols with 'ASCII' alternatives.",
+				"License" : "MIT + file LICENSE",
+				"LazyData" : "true",
+				"URL" : "https://github.com/r-lib/cli#readme",
+				"BugReports" : "https://github.com/r-lib/cli/issues",
+				"RoxygenNote" : "6.0.1.9000",
+				"Depends" : "R (>= 2.10)",
+				"Imports" : "assertthat, crayon, methods",
+				"Suggests" : "covr, mockery, testthat, withr",
+				"Encoding" : "UTF-8",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2017-11-03 20:31:55 UTC; gaborcsardi",
+				"Author" : "Gábor Csárdi [aut, cre],\n  Hadley Wickham [ctb],\n  Kirill Müller [ctb]",
+				"Maintainer" : "Gábor Csárdi <csardi.gabor@gmail.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-11-05 12:38:47 UTC",
+				"Built" : "R 3.4.2; ; 2017-11-06 09:28:23 UTC; unix"
+			}
+		},
+		"colorspace" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "colorspace",
+				"Version" : "1.3-2",
+				"Date" : "2016-12-14",
+				"Title" : "Color Space Manipulation",
+				"Authors@R" : "c(person(given = \"Ross\", family = \"Ihaka\", role = \"aut\", email = \"ihaka@stat.auckland.ac.nz\"),\n             person(given = \"Paul\", family = \"Murrell\", role = \"aut\", email = \"paul@stat.auckland.ac.nz\"),\n             person(given = \"Kurt\", family = \"Hornik\", role = \"aut\", email = \"Kurt.Hornik@R-project.org\"),\n             person(given = c(\"Jason\", \"C.\"), family = \"Fisher\", role = \"aut\", email = \"jfisher@usgs.gov\"),\n             person(given = \"Reto\", family = \"Stauffer\", role = \"aut\", email = \"Reto.Stauffer@uibk.ac.at\"),\n             person(given = \"Achim\", family = \"Zeileis\", role = c(\"aut\", \"cre\"), email = \"Achim.Zeileis@R-project.org\"))",
+				"Description" : "Carries out mapping between assorted color spaces including\n             RGB, HSV, HLS, CIEXYZ, CIELUV, HCL (polar CIELUV),\n\t     CIELAB and polar CIELAB. Qualitative, sequential, and\n\t     diverging color palettes based on HCL colors are provided\n\t     along with an interactive palette picker (with either a Tcl/Tk\n\t     or a shiny GUI).",
+				"Depends" : "R (>= 2.13.0), methods",
+				"Imports" : "graphics, grDevices",
+				"Suggests" : "datasets, stats, utils, KernSmooth, MASS, kernlab, mvtnorm,\nvcd, dichromat, tcltk, shiny, shinyjs",
+				"License" : "BSD_3_clause + file LICENSE",
+				"URL" : "https://hclwizard.org/",
+				"LazyData" : "yes",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2016-12-14 22:11:46 UTC; zeileis",
+				"Author" : "Ross Ihaka [aut],\n  Paul Murrell [aut],\n  Kurt Hornik [aut],\n  Jason C. Fisher [aut],\n  Reto Stauffer [aut],\n  Achim Zeileis [aut, cre]",
+				"Maintainer" : "Achim Zeileis <Achim.Zeileis@R-project.org>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2016-12-14 23:28:25",
+				"Built" : "R 3.4.0; x86_64-apple-darwin15.6.0; 2017-04-21 21:24:28 UTC; unix"
+			}
+		},
+		"crayon" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "crayon",
+				"Title" : "Colored Terminal Output",
+				"Version" : "1.3.4",
+				"Authors@R" : "c(\n    person(\"Gábor\", \"Csárdi\", , \"csardi.gabor@gmail.com\",\n    role = c(\"aut\", \"cre\")),\n    person(\n    \"Brodie\", \"Gaslam\", email=\"brodie.gaslam@yahoo.com\",\n    role=c(\"ctb\"))\n    )",
+				"Description" : "Colored terminal output on terminals that support 'ANSI'\n    color and highlight codes. It also works in 'Emacs' 'ESS'. 'ANSI'\n    color support is automatically detected. Colors and highlighting can\n    be combined and nested. New styles can also be created easily.\n    This package was inspired by the 'chalk' 'JavaScript' project.",
+				"License" : "MIT + file LICENSE",
+				"LazyData" : "true",
+				"URL" : "https://github.com/r-lib/crayon#readme",
+				"BugReports" : "https://github.com/r-lib/crayon/issues",
+				"Collate" : "'ansi-256.r' 'combine.r' 'string.r' 'utils.r'\n'crayon-package.r' 'disposable.r' 'has_ansi.r' 'has_color.r'\n'styles.r' 'machinery.r' 'parts.r' 'print.r' 'style-var.r'\n'show.r' 'string_operations.r'",
+				"Imports" : "grDevices, methods, utils",
+				"Suggests" : "mockery, rstudioapi, testthat, withr",
+				"RoxygenNote" : "6.0.1.9000",
+				"Encoding" : "UTF-8",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2017-09-15 18:14:04 UTC; gaborcsardi",
+				"Author" : "Gábor Csárdi [aut, cre],\n  Brodie Gaslam [ctb]",
+				"Maintainer" : "Gábor Csárdi <csardi.gabor@gmail.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-09-16 19:49:46 UTC",
+				"Built" : "R 3.4.1; ; 2017-09-17 04:43:27 UTC; unix"
+			}
+		},
+		"dichromat" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "dichromat",
+				"Version" : "2.0-0",
+				"Date" : "2013-01-23",
+				"Title" : "Color Schemes for Dichromats",
+				"Authors@R" : "c(person(given = \"Thomas\", family = \"Lumley\", role =\n        c(\"aut\", \"cre\"), email = \"tlumley@u.washington.edu\"),\n        person(given = \"Ken\", family = \"Knoblauch\", role = \"ctb\", email\n        = \"ken.knoblauch@inserm.fr\"), person(given = \"Scott\", family =\n        \"Waichler\", role = \"ctb\", email = \"scott.waichler@pnl.gov\"),\n        person(given = \"Achim\", family = \"Zeileis\", role = \"ctb\", email\n        = \"Achim.Zeileis@R-project.org\"))",
+				"Description" : "Collapse red-green or green-blue distinctions to simulate\n        the effects of different types of color-blindness.",
+				"Depends" : "R (>= 2.10), stats",
+				"License" : "GPL-2",
+				"LazyLoad" : "Yes",
+				"Packaged" : "2013-01-23 06:25:04 UTC; zeileis",
+				"Author" : "Thomas Lumley [aut, cre], Ken Knoblauch [ctb], Scott Waichler\n        [ctb], Achim Zeileis [ctb]",
+				"Maintainer" : "Thomas Lumley <tlumley@u.washington.edu>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2013-01-24 08:18:09",
+				"Built" : "R 3.4.0; ; 2017-04-21 21:23:41 UTC; unix"
+			}
+		},
+		"digest" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "digest",
+				"Author" : "Dirk Eddelbuettel <edd@debian.org> with contributions \n by Antoine Lucas, Jarek Tuszynski, Henrik Bengtsson, Simon Urbanek,\n Mario Frasca, Bryan Lewis, Murray Stokely, Hannes Muehleisen,\n Duncan Murdoch, Jim Hester, Wush Wu, Qiang Kou, Thierry Onkelinx, \n Michel Lang, Viliam Simko and Kurt Hornik.",
+				"Version" : "0.6.15",
+				"Date" : "2018-01-28",
+				"Maintainer" : "Dirk Eddelbuettel <edd@debian.org>",
+				"Title" : "Create Compact Hash Digests of R Objects",
+				"Description" : "Implementation of a function 'digest()' for the creation \n of hash digests of arbitrary R objects (using the 'md5', 'sha-1', 'sha-256', \n 'crc32', 'xxhash' and 'murmurhash' algorithms) permitting easy comparison of R\n language objects, as well as a function 'hmac()' to create hash-based\n message authentication code. Please note that this package is not meant to\n be deployed for cryptographic purposes for which more comprehensive (and\n widely tested) libraries such as 'OpenSSL' should be used.",
+				"URL" : "http://dirk.eddelbuettel.com/code/digest.html",
+				"BugReports" : "https://github.com/eddelbuettel/digest/issues",
+				"Depends" : "R (>= 2.4.1)",
+				"License" : "GPL (>= 2)",
+				"Suggests" : "knitr, rmarkdown",
+				"VignetteBuilder" : "knitr",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2018-01-28 16:42:14.094058 UTC; edd",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2018-01-28 21:43:31 UTC",
+				"Built" : "R 3.4.3; x86_64-apple-darwin15.6.0; 2018-01-29 05:21:06 UTC; unix"
+			}
+		},
+		"dplyr" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Type" : "Package",
+				"Package" : "dplyr",
+				"Version" : "0.7.4",
+				"Title" : "A Grammar of Data Manipulation",
+				"Description" : "A fast, consistent tool for working with data frame like objects,\n    both in memory and out of memory.",
+				"Authors@R" : "c(\n    person(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", c(\"aut\", \"cre\")),\n    person(\"Romain\", \"Francois\", , \"romain@r-enthusiasts.com\", role = \"aut\"),\n    person(\"Lionel\", \"Henry\", role = \"aut\"),\n    person(\"Kirill\", \"Müller\", role = \"aut\"),\n    person(\"RStudio\", role = c(\"cph\", \"fnd\"))\n    )",
+				"URL" : "http://dplyr.tidyverse.org, https://github.com/tidyverse/dplyr",
+				"BugReports" : "https://github.com/tidyverse/dplyr/issues",
+				"Encoding" : "UTF-8",
+				"Depends" : "R (>= 3.1.2)",
+				"Imports" : "assertthat, bindrcpp (>= 0.2), glue (>= 1.1.1), magrittr,\nmethods, pkgconfig, rlang (>= 0.1.2), R6, Rcpp (>= 0.12.7),\ntibble (>= 1.3.1), utils",
+				"Suggests" : "bit64, covr, dbplyr, dtplyr, DBI, ggplot2, hms, knitr, Lahman\n(>= 3.0-1), mgcv, microbenchmark, nycflights13, rmarkdown,\nRMySQL, RPostgreSQL, RSQLite, testthat, withr",
+				"VignetteBuilder" : "knitr",
+				"LinkingTo" : "Rcpp (>= 0.12.0), BH (>= 1.58.0-1), bindrcpp, plogr",
+				"LazyData" : "yes",
+				"License" : "MIT + file LICENSE",
+				"RoxygenNote" : "6.0.1",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2017-09-16 15:25:52 UTC; muelleki",
+				"Author" : "Hadley Wickham [aut, cre],\n  Romain Francois [aut],\n  Lionel Henry [aut],\n  Kirill Müller [aut],\n  RStudio [cph, fnd]",
+				"Maintainer" : "Hadley Wickham <hadley@rstudio.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-09-28 20:43:29 UTC",
+				"Built" : "R 3.4.2; x86_64-apple-darwin15.6.0; 2017-09-29 04:33:12 UTC; unix"
+			}
+		},
+		"ggplot2" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "ggplot2",
+				"Version" : "2.2.1",
+				"Title" : "Create Elegant Data Visualisations Using the Grammar of Graphics",
+				"Description" : "A system for 'declaratively' creating graphics,\n    based on \"The Grammar of Graphics\". You provide the data, tell 'ggplot2'\n    how to map variables to aesthetics, what graphical primitives to use,\n    and it takes care of the details.",
+				"Authors@R" : "c(\n    person(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", c(\"aut\", \"cre\")),\n    person(\"Winston\", \"Chang\", , \"winston@rstudio.com\", \"aut\"),\n    person(\"RStudio\", role = c(\"cph\"))\n    )",
+				"Depends" : "R (>= 3.1)",
+				"Imports" : "digest, grid, gtable (>= 0.1.1), MASS, plyr (>= 1.7.1),\nreshape2, scales (>= 0.4.1), stats, tibble, lazyeval",
+				"Suggests" : "covr, ggplot2movies, hexbin, Hmisc, lattice, mapproj, maps,\nmaptools, mgcv, multcomp, nlme, testthat (>= 0.11.0), quantreg,\nknitr, rpart, rmarkdown, svglite",
+				"Enhances" : "sp",
+				"License" : "GPL-2 | file LICENSE",
+				"URL" : "http://ggplot2.tidyverse.org, https://github.com/tidyverse/ggplot2",
+				"BugReports" : "https://github.com/tidyverse/ggplot2/issues",
+				"LazyData" : "true",
+				"Collate" : "'ggproto.r' 'aaa-.r' 'aes-calculated.r'\n'aes-colour-fill-alpha.r' 'aes-group-order.r'\n'aes-linetype-size-shape.r' 'aes-position.r' 'utilities.r'\n'aes.r' 'legend-draw.r' 'geom-.r' 'annotation-custom.r'\n'annotation-logticks.r' 'geom-polygon.r' 'geom-map.r'\n'annotation-map.r' 'geom-raster.r' 'annotation-raster.r'\n'annotation.r' 'autoplot.r' 'axis-secondary.R' 'bench.r'\n'bin.R' 'coord-.r' 'coord-cartesian-.r' 'coord-fixed.r'\n'coord-flip.r' 'coord-map.r' 'coord-munch.r' 'coord-polar.r'\n'coord-quickmap.R' 'coord-transform.r' 'data.R' 'facet-.r'\n'facet-grid-.r' 'facet-null.r' 'facet-wrap.r' 'fortify-lm.r'\n'fortify-map.r' 'fortify-multcomp.r' 'fortify-spatial.r'\n'fortify.r' 'stat-.r' 'geom-abline.r' 'geom-rect.r'\n'geom-bar.r' 'geom-bin2d.r' 'geom-blank.r' 'geom-boxplot.r'\n'geom-col.r' 'geom-path.r' 'geom-contour.r' 'geom-count.r'\n'geom-crossbar.r' 'geom-segment.r' 'geom-curve.r'\n'geom-defaults.r' 'geom-ribbon.r' 'geom-density.r'\n'geom-density2d.r' 'geom-dotplot.r' 'geom-errorbar.r'\n'geom-errorbarh.r' 'geom-freqpoly.r' 'geom-hex.r'\n'geom-histogram.r' 'geom-hline.r' 'geom-jitter.r'\n'geom-label.R' 'geom-linerange.r' 'geom-point.r'\n'geom-pointrange.r' 'geom-quantile.r' 'geom-rug.r'\n'geom-smooth.r' 'geom-spoke.r' 'geom-text.r' 'geom-tile.r'\n'geom-violin.r' 'geom-vline.r' 'ggplot2.r' 'grob-absolute.r'\n'grob-dotstack.r' 'grob-null.r' 'grouping.r' 'guide-colorbar.r'\n'guide-legend.r' 'guides-.r' 'guides-axis.r' 'guides-grid.r'\n'hexbin.R' 'labeller.r' 'labels.r' 'layer.r' 'layout.R'\n'limits.r' 'margins.R' 'plot-build.r' 'plot-construction.r'\n'plot-last.r' 'plot.r' 'position-.r' 'position-collide.r'\n'position-dodge.r' 'position-identity.r' 'position-jitter.r'\n'position-jitterdodge.R' 'position-nudge.R' 'position-stack.r'\n'quick-plot.r' 'range.r' 'save.r' 'scale-.r' 'scale-alpha.r'\n'scale-brewer.r' 'scale-continuous.r' 'scale-date.r'\n'scale-discrete-.r' 'scale-gradient.r' 'scale-grey.r'\n'scale-hue.r' 'scale-identity.r' 'scale-linetype.r'\n'scale-manual.r' 'scale-shape.r' 'scale-size.r' 'scale-type.R'\n'scales-.r' 'stat-bin.r' 'stat-bin2d.r' 'stat-bindot.r'\n'stat-binhex.r' 'stat-boxplot.r' 'stat-contour.r'\n'stat-count.r' 'stat-density-2d.r' 'stat-density.r'\n'stat-ecdf.r' 'stat-ellipse.R' 'stat-function.r'\n'stat-identity.r' 'stat-qq.r' 'stat-quantile.r'\n'stat-smooth-methods.r' 'stat-smooth.r' 'stat-sum.r'\n'stat-summary-2d.r' 'stat-summary-bin.R' 'stat-summary-hex.r'\n'stat-summary.r' 'stat-unique.r' 'stat-ydensity.r' 'summary.r'\n'theme-elements.r' 'theme.r' 'theme-defaults.r'\n'theme-current.R' 'translate-qplot-ggplot.r'\n'translate-qplot-lattice.r' 'utilities-break.r'\n'utilities-grid.r' 'utilities-help.r' 'utilities-matrix.r'\n'utilities-resolution.r' 'utilities-table.r' 'zxx.r' 'zzz.r'",
+				"VignetteBuilder" : "knitr",
+				"RoxygenNote" : "5.0.1.9000",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2016-12-30 17:10:52 UTC; hadley",
+				"Author" : "Hadley Wickham [aut, cre],\n  Winston Chang [aut],\n  RStudio [cph]",
+				"Maintainer" : "Hadley Wickham <hadley@rstudio.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2016-12-30 22:45:17",
+				"Built" : "R 3.4.0; ; 2017-04-20 21:08:16 UTC; unix"
+			}
+		},
+		"glue" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "glue",
+				"Title" : "Interpreted String Literals",
+				"Version" : "1.2.0",
+				"Authors@R" : "person(\"Jim\", \"Hester\", email = \"james.f.hester@gmail.com\", role = c(\"aut\", \"cre\"))",
+				"Description" : "An implementation of interpreted string literals, inspired by\n  Python's Literal String Interpolation <https://www.python.org/dev/peps/pep-0498/> and Docstrings\n  <https://www.python.org/dev/peps/pep-0257/> and Julia's Triple-Quoted String Literals\n  <https://docs.julialang.org/en/stable/manual/strings/#triple-quoted-string-literals>.",
+				"Depends" : "R (>= 3.1)",
+				"Suggests" : "testthat, covr, magrittr, crayon, knitr, rmarkdown, DBI,\nRSQLite, R.utils, forcats, microbenchmark, rprintf, stringr,\nggplot2",
+				"Imports" : "methods",
+				"License" : "MIT + file LICENSE",
+				"Encoding" : "UTF-8",
+				"LazyData" : "true",
+				"RoxygenNote" : "6.0.1",
+				"URL" : "https://github.com/tidyverse/glue",
+				"BugReports" : "https://github.com/tidyverse/glue/issues",
+				"VignetteBuilder" : "knitr",
+				"ByteCompile" : "true",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2017-10-29 19:05:15 UTC; jhester",
+				"Author" : "Jim Hester [aut, cre]",
+				"Maintainer" : "Jim Hester <james.f.hester@gmail.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-10-29 20:03:53 UTC",
+				"Built" : "R 3.4.2; x86_64-apple-darwin15.6.0; 2017-10-30 08:48:16 UTC; unix"
+			}
+		},
+		"gtable" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "gtable",
+				"Version" : "0.2.0",
+				"Title" : "Arrange 'Grobs' in Tables",
+				"Description" : "Tools to make it easier to work with \"tables\" of 'grobs'.",
+				"Authors@R" : "person(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", c(\"aut\", \"cre\"))",
+				"Depends" : "R (>= 2.14)",
+				"Imports" : "grid",
+				"Suggests" : "testthat, covr",
+				"License" : "GPL-2",
+				"Collate" : "'add-grob.r' 'add-rows-cols.r' 'add-space.r' 'grid.r'\n'gtable-layouts.r' 'gtable.r' 'rbind-cbind.r' 'utils.r'\n'trim.r' 'filter.r' 'align.r' 'padding.r' 'z.r'",
+				"RoxygenNote" : "5.0.1",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2016-02-26 13:06:10 UTC; hadley",
+				"Author" : "Hadley Wickham [aut, cre]",
+				"Maintainer" : "Hadley Wickham <hadley@rstudio.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2016-02-26 15:23:14",
+				"Built" : "R 3.4.0; ; 2017-04-21 21:23:21 UTC; unix"
+			}
+		},
+		"htmltools" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "htmltools",
+				"Type" : "Package",
+				"Title" : "Tools for HTML",
+				"Version" : "0.3.6",
+				"Date" : "2017-04-26",
+				"Author" : "RStudio, Inc.",
+				"Maintainer" : "Joe Cheng <joe@rstudio.com>",
+				"Description" : "Tools for HTML generation and output.",
+				"Depends" : "R (>= 2.14.1)",
+				"Imports" : "utils, digest, Rcpp",
+				"Suggests" : "markdown, testthat",
+				"Enhances" : "knitr",
+				"License" : "GPL (>= 2)",
+				"URL" : "https://github.com/rstudio/htmltools",
+				"BugReports" : "https://github.com/rstudio/htmltools/issues",
+				"RoxygenNote" : "6.0.1",
+				"LinkingTo" : "Rcpp",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2017-04-27 00:04:32 UTC; jcheng",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-04-28 07:41:46 UTC",
+				"Built" : "R 3.4.0; x86_64-apple-darwin15.6.0; 2017-04-29 03:24:16 UTC; unix"
+			}
+		},
+		"httpuv" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "httpuv",
+				"Type" : "Package",
+				"Title" : "HTTP and WebSocket Server Library",
+				"Version" : "1.3.5",
+				"Author" : "Joe Cheng, Hector Corrada Bravo [ctb], Jeroen Ooms [ctb],\n    Winston Chang [ctb]",
+				"Copyright" : "RStudio, Inc.; Joyent, Inc.; Nginx Inc.; Igor Sysoev; Niels\nProvos; Internet Systems Consortium, Inc.; Alexander Chemeris",
+				"Maintainer" : "Joe Cheng <joe@rstudio.com>",
+				"Description" : "Provides low-level socket and protocol support for handling\n    HTTP and WebSocket requests directly from within R. It is primarily\n    intended as a building block for other packages, rather than making it\n    particularly easy to create complete web applications using httpuv alone.\n    httpuv is built on top of the libuv and http-parser C libraries, both of\n    which were developed by Joyent, Inc. (See LICENSE file for libuv and\n    http-parser license information.)",
+				"License" : "GPL-3 | file LICENSE",
+				"Depends" : "R (>= 2.15.1), methods",
+				"Imports" : "Rcpp (>= 0.11.0), utils",
+				"LinkingTo" : "Rcpp",
+				"URL" : "https://github.com/rstudio/httpuv",
+				"SystemRequirements" : "GNU make",
+				"RoxygenNote" : "6.0.1",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2017-07-03 21:47:04 UTC; jcheng",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-07-04 07:02:15 UTC",
+				"Built" : "R 3.4.1; x86_64-apple-darwin15.6.0; 2017-07-05 04:13:30 UTC; unix"
+			}
+		},
+		"jsonlite" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "jsonlite",
+				"Version" : "1.5",
+				"Title" : "A Robust, High Performance JSON Parser and Generator for R",
+				"License" : "MIT + file LICENSE",
+				"NeedsCompilation" : "yes",
+				"Depends" : "methods",
+				"Author" : "Jeroen Ooms, Duncan Temple Lang, Lloyd Hilaiel",
+				"URL" : "https://arxiv.org/abs/1403.2805,\nhttps://www.opencpu.org/posts/jsonlite-a-smarter-json-encoder",
+				"BugReports" : "http://github.com/jeroen/jsonlite/issues",
+				"Maintainer" : "Jeroen Ooms <jeroen@berkeley.edu>",
+				"VignetteBuilder" : "knitr, R.rsp",
+				"Description" : "A fast JSON parser and generator optimized for statistical data\n    and the web. Started out as a fork of 'RJSONIO', but has been completely\n    rewritten in recent versions. The package offers flexible, robust, high\n    performance tools for working with JSON in R and is particularly powerful\n    for building pipelines and interacting with a web API. The implementation is\n    based on the mapping described in the vignette (Ooms, 2014). In addition to\n    converting JSON data from/to R objects, 'jsonlite' contains functions to\n    stream, validate, and prettify JSON data. The unit tests included with the\n    package verify that all edge cases are encoded and decoded consistently for\n    use with dynamic data in systems and applications.",
+				"Suggests" : "httr, curl, plyr, testthat, knitr, rmarkdown, R.rsp, sp",
+				"RoxygenNote" : "6.0.1.9000",
+				"Packaged" : "2017-05-31 14:03:43 UTC; jeroen",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-06-01 12:03:37 UTC",
+				"Built" : "R 3.4.0; x86_64-apple-darwin15.6.0; 2017-06-02 03:53:14 UTC; unix"
+			}
+		},
+		"labeling" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "labeling",
+				"Type" : "Package",
+				"Title" : "Axis Labeling",
+				"Version" : "0.3",
+				"Date" : "2014-08-22",
+				"Author" : "Justin Talbot",
+				"Maintainer" : "Justin Talbot <justintalbot@gmail.com>",
+				"Description" : "Provides a range of axis labeling algorithms",
+				"License" : "MIT + file LICENSE | Unlimited",
+				"LazyLoad" : "no",
+				"Collate" : "'labeling.R'",
+				"Repository" : "CRAN",
+				"Repository/R-Forge/Project" : "labeling",
+				"Repository/R-Forge/Revision" : "16",
+				"Repository/R-Forge/DateTimeStamp" : "2014-08-23 05:53:23",
+				"Date/Publication" : "2014-08-23 14:57:53",
+				"Packaged" : "2014-08-23 06:15:07 UTC; rforge",
+				"NeedsCompilation" : "no",
+				"Built" : "R 3.4.0; ; 2017-04-21 21:24:13 UTC; unix"
+			}
+		},
+		"lazyeval" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "lazyeval",
+				"Version" : "0.2.1",
+				"Title" : "Lazy (Non-Standard) Evaluation",
+				"Description" : "An alternative approach to non-standard evaluation using\n    formulas. Provides a full implementation of LISP style 'quasiquotation',\n    making it easier to generate code with other code.",
+				"Authors@R" : "c(\n    person(\"Hadley\", \"Wickham\", ,\"hadley@rstudio.com\", c(\"aut\", \"cre\")),\n    person(\"RStudio\", role = \"cph\")\n    )",
+				"License" : "GPL-3",
+				"LazyData" : "true",
+				"Depends" : "R (>= 3.1.0)",
+				"Suggests" : "knitr, rmarkdown (>= 0.2.65), testthat, covr",
+				"VignetteBuilder" : "knitr",
+				"RoxygenNote" : "6.0.1",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2017-10-18 22:37:44 UTC; lionel",
+				"Author" : "Hadley Wickham [aut, cre],\n  RStudio [cph]",
+				"Maintainer" : "Hadley Wickham <hadley@rstudio.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-10-29 22:59:36 UTC",
+				"Built" : "R 3.4.2; x86_64-apple-darwin15.6.0; 2017-10-30 04:28:48 UTC; unix"
+			}
+		},
+		"magrittr" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "magrittr",
+				"Type" : "Package",
+				"Title" : "A Forward-Pipe Operator for R",
+				"Version" : "1.5",
+				"Author" : "Stefan Milton Bache <stefan@stefanbache.dk> and\n    Hadley Wickham <h.wickham@gmail.com>",
+				"Maintainer" : "Stefan Milton Bache <stefan@stefanbache.dk>",
+				"Description" : "Provides a mechanism for chaining commands with a\n    new forward-pipe operator, %>%. This operator will forward a\n    value, or the result of an expression, into the next function\n    call/expression. There is flexible support for the type\n    of right-hand side expressions. For more information, see\n    package vignette.\n    To quote Rene Magritte, \"Ceci n'est pas un pipe.\"",
+				"Suggests" : "testthat, knitr",
+				"VignetteBuilder" : "knitr",
+				"License" : "MIT + file LICENSE",
+				"ByteCompile" : "Yes",
+				"Packaged" : "2014-11-22 08:50:53 UTC; shb",
+				"NeedsCompilation" : "no",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2014-11-22 19:15:57",
+				"Built" : "R 3.4.0; ; 2017-04-21 21:17:20 UTC; unix"
+			}
+		},
+		"mime" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "mime",
+				"Type" : "Package",
+				"Title" : "Map Filenames to MIME Types",
+				"Version" : "0.5",
+				"Date" : "2016-07-07",
+				"Authors@R" : "c(person(\"Jeffrey\", \"Horner\", role = \"ctb\"),\n    person(\"Yihui\", \"Xie\", role = c(\"aut\", \"cre\"), email = \"xie@yihui.name\"))",
+				"Maintainer" : "Yihui Xie <xie@yihui.name>",
+				"Description" : "Guesses the MIME type from a filename extension using the data\n    derived from /etc/mime.types in UNIX-type systems.",
+				"Imports" : "tools",
+				"License" : "GPL",
+				"URL" : "https://github.com/yihui/mime",
+				"BugReports" : "https://github.com/yihui/mime/issues",
+				"LazyData" : "TRUE",
+				"RoxygenNote" : "5.0.1",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2016-07-07 04:44:41 UTC; yihui",
+				"Author" : "Jeffrey Horner [ctb],\n  Yihui Xie [aut, cre]",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2016-07-07 07:38:00",
+				"Built" : "R 3.4.0; x86_64-apple-darwin15.6.0; 2017-04-21 21:12:03 UTC; unix"
+			}
+		},
+		"munsell" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "munsell",
+				"Type" : "Package",
+				"Title" : "Utilities for Using Munsell Colours",
+				"Version" : "0.4.3",
+				"Author" : "Charlotte Wickham <cwickham@gmail.com>",
+				"Maintainer" : "Charlotte Wickham <cwickham@gmail.com>",
+				"Description" : "Provides easy access to, and manipulation of, the Munsell \n    colours. Provides a mapping between Munsell's \n    original notation (e.g. \"5R 5/10\") and hexadecimal strings suitable \n    for use directly in R graphics. Also provides utilities \n    to explore slices through the Munsell colour tree, to transform \n    Munsell colours and display colour palettes.",
+				"Suggests" : "ggplot2, testthat",
+				"Imports" : "colorspace, methods",
+				"License" : "MIT + file LICENSE",
+				"RoxygenNote" : "5.0.1",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2016-02-12 19:58:18 UTC; wickhamc",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2016-02-13 00:46:00",
+				"Built" : "R 3.4.0; ; 2017-04-20 17:42:21 UTC; unix"
+			}
+		},
+		"packrat" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "packrat",
+				"Type" : "Package",
+				"Title" : "A Dependency Management System for Projects and their R Package\nDependencies",
+				"Version" : "0.4.8-1",
+				"Author" : "Kevin Ushey, Jonathan McPherson, Joe Cheng, Aron Atkins, JJ Allaire",
+				"Maintainer" : "Kevin Ushey <kevin@rstudio.com>",
+				"Description" : "Manage the R packages your project depends\n    on in an isolated, portable, and reproducible way.",
+				"License" : "GPL-2",
+				"Depends" : "R (>= 3.0.0)",
+				"Imports" : "tools, utils",
+				"Suggests" : "testthat (>= 0.7), devtools, httr, knitr, rmarkdown",
+				"Enhances" : "BiocInstaller",
+				"URL" : "https://github.com/rstudio/packrat/",
+				"BugReports" : "https://github.com/rstudio/packrat/issues",
+				"RoxygenNote" : "5.0.1",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2016-09-07 21:30:04 UTC; kevin",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2016-09-07 23:37:52",
+				"Built" : "R 3.4.3; ; 2018-02-15 06:59:15 UTC; unix"
+			}
+		},
+		"pillar" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "pillar",
+				"Title" : "Coloured Formatting for Columns",
+				"Version" : "1.1.0",
+				"Authors@R" : "c(\n    person(\"Kirill\", \"Müller\", , \"krlmlr+r@mailbox.org\", role = c(\"aut\", \"cre\")),\n    person(\"Hadley\", \"Wickham\", role = \"aut\"),\n    person(\"RStudio\", role = \"cph\")\n  )",
+				"Description" : "Provides a 'pillar' generic designed for formatting columns\n   of data using the full range of colours provided by modern terminals.",
+				"License" : "GPL-3",
+				"Encoding" : "UTF-8",
+				"LazyData" : "true",
+				"URL" : "https://github.com/r-lib/pillar",
+				"BugReports" : "https://github.com/r-lib/pillar/issues",
+				"Imports" : "cli, crayon (>= 1.3.4), methods, rlang, utf8 (>= 1.1.3)",
+				"Suggests" : "knitr, testthat (>= 2.0.0)",
+				"RoxygenNote" : "6.0.1",
+				"Collate" : "'capital.R' 'compat-purrr.R' 'dim.R' 'extent.R' 'multi.R'\n'ornament.R' 'pillar-package.R' 'pillar.R' 'rowid-capital.R'\n'rowid-data.R' 'rowid-title.R' 'rowid-type.R' 'scientific.R'\n'shaft.R' 'shaft-simple.R' 'sigfig.R' 'spark-bar.R'\n'spark-line.R' 'strrep.R' 'styles.R' 'testthat.R' 'tick.R'\n'title.R' 'type-sum.R' 'type.R' 'utils.R' 'width.R' 'zzz.R'",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2018-01-14 21:11:40 UTC; muelleki",
+				"Author" : "Kirill Müller [aut, cre],\n  Hadley Wickham [aut],\n  RStudio [cph]",
+				"Maintainer" : "Kirill Müller <krlmlr+r@mailbox.org>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2018-01-14 22:42:38 UTC",
+				"Built" : "R 3.4.3; ; 2018-01-15 23:30:54 UTC; unix"
+			}
+		},
+		"pkgconfig" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "pkgconfig",
+				"Title" : "Private Configuration for 'R' Packages",
+				"Version" : "2.0.1",
+				"Author" : "Gábor Csárdi",
+				"Maintainer" : "Gábor Csárdi <csardi.gabor@gmail.com>",
+				"Description" : "Set configuration options on a per-package basis.\n    Options set by a given package only apply to that package,\n    other packages are unaffected.",
+				"License" : "MIT + file LICENSE",
+				"LazyData" : "true",
+				"Imports" : "utils",
+				"Suggests" : "covr, testthat, disposables (>= 1.0.3)",
+				"URL" : "https://github.com/gaborcsardi/pkgconfig",
+				"BugReports" : "https://github.com/gaborcsardi/pkgconfig/issues",
+				"Encoding" : "UTF-8",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2017-03-21 10:15:26 UTC; gaborcsardi",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-03-21 15:20:20 UTC",
+				"Built" : "R 3.4.0; ; 2017-04-20 18:51:07 UTC; unix"
+			}
+		},
+		"plogr" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "plogr",
+				"Title" : "The 'plog' C++ Logging Library",
+				"Version" : "0.1-1",
+				"Date" : "2016-09-24",
+				"Authors@R" : "c(\n  person(\"Kirill\", \"Müller\", role = c(\"aut\", \"cre\"), email = \"krlmlr+r@mailbox.org\"),\n  person(\"Sergey\", \"Podobry\", role = \"cph\", comment = \"Author of the bundled plog library\"))",
+				"Description" : "\n  A simple header-only logging library for C++.\n  Add 'LinkingTo: plogr' to 'DESCRIPTION', and '#include <plogr.h>' in your C++ modules to use it.",
+				"Suggests" : "Rcpp",
+				"License" : "MIT + file LICENSE",
+				"Encoding" : "UTF-8",
+				"LazyData" : "true",
+				"URL" : "https://github.com/krlmlr/plogr#readme",
+				"BugReports" : "https://github.com/krlmlr/plogr/issues",
+				"RoxygenNote" : "5.0.1.9000",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2016-09-24 12:08:49 UTC; muelleki",
+				"Author" : "Kirill Müller [aut, cre],\n  Sergey Podobry [cph] (Author of the bundled plog library)",
+				"Maintainer" : "Kirill Müller <krlmlr+r@mailbox.org>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2016-09-24 18:23:26",
+				"Built" : "R 3.4.0; ; 2017-04-21 21:51:53 UTC; unix"
+			}
+		},
+		"plyr" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "plyr",
+				"Version" : "1.8.4",
+				"Title" : "Tools for Splitting, Applying and Combining Data",
+				"Description" : "A set of tools that solves a common set of problems: you\n    need to break a big problem down into manageable pieces, operate on each\n    piece and then put all the pieces back together.  For example, you might\n    want to fit a model to each spatial location or time point in your study,\n    summarise data by panels or collapse high-dimensional arrays to simpler\n    summary statistics. The development of 'plyr' has been generously supported\n    by 'Becton Dickinson'.",
+				"Authors@R" : "person(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", c(\"aut\", \"cre\"))",
+				"URL" : "http://had.co.nz/plyr, https://github.com/hadley/plyr",
+				"BugReports" : "https://github.com/hadley/plyr/issues",
+				"Depends" : "R (>= 3.1.0)",
+				"Imports" : "Rcpp (>= 0.11.0)",
+				"LinkingTo" : "Rcpp",
+				"Suggests" : "abind, testthat, tcltk, foreach, doParallel, itertools,\niterators, covr",
+				"License" : "MIT + file LICENSE",
+				"LazyData" : "true",
+				"RoxygenNote" : "5.0.1",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2016-06-07 19:58:36 UTC; hadley",
+				"Author" : "Hadley Wickham [aut, cre]",
+				"Maintainer" : "Hadley Wickham <hadley@rstudio.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2016-06-08 10:40:15",
+				"Built" : "R 3.4.0; x86_64-apple-darwin15.6.0; 2017-04-20 17:42:14 UTC; unix"
+			}
+		},
+		"purrr" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "purrr",
+				"Title" : "Functional Programming Tools",
+				"Version" : "0.2.4",
+				"Authors@R" : "c(\n    person(\"Lionel\", \"Henry\", , \"lionel@rstudio.com\", c(\"aut\", \"cre\")),\n    person(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", \"aut\"),\n    person(\"RStudio\", role = c(\"cph\", \"fnd\"))\n    )",
+				"Description" : "A complete and consistent functional programming toolkit for R.",
+				"License" : "GPL-3 | file LICENSE",
+				"URL" : "http://purrr.tidyverse.org, https://github.com/tidyverse/purrr",
+				"BugReports" : "https://github.com/tidyverse/purrr/issues",
+				"Depends" : "R (>= 3.1)",
+				"Imports" : "magrittr (>= 1.5), rlang (>= 0.1), tibble",
+				"Suggests" : "covr, dplyr (>= 0.4.3), knitr, rmarkdown, testthat",
+				"VignetteBuilder" : "knitr",
+				"LazyData" : "true",
+				"RoxygenNote" : "6.0.1",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2017-10-18 13:06:58 UTC; hadley",
+				"Author" : "Lionel Henry [aut, cre],\n  Hadley Wickham [aut],\n  RStudio [cph, fnd]",
+				"Maintainer" : "Lionel Henry <lionel@rstudio.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-10-18 20:19:51 UTC",
+				"Built" : "R 3.4.2; x86_64-apple-darwin15.6.0; 2017-10-19 04:44:13 UTC; unix"
+			}
+		},
+		"reshape2" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "reshape2",
+				"Title" : "Flexibly Reshape Data: A Reboot of the Reshape Package",
+				"Version" : "1.4.3",
+				"Author" : "Hadley Wickham <h.wickham@gmail.com>",
+				"Maintainer" : "Hadley Wickham <h.wickham@gmail.com>",
+				"Description" : "Flexibly restructure and aggregate data using just two\n    functions: melt and 'dcast' (or 'acast').",
+				"License" : "MIT + file LICENSE",
+				"URL" : "https://github.com/hadley/reshape",
+				"BugReports" : "https://github.com/hadley/reshape/issues",
+				"Depends" : "R (>= 3.1)",
+				"Imports" : "plyr (>= 1.8.1), Rcpp, stringr",
+				"Suggests" : "covr, lattice, testthat (>= 0.8.0)",
+				"LinkingTo" : "Rcpp",
+				"Encoding" : "UTF-8",
+				"LazyData" : "true",
+				"RoxygenNote" : "6.0.1.9000",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2017-12-10 22:04:42 UTC; hadley",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-12-11 16:47:57 UTC",
+				"Built" : "R 3.4.3; x86_64-apple-darwin15.6.0; 2017-12-12 05:34:35 UTC; unix"
+			}
+		},
+		"rlang" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "rlang",
+				"Version" : "0.1.6",
+				"Title" : "Functions for Base Types and Core R and 'Tidyverse' Features",
+				"Description" : "A toolbox for working with base types, core R features\n  like the condition system, and core 'Tidyverse' features like tidy\n  evaluation.",
+				"Authors@R" : "c(\n    person(\"Lionel\", \"Henry\", ,\"lionel@rstudio.com\", c(\"aut\", \"cre\")),\n    person(\"Hadley\", \"Wickham\", ,\"hadley@rstudio.com\", \"aut\"),\n    person(\"RStudio\", role = \"cph\")\n    )",
+				"License" : "GPL-3",
+				"LazyData" : "true",
+				"Depends" : "R (>= 3.1.0)",
+				"Suggests" : "knitr, rmarkdown (>= 0.2.65), testthat, covr",
+				"VignetteBuilder" : "knitr",
+				"RoxygenNote" : "6.0.1",
+				"URL" : "http://rlang.tidyverse.org, https://github.com/tidyverse/rlang",
+				"BugReports" : "https://github.com/tidyverse/rlang/issues",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2017-12-21 16:29:51 UTC; lionel",
+				"Author" : "Lionel Henry [aut, cre],\n  Hadley Wickham [aut],\n  RStudio [cph]",
+				"Maintainer" : "Lionel Henry <lionel@rstudio.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-12-21 21:15:03 UTC",
+				"Built" : "R 3.4.3; x86_64-apple-darwin15.6.0; 2017-12-22 05:23:43 UTC; unix"
+			}
+		},
+		"scales" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "scales",
+				"Version" : "0.5.0",
+				"Authors@R" : "c(\n    person(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", c(\"aut\", \"cre\")),\n    person(\"RStudio\", role = \"cph\")\n    )",
+				"Title" : "Scale Functions for Visualization",
+				"Description" : "Graphical scales map data to aesthetics, and provide\n    methods for automatically determining breaks and labels\n    for axes and legends.",
+				"URL" : "https://github.com/hadley/scales",
+				"BugReports" : "https://github.com/hadley/scales/issues",
+				"Depends" : "R (>= 2.13)",
+				"Imports" : "RColorBrewer, dichromat, plyr, munsell (>= 0.2), labeling,\nRcpp, R6, viridisLite",
+				"LinkingTo" : "Rcpp",
+				"Suggests" : "testthat (>= 0.8), bit64, covr, hms",
+				"License" : "MIT + file LICENSE",
+				"LazyLoad" : "yes",
+				"RoxygenNote" : "6.0.1",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2017-08-23 21:21:31 UTC; Kara",
+				"Author" : "Hadley Wickham [aut, cre],\n  RStudio [cph]",
+				"Maintainer" : "Hadley Wickham <hadley@rstudio.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-08-24 14:35:38 UTC",
+				"Built" : "R 3.4.1; x86_64-apple-darwin15.6.0; 2017-08-25 04:21:02 UTC; unix"
+			}
+		},
+		"shiny" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "shiny",
+				"Type" : "Package",
+				"Title" : "Web Application Framework for R",
+				"Version" : "1.0.5",
+				"Authors@R" : "c(\n    person(\"Winston\", \"Chang\", role = c(\"aut\", \"cre\"), email = \"winston@rstudio.com\"),\n    person(\"Joe\", \"Cheng\", role = \"aut\", email = \"joe@rstudio.com\"),\n    person(\"JJ\", \"Allaire\", role = \"aut\", email = \"jj@rstudio.com\"),\n    person(\"Yihui\", \"Xie\", role = \"aut\", email = \"yihui@rstudio.com\"),\n    person(\"Jonathan\", \"McPherson\", role = \"aut\", email = \"jonathan@rstudio.com\"),\n    person(family = \"RStudio\", role = \"cph\"),\n    person(family = \"jQuery Foundation\", role = \"cph\",\n    comment = \"jQuery library and jQuery UI library\"),\n    person(family = \"jQuery contributors\", role = c(\"ctb\", \"cph\"),\n    comment = \"jQuery library; authors listed in inst/www/shared/jquery-AUTHORS.txt\"),\n    person(family = \"jQuery UI contributors\", role = c(\"ctb\", \"cph\"),\n    comment = \"jQuery UI library; authors listed in inst/www/shared/jqueryui/AUTHORS.txt\"),\n    person(\"Mark\", \"Otto\", role = \"ctb\",\n    comment = \"Bootstrap library\"),\n    person(\"Jacob\", \"Thornton\", role = \"ctb\",\n    comment = \"Bootstrap library\"),\n    person(family = \"Bootstrap contributors\", role = \"ctb\",\n    comment = \"Bootstrap library\"),\n    person(family = \"Twitter, Inc\", role = \"cph\",\n    comment = \"Bootstrap library\"),\n    person(\"Alexander\", \"Farkas\", role = c(\"ctb\", \"cph\"),\n    comment = \"html5shiv library\"),\n    person(\"Scott\", \"Jehl\", role = c(\"ctb\", \"cph\"),\n    comment = \"Respond.js library\"),\n    person(\"Stefan\", \"Petre\", role = c(\"ctb\", \"cph\"),\n    comment = \"Bootstrap-datepicker library\"),\n    person(\"Andrew\", \"Rowls\", role = c(\"ctb\", \"cph\"),\n    comment = \"Bootstrap-datepicker library\"),\n    person(\"Dave\", \"Gandy\", role = c(\"ctb\", \"cph\"),\n    comment = \"Font-Awesome font\"),\n    person(\"Brian\", \"Reavis\", role = c(\"ctb\", \"cph\"),\n    comment = \"selectize.js library\"),\n    person(\"Kristopher Michael\", \"Kowal\", role = c(\"ctb\", \"cph\"),\n    comment = \"es5-shim library\"),\n    person(family = \"es5-shim contributors\", role = c(\"ctb\", \"cph\"),\n    comment = \"es5-shim library\"),\n    person(\"Denis\", \"Ineshin\", role = c(\"ctb\", \"cph\"),\n    comment = \"ion.rangeSlider library\"),\n    person(\"Sami\", \"Samhuri\", role = c(\"ctb\", \"cph\"),\n    comment = \"Javascript strftime library\"),\n    person(family = \"SpryMedia Limited\", role = c(\"ctb\", \"cph\"),\n    comment = \"DataTables library\"),\n    person(\"John\", \"Fraser\", role = c(\"ctb\", \"cph\"),\n    comment = \"showdown.js library\"),\n    person(\"John\", \"Gruber\", role = c(\"ctb\", \"cph\"),\n    comment = \"showdown.js library\"),\n    person(\"Ivan\", \"Sagalaev\", role = c(\"ctb\", \"cph\"),\n    comment = \"highlight.js library\"),\n    person(family = \"R Core Team\", role = c(\"ctb\", \"cph\"),\n    comment = \"tar implementation from R\")\n    )",
+				"Description" : "Makes it incredibly easy to build interactive web\n    applications with R. Automatic \"reactive\" binding between inputs and\n    outputs and extensive prebuilt widgets make it possible to build\n    beautiful, responsive, and powerful applications with minimal effort.",
+				"License" : "GPL-3 | file LICENSE",
+				"Depends" : "R (>= 3.0.2), methods",
+				"Imports" : "utils, httpuv (>= 1.3.5), mime (>= 0.3), jsonlite (>= 0.9.16),\nxtable, digest, htmltools (>= 0.3.5), R6 (>= 2.0), sourcetools,\ntools",
+				"Suggests" : "datasets, Cairo (>= 1.5-5), testthat, knitr (>= 1.6),\nmarkdown, rmarkdown, ggplot2, magrittr",
+				"URL" : "http://shiny.rstudio.com",
+				"BugReports" : "https://github.com/rstudio/shiny/issues",
+				"Collate" : "'app.R' 'bookmark-state-local.R' 'stack.R' 'bookmark-state.R'\n'bootstrap-layout.R' 'conditions.R' 'map.R' 'globals.R'\n'utils.R' 'bootstrap.R' 'cache.R' 'diagnose.R' 'fileupload.R'\n'graph.R' 'reactives.R' 'reactive-domains.R' 'history.R'\n'hooks.R' 'html-deps.R' 'htmltools.R' 'image-interact-opts.R'\n'image-interact.R' 'imageutils.R' 'input-action.R'\n'input-checkbox.R' 'input-checkboxgroup.R' 'input-date.R'\n'input-daterange.R' 'input-file.R' 'input-numeric.R'\n'input-password.R' 'input-radiobuttons.R' 'input-select.R'\n'input-slider.R' 'input-submit.R' 'input-text.R'\n'input-textarea.R' 'input-utils.R' 'insert-tab.R' 'insert-ui.R'\n'jqueryui.R' 'middleware-shiny.R' 'middleware.R' 'modal.R'\n'modules.R' 'notifications.R' 'priorityqueue.R' 'progress.R'\n'react.R' 'render-plot.R' 'render-table.R' 'run-url.R'\n'serializers.R' 'server-input-handlers.R' 'server.R'\n'shiny-options.R' 'shiny.R' 'shinyui.R' 'shinywrappers.R'\n'showcase.R' 'snapshot.R' 'tar.R' 'test-export.R' 'timer.R'\n'update-input.R'",
+				"RoxygenNote" : "6.0.1",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2017-08-23 18:15:30 UTC; winston",
+				"Author" : "Winston Chang [aut, cre],\n  Joe Cheng [aut],\n  JJ Allaire [aut],\n  Yihui Xie [aut],\n  Jonathan McPherson [aut],\n  RStudio [cph],\n  jQuery Foundation [cph] (jQuery library and jQuery UI library),\n  jQuery contributors [ctb, cph] (jQuery library; authors listed in\n    inst/www/shared/jquery-AUTHORS.txt),\n  jQuery UI contributors [ctb, cph] (jQuery UI library; authors listed in\n    inst/www/shared/jqueryui/AUTHORS.txt),\n  Mark Otto [ctb] (Bootstrap library),\n  Jacob Thornton [ctb] (Bootstrap library),\n  Bootstrap contributors [ctb] (Bootstrap library),\n  Twitter, Inc [cph] (Bootstrap library),\n  Alexander Farkas [ctb, cph] (html5shiv library),\n  Scott Jehl [ctb, cph] (Respond.js library),\n  Stefan Petre [ctb, cph] (Bootstrap-datepicker library),\n  Andrew Rowls [ctb, cph] (Bootstrap-datepicker library),\n  Dave Gandy [ctb, cph] (Font-Awesome font),\n  Brian Reavis [ctb, cph] (selectize.js library),\n  Kristopher Michael Kowal [ctb, cph] (es5-shim library),\n  es5-shim contributors [ctb, cph] (es5-shim library),\n  Denis Ineshin [ctb, cph] (ion.rangeSlider library),\n  Sami Samhuri [ctb, cph] (Javascript strftime library),\n  SpryMedia Limited [ctb, cph] (DataTables library),\n  John Fraser [ctb, cph] (showdown.js library),\n  John Gruber [ctb, cph] (showdown.js library),\n  Ivan Sagalaev [ctb, cph] (highlight.js library),\n  R Core Team [ctb, cph] (tar implementation from R)",
+				"Maintainer" : "Winston Chang <winston@rstudio.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-08-23 20:20:10 UTC",
+				"Built" : "R 3.4.1; ; 2017-08-24 04:43:40 UTC; unix"
+			}
+		},
+		"sourcetools" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "sourcetools",
+				"Type" : "Package",
+				"Title" : "Tools for Reading, Tokenizing and Parsing R Code",
+				"Version" : "0.1.6",
+				"Author" : "Kevin Ushey",
+				"Maintainer" : "Kevin Ushey <kevinushey@gmail.com>",
+				"Description" : "Tools for the reading and tokenization of R code. The\n    'sourcetools' package provides both an R and C++ interface for the tokenization\n    of R code, and helpers for interacting with the tokenized representation of R\n    code.",
+				"License" : "MIT + file LICENSE",
+				"LazyData" : "TRUE",
+				"Depends" : "R (>= 3.0.2)",
+				"Suggests" : "testthat",
+				"RoxygenNote" : "5.0.1",
+				"BugReports" : "https://github.com/kevinushey/sourcetools/issues",
+				"Encoding" : "UTF-8",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2017-04-05 19:41:15 UTC; kevin",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-04-05 21:57:43 UTC",
+				"Built" : "R 3.4.0; x86_64-apple-darwin15.6.0; 2017-04-21 21:21:45 UTC; unix"
+			}
+		},
+		"stringi" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "stringi",
+				"Version" : "1.1.6",
+				"Date" : "2017-11-10",
+				"Title" : "Character String Processing Facilities",
+				"Description" : "Allows for fast, correct, consistent, portable,\n    as well as convenient character string/text processing in every locale\n    and any native encoding. Owing to the use of the ICU library,\n    the package provides R users with platform-independent functions\n    known to Java, Perl, Python, PHP, and Ruby programmers. Available\n    features include: pattern searching (e.g., with ICU Java-like regular\n    expressions or the Unicode Collation Algorithm), random string generation,\n    case mapping, string transliteration, concatenation,\n    Unicode normalization, date-time formatting and parsing, etc.",
+				"URL" : "http://www.gagolewski.com/software/stringi/\nhttp://site.icu-project.org/ http://www.unicode.org/",
+				"BugReports" : "http://github.com/gagolews/stringi/issues",
+				"SystemRequirements" : "ICU4C (>= 52, optional)",
+				"Type" : "Package",
+				"Depends" : "R (>= 2.14)",
+				"Imports" : "tools, utils, stats",
+				"Biarch" : "TRUE",
+				"License" : "file LICENSE",
+				"Author" : "Marek Gagolewski [aut, cre], Bartek Tartanus [ctb],\n    and other contributors (stringi source code);\n    IBM and other contributors (ICU4C 55.1 source code);\n    Unicode, Inc. (Unicode Character Database)",
+				"Maintainer" : "Marek Gagolewski <gagolews@rexamine.com>",
+				"RoxygenNote" : "6.0.1",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2017-11-10 13:42:04 UTC; gagolews",
+				"License_is_FOSS" : "yes",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-11-17 13:13:14 UTC",
+				"Built" : "R 3.4.2; x86_64-apple-darwin15.6.0; 2017-11-18 05:56:42 UTC; unix"
+			}
+		},
+		"stringr" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "stringr",
+				"Title" : "Simple, Consistent Wrappers for Common String Operations",
+				"Version" : "1.3.0",
+				"Authors@R" : "c(\n    person(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", c(\"aut\", \"cre\", \"cph\")),\n    person(\"RStudio\", role = c(\"cph\", \"fnd\"))\n    )",
+				"Description" : "A consistent, simple and easy to use set of wrappers around the\n    fantastic 'stringi' package. All function and argument names (and positions)\n    are consistent, all functions deal with \"NA\"'s and zero length vectors\n    in the same way, and the output from one function is easy to feed into\n    the input of another.",
+				"License" : "GPL-2 | file LICENSE",
+				"URL" : "http://stringr.tidyverse.org, https://github.com/tidyverse/stringr",
+				"BugReports" : "https://github.com/tidyverse/stringr/issues",
+				"Depends" : "R (>= 3.1)",
+				"Imports" : "glue, magrittr, stringi (>= 1.1.6)",
+				"Suggests" : "covr, htmltools, htmlwidgets, knitr, rmarkdown, testthat",
+				"VignetteBuilder" : "knitr",
+				"LazyData" : "true",
+				"RoxygenNote" : "6.0.1",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2018-01-29 22:45:15 UTC; hadley",
+				"Author" : "Hadley Wickham [aut, cre, cph],\n  RStudio [cph, fnd]",
+				"Maintainer" : "Hadley Wickham <hadley@rstudio.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2018-02-19 19:47:14 UTC",
+				"Built" : "R 3.4.3; ; 2018-02-20 14:59:55 UTC; unix"
+			}
+		},
+		"tibble" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "tibble",
+				"Title" : "Simple Data Frames",
+				"Version" : "1.4.2",
+				"Authors@R" : "c(\n    person(\"Kirill\", \"Müller\", , \"krlmlr+r@mailbox.org\", c(\"aut\", \"cre\")),\n    person(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", \"aut\"),\n    person(\"Romain\", \"Francois\", , \"romain@r-enthusiasts.com\", \"ctb\"),\n    person(\"RStudio\", role = \"cph\")\n    )",
+				"Description" : "Provides a 'tbl_df' class (the 'tibble') that provides\n    stricter checking and better formatting than the traditional data frame.",
+				"License" : "MIT + file LICENSE",
+				"URL" : "http://tibble.tidyverse.org/, https://github.com/tidyverse/tibble",
+				"BugReports" : "https://github.com/tidyverse/tibble/issues",
+				"Depends" : "R (>= 3.1.0)",
+				"Imports" : "cli, crayon, methods, pillar (>= 1.1.0), rlang, utils",
+				"Suggests" : "covr, dplyr, import, knitr (>= 1.5.32), microbenchmark,\nmockr, nycflights13, rmarkdown, testthat, withr",
+				"VignetteBuilder" : "knitr",
+				"Encoding" : "UTF-8",
+				"LazyData" : "yes",
+				"RoxygenNote" : "6.0.1",
+				"Collate" : "'add.R' 'as_tibble.R' 'check-names.R' 'compat-lazyeval.R'\n'compat-purrr.R' 'enframe.R' 'exports.R' 'glimpse.R'\n'has-name.R' 'tibble.R' 'lst.R' 'new.R' 'repair-names.R'\n'rownames.R' 'strrep.R' 'tbl-df.r' 'tibble-package.R'\n'tribble.R' 'type-sum.r' 'utils-format.r' 'utils.r' 'wrap.R'",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2018-01-21 23:58:53 UTC; muelleki",
+				"Author" : "Kirill Müller [aut, cre],\n  Hadley Wickham [aut],\n  Romain Francois [ctb],\n  RStudio [cph]",
+				"Maintainer" : "Kirill Müller <krlmlr+r@mailbox.org>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2018-01-22 19:41:48 UTC",
+				"Built" : "R 3.4.3; x86_64-apple-darwin15.6.0; 2018-01-23 05:44:53 UTC; unix"
+			}
+		},
+		"tidyr" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "tidyr",
+				"Title" : "Easily Tidy Data with 'spread()' and 'gather()' Functions",
+				"Version" : "0.8.0",
+				"Authors@R" : "c(\n    person(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", c(\"aut\", \"cre\")),\n    person(\"Lionel\", \"Henry\", , \"lionel@rstudio.com\", \"aut\"),\n    person(\"RStudio\", role = \"cph\")\n    )",
+				"Description" : "An evolution of 'reshape2'. It's designed specifically for data\n    tidying (not general reshaping or aggregating) and works well with\n    'dplyr' data pipelines.",
+				"License" : "MIT + file LICENSE",
+				"URL" : "http://tidyr.tidyverse.org, https://github.com/tidyverse/tidyr",
+				"BugReports" : "https://github.com/tidyverse/tidyr/issues",
+				"Depends" : "R (>= 3.2)",
+				"Imports" : "dplyr (>= 0.7.0), glue, magrittr, purrr, Rcpp, rlang, stringi,\ntibble, tidyselect",
+				"Suggests" : "covr, gapminder, knitr, rmarkdown, testthat",
+				"LinkingTo" : "Rcpp",
+				"VignetteBuilder" : "knitr",
+				"LazyData" : "true",
+				"RoxygenNote" : "6.0.1",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2018-01-29 15:47:05 UTC; hadley",
+				"Author" : "Hadley Wickham [aut, cre],\n  Lionel Henry [aut],\n  RStudio [cph]",
+				"Maintainer" : "Hadley Wickham <hadley@rstudio.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2018-01-29 19:33:39 UTC",
+				"Built" : "R 3.4.3; x86_64-apple-darwin15.6.0; 2018-01-30 05:23:06 UTC; unix"
+			}
+		},
+		"tidyselect" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "tidyselect",
+				"Title" : "Select from a Set of Strings",
+				"Version" : "0.2.3",
+				"Authors@R" : "c(\n    person(\"Lionel\", \"Henry\", ,\"lionel@rstudio.com\", c(\"aut\", \"cre\")),\n    person(\"Hadley\", \"Wickham\", ,\"hadley@rstudio.com\", \"aut\"),\n    person(\"RStudio\", role = \"cph\")\n    )",
+				"Description" : "A backend for the selecting functions of the 'tidyverse'.\n    It makes it easy to implement select-like functions in your own\n    packages in a way that is consistent with other 'tidyverse'\n    interfaces for selection.",
+				"Depends" : "R (>= 3.1.0)",
+				"Imports" : "glue, purrr, rlang (>= 0.1), Rcpp (>= 0.12.0)",
+				"Suggests" : "dplyr, testthat",
+				"LinkingTo" : "Rcpp (>= 0.12.0),",
+				"License" : "GPL-3",
+				"Encoding" : "UTF-8",
+				"LazyData" : "true",
+				"ByteCompile" : "true",
+				"RoxygenNote" : "6.0.1",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2017-11-06 19:12:16 UTC; lionel",
+				"Author" : "Lionel Henry [aut, cre],\n  Hadley Wickham [aut],\n  RStudio [cph]",
+				"Maintainer" : "Lionel Henry <lionel@rstudio.com>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2017-11-06 21:55:42 UTC",
+				"Built" : "R 3.4.2; x86_64-apple-darwin15.6.0; 2017-11-07 05:29:52 UTC; unix"
+			}
+		},
+		"utf8" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "utf8",
+				"Version" : "1.1.3",
+				"Title" : "Unicode Text Processing",
+				"Authors@R" : "c(\n  person(c(\"Patrick\", \"O.\"), \"Perry\",\n         role = c(\"aut\", \"cph\", \"cre\"),\n         email = \"pperry@stern.nyu.edu\"),\n  person(\"Unicode, Inc.\",\n         role = c(\"cph\", \"dtc\"),\n         comment = \"Unicode Character Database\"))",
+				"Depends" : "R (>= 2.10)",
+				"Suggests" : "corpus, knitr, rmarkdown, testthat",
+				"Description" : "Process and print 'UTF-8' encoded international text (Unicode). Input, validate, normalize, encode, format, and display.",
+				"License" : "Apache License (== 2.0) | file LICENSE",
+				"URL" : "https://github.com/patperry/r-utf8",
+				"BugReports" : "https://github.com/patperry/r-utf8/issues",
+				"LazyData" : "Yes",
+				"Encoding" : "UTF-8",
+				"VignetteBuilder" : "knitr, rmarkdown",
+				"NeedsCompilation" : "yes",
+				"Packaged" : "2018-01-02 20:06:19 UTC; ptrck",
+				"Author" : "Patrick O. Perry [aut, cph, cre],\n  Unicode, Inc. [cph, dtc] (Unicode Character Database)",
+				"Maintainer" : "Patrick O. Perry <pperry@stern.nyu.edu>",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2018-01-03 13:28:39 UTC",
+				"Built" : "R 3.4.3; x86_64-apple-darwin15.6.0; 2018-01-04 13:45:17 UTC; unix"
+			}
+		},
+		"viridisLite" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "viridisLite",
+				"Type" : "Package",
+				"Title" : "Default Color Maps from 'matplotlib' (Lite Version)",
+				"Version" : "0.3.0",
+				"Authors@R" : "c(\n      person(\"Simon\", \"Garnier\", email = \"garnier@njit.edu\", role = c(\"aut\", \"cre\")),\n      person(\"Noam\", \"Ross\", email = \"noam.ross@gmail.com\", role = c(\"ctb\", \"cph\")),\n      person(\"Bob\", \"Rudis\", email = \"bob@rud.is\", role = c(\"ctb\", \"cph\")),\n      person(\"Marco\", \"Sciaini\", email = \"sciaini.marco@gmail.com\", role = c(\"ctb\", \"cph\")),\n      person(\"Cédric\", \"Scherer\", email = \"scherer@izw-berlin.de\", role = c(\"ctb\", \"cph\"))\n  )",
+				"Maintainer" : "Simon Garnier <garnier@njit.edu>",
+				"Description" : "Implementation of the 'viridis' - the default -, 'magma', 'plasma', \n    'inferno', and 'cividis' color maps for 'R'. 'viridis', 'magma', 'plasma', \n    and 'inferno' are ported from 'matplotlib' <http://matplotlib.org/>, a \n    popular plotting library for 'python'. 'cividis', was developed by Jamie R. \n    Nuñez and Sean M. Colby. These color maps are designed in such a way that \n    they will analytically be perfectly perceptually-uniform, both in regular \n    form and also when converted to black-and-white. They are also designed to \n    be perceived by readers with the most common form of color blindness (all \n    color maps in this package) and color vision deficiency ('cividis' only). \n    This is the 'lite' version of the more complete 'viridis' package that can \n    be found at <https://cran.r-project.org/package=viridis>.",
+				"License" : "MIT + file LICENSE",
+				"LazyData" : "TRUE",
+				"Encoding" : "UTF-8",
+				"Depends" : "R (>= 2.10)",
+				"Suggests" : "hexbin (>= 1.27.0), ggplot2 (>= 1.0.1), testthat, covr",
+				"URL" : "https://github.com/sjmgarnier/viridisLite",
+				"BugReports" : "https://github.com/sjmgarnier/viridisLite/issues",
+				"RoxygenNote" : "6.0.1",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2018-02-01 17:33:56 UTC; simon",
+				"Author" : "Simon Garnier [aut, cre],\n  Noam Ross [ctb, cph],\n  Bob Rudis [ctb, cph],\n  Marco Sciaini [ctb, cph],\n  Cédric Scherer [ctb, cph]",
+				"Repository" : "CRAN",
+				"Date/Publication" : "2018-02-01 22:45:56 UTC",
+				"Built" : "R 3.4.3; ; 2018-02-10 05:30:21 UTC; unix"
+			}
+		},
+		"xtable" : {
+			"Source" : "CRAN",
+			"Repository" : "https://cran.rstudio.com/",
+			"description" : {
+				"Package" : "xtable",
+				"Version" : "1.8-2",
+				"Date" : "2016-01-08",
+				"Title" : "Export Tables to LaTeX or HTML",
+				"Author" : "David B. Dahl <dahl@stat.byu.edu>",
+				"Maintainer" : "David Scott <d.scott@auckland.ac.nz>",
+				"Imports" : "stats, utils",
+				"Suggests" : "knitr, lsmeans, spdep, splm, sphet, plm, zoo, survival",
+				"VignetteBuilder" : "knitr",
+				"Description" : "Coerce data to LaTeX and HTML tables.",
+				"URL" : "http://xtable.r-forge.r-project.org/",
+				"Depends" : "R (>= 2.10.0)",
+				"License" : "GPL (>= 2)",
+				"Repository" : "CRAN",
+				"NeedsCompilation" : "no",
+				"Packaged" : "2016-02-02 02:58:02 UTC; dsco036",
+				"Date/Publication" : "2016-02-05 19:22:18",
+				"Built" : "R 3.4.0; ; 2017-04-21 21:12:53 UTC; unix"
+			}
+		}
+	},
+	"files" : {
+		"_config.yml" : {
+			"checksum" : "47b0421ad3207ce82d388a040f0154f2"
+		},
+		"_includes/analytics.html" : {
+			"checksum" : "db0a59148a136ea5052dbe8f5c7f2062"
+		},
+		"CNAME" : {
+			"checksum" : "d6a32e3862c29c2263ec85b6178ab086"
+		},
+		"FB4_Log_File.csv" : {
+			"checksum" : "ac8957d63ca37550362ce9c480192a5c"
+		},
+		"FB4_User_Guide.pdf" : {
+			"checksum" : "fdfba1d2f73d32f62db93882dd5d5d1f"
+		},
+		"FB4.png" : {
+			"checksum" : "d2306ee9f1da238f3223b49c72711ac4"
+		},
+		"global.R" : {
+			"checksum" : "7039f21043808eeb6a819f8822ebcfd6"
+		},
+		"inputs/chnk/2015_Early Summer_Kenai River_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "10c62a1e711f10c74bb40fa69c1ed859"
+		},
+		"inputs/chnk/2015_Early Summer_Kenai River_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2015_Early Summer_Kenai River_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2015_Early Summer_Kenai River_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2015_Early Summer_Kenai River_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "f4553c206ba7009b5fb98dc30db661d4"
+		},
+		"inputs/chnk/2015_Early Summer_Russian River_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "301302d4f5b1b196e1eea4865b1b4324"
+		},
+		"inputs/chnk/2015_Early Summer_Russian River_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2015_Early Summer_Russian River_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2015_Early Summer_Russian River_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2015_Early Summer_Russian River_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "d61a1b00736a37bf46788dc23bc11e38"
+		},
+		"inputs/chnk/2015_Late Summer_Kenai River_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "a3b2ff6e9727e9383edb1a826e22b4b5"
+		},
+		"inputs/chnk/2015_Late Summer_Kenai River_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2015_Late Summer_Kenai River_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2015_Late Summer_Kenai River_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2015_Late Summer_Kenai River_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "c496ac0527ed6c4e33046a87f05be40b"
+		},
+		"inputs/chnk/2015_Mid-Summer_Kenai River_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "668d39bf9ea83b812583877f8f3062b1"
+		},
+		"inputs/chnk/2015_Mid-Summer_Kenai River_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2015_Mid-Summer_Kenai River_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2015_Mid-Summer_Kenai River_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2015_Mid-Summer_Kenai River_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "307d0f2e06a40c60d15ce505e0295924"
+		},
+		"inputs/chnk/2015_Mid-Summer_Russian River_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "7526d9038de659b693ef830e6c9253c7"
+		},
+		"inputs/chnk/2015_Mid-Summer_Russian River_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2015_Mid-Summer_Russian River_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2015_Mid-Summer_Russian River_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2015_Mid-Summer_Russian River_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "d14fd2d7f99c318752f2a5eb41f4c0d1"
+		},
+		"inputs/chnk/2016_Early Summer_Kenai River_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "c3d173103de83018e5d83389b690f488"
+		},
+		"inputs/chnk/2016_Early Summer_Kenai River_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2016_Early Summer_Kenai River_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2016_Early Summer_Kenai River_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2016_Early Summer_Kenai River_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "6e651b23920c4f13739c32f18001b222"
+		},
+		"inputs/chnk/2016_Early Summer_Kenai River_Chinook_Age_1/Diet_prop.csv" : {
+			"checksum" : "9b214b35906b676143c19b5ca6f1378c"
+		},
+		"inputs/chnk/2016_Early Summer_Kenai River_Chinook_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2016_Early Summer_Kenai River_Chinook_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2016_Early Summer_Kenai River_Chinook_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2016_Early Summer_Kenai River_Chinook_Age_1/Temperature.csv" : {
+			"checksum" : "6e651b23920c4f13739c32f18001b222"
+		},
+		"inputs/chnk/2016_Early Summer_Russian River_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "48e24330e17f95a3073dd4347c763639"
+		},
+		"inputs/chnk/2016_Early Summer_Russian River_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2016_Early Summer_Russian River_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2016_Early Summer_Russian River_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2016_Early Summer_Russian River_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "39523b4b56aeba0df487e94043899ba8"
+		},
+		"inputs/chnk/2016_Fall_Beaver Creek_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "4b36189b1c56a19a222c0b8cbaed2392"
+		},
+		"inputs/chnk/2016_Fall_Beaver Creek_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2016_Fall_Beaver Creek_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2016_Fall_Beaver Creek_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2016_Fall_Beaver Creek_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "0f5b4e25e031a270746ec54d7d8ff29a"
+		},
+		"inputs/chnk/2016_Fall_Kenai River_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "f945472578a96551f9b755188d8a930c"
+		},
+		"inputs/chnk/2016_Fall_Kenai River_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2016_Fall_Kenai River_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2016_Fall_Kenai River_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2016_Fall_Kenai River_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "bc312aa9e3cb9ac892ac1fd5e4a6180d"
+		},
+		"inputs/chnk/2016_Fall_Russian River_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "e17c065c8f902c7039273f29fc7a5168"
+		},
+		"inputs/chnk/2016_Fall_Russian River_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2016_Fall_Russian River_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2016_Fall_Russian River_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2016_Fall_Russian River_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "8e05c6fe34a2e6a9f89569af7a3dcbdf"
+		},
+		"inputs/chnk/2016_Late Summer_Beaver Creek_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "73a5072db8a7f58a5ae74f34c0967f6d"
+		},
+		"inputs/chnk/2016_Late Summer_Beaver Creek_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2016_Late Summer_Beaver Creek_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2016_Late Summer_Beaver Creek_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2016_Late Summer_Beaver Creek_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "cdce018e62f417463783e488d65b1ccd"
+		},
+		"inputs/chnk/2016_Late Summer_Kenai River_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "7345bba3dae3e82d313ca234058942c3"
+		},
+		"inputs/chnk/2016_Late Summer_Kenai River_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2016_Late Summer_Kenai River_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2016_Late Summer_Kenai River_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2016_Late Summer_Kenai River_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "3af912bfe5a815e535558a8ac41f2667"
+		},
+		"inputs/chnk/2016_Late Summer_Ptarmigan Creek_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "1b2a8420a5becaa62b5d23c0cad417ae"
+		},
+		"inputs/chnk/2016_Late Summer_Ptarmigan Creek_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2016_Late Summer_Ptarmigan Creek_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2016_Late Summer_Ptarmigan Creek_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2016_Late Summer_Ptarmigan Creek_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "c41ed9e92c83f5e66aa5f79cb6e42ac0"
+		},
+		"inputs/chnk/2016_Late Summer_Russian River_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "58f94bbddb8c163097d0924a50986fc6"
+		},
+		"inputs/chnk/2016_Late Summer_Russian River_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2016_Late Summer_Russian River_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2016_Late Summer_Russian River_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2016_Late Summer_Russian River_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "6f78ab99ca2fe0cf02f2be93b75f9cc2"
+		},
+		"inputs/chnk/2016_Mid-Summer_Beaver Creek_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "4db422ac66d9505def8b0ccc8ee30cb6"
+		},
+		"inputs/chnk/2016_Mid-Summer_Beaver Creek_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2016_Mid-Summer_Beaver Creek_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2016_Mid-Summer_Beaver Creek_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2016_Mid-Summer_Beaver Creek_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "f57536fa98a867f75908943e3210e7d6"
+		},
+		"inputs/chnk/2016_Mid-Summer_Kenai River_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "cf9a2f7c00a5c99471713cbfec3d01db"
+		},
+		"inputs/chnk/2016_Mid-Summer_Kenai River_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2016_Mid-Summer_Kenai River_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2016_Mid-Summer_Kenai River_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2016_Mid-Summer_Kenai River_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "a4a3bd2faf6f8d331ca4aa97ec84d191"
+		},
+		"inputs/chnk/2016_Mid-Summer_Russian River_Chinook_Age_0/Diet_prop.csv" : {
+			"checksum" : "256c42e2f666b7b29921516f6e40acff"
+		},
+		"inputs/chnk/2016_Mid-Summer_Russian River_Chinook_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/chnk/2016_Mid-Summer_Russian River_Chinook_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/chnk/2016_Mid-Summer_Russian River_Chinook_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/chnk/2016_Mid-Summer_Russian River_Chinook_Age_0/Temperature.csv" : {
+			"checksum" : "f96a94a29e095fefd5a1f4f6f009c6e6"
+		},
+		"inputs/coho/2015_Early Summer_Beaver Creek_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "95a09446f5be1b3746ba9e0db3523d84"
+		},
+		"inputs/coho/2015_Early Summer_Beaver Creek_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Early Summer_Beaver Creek_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Early Summer_Beaver Creek_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Early Summer_Beaver Creek_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "b127ea450640269f5e7465cf22d95070"
+		},
+		"inputs/coho/2015_Early Summer_Ptarmigan Creek_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "7f978ee255a616dfdaa1e0523a30d5d1"
+		},
+		"inputs/coho/2015_Early Summer_Ptarmigan Creek_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Early Summer_Ptarmigan Creek_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Early Summer_Ptarmigan Creek_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Early Summer_Ptarmigan Creek_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "bab3aea403c039c40b9c312915742f66"
+		},
+		"inputs/coho/2015_Early Summer_Russian River_Coho_Age_0/Diet_prop.csv" : {
+			"checksum" : "c5bb3541d9344cd7bb26bc3a5c917c44"
+		},
+		"inputs/coho/2015_Early Summer_Russian River_Coho_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Early Summer_Russian River_Coho_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Early Summer_Russian River_Coho_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Early Summer_Russian River_Coho_Age_0/Temperature.csv" : {
+			"checksum" : "d61a1b00736a37bf46788dc23bc11e38"
+		},
+		"inputs/coho/2015_Early Summer_Russian River_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "85574f827a89187f1e0a0b66393299ba"
+		},
+		"inputs/coho/2015_Early Summer_Russian River_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Early Summer_Russian River_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Early Summer_Russian River_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Early Summer_Russian River_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "d61a1b00736a37bf46788dc23bc11e38"
+		},
+		"inputs/coho/2015_Late Summer_Beaver Creek_Coho_Age_0/Diet_prop.csv" : {
+			"checksum" : "14304599e3213354d4b1d584a55b0eaa"
+		},
+		"inputs/coho/2015_Late Summer_Beaver Creek_Coho_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Late Summer_Beaver Creek_Coho_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Late Summer_Beaver Creek_Coho_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Late Summer_Beaver Creek_Coho_Age_0/Temperature.csv" : {
+			"checksum" : "3618bbdc0efd0cdc42bf7bddfe51494c"
+		},
+		"inputs/coho/2015_Late Summer_Beaver Creek_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "d0105549d5cb5364149af511164e4c22"
+		},
+		"inputs/coho/2015_Late Summer_Beaver Creek_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Late Summer_Beaver Creek_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Late Summer_Beaver Creek_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Late Summer_Beaver Creek_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "3618bbdc0efd0cdc42bf7bddfe51494c"
+		},
+		"inputs/coho/2015_Late Summer_Kenai River_Coho_Age_0/Diet_prop.csv" : {
+			"checksum" : "36913dde1f032530e9caf3c4fb8ac9b1"
+		},
+		"inputs/coho/2015_Late Summer_Kenai River_Coho_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Late Summer_Kenai River_Coho_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Late Summer_Kenai River_Coho_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Late Summer_Kenai River_Coho_Age_0/Temperature.csv" : {
+			"checksum" : "c496ac0527ed6c4e33046a87f05be40b"
+		},
+		"inputs/coho/2015_Late Summer_Ptarmigan Creek_Coho_Age_0/Diet_prop.csv" : {
+			"checksum" : "dcc2a32de40210054b3dff9c0cbaba59"
+		},
+		"inputs/coho/2015_Late Summer_Ptarmigan Creek_Coho_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Late Summer_Ptarmigan Creek_Coho_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Late Summer_Ptarmigan Creek_Coho_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Late Summer_Ptarmigan Creek_Coho_Age_0/Temperature.csv" : {
+			"checksum" : "592408b06eae1e15640e67ce2fff5ddb"
+		},
+		"inputs/coho/2015_Late Summer_Ptarmigan Creek_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "dff0aaf13846a40918fbf821d9521464"
+		},
+		"inputs/coho/2015_Late Summer_Ptarmigan Creek_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Late Summer_Ptarmigan Creek_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Late Summer_Ptarmigan Creek_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Late Summer_Ptarmigan Creek_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "592408b06eae1e15640e67ce2fff5ddb"
+		},
+		"inputs/coho/2015_Late Summer_Russian River_Coho_Age_0/Diet_prop.csv" : {
+			"checksum" : "577002043f329ec029dd3a8d020f694d"
+		},
+		"inputs/coho/2015_Late Summer_Russian River_Coho_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Late Summer_Russian River_Coho_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Late Summer_Russian River_Coho_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Late Summer_Russian River_Coho_Age_0/Temperature.csv" : {
+			"checksum" : "bc0f95cd23e93807fdce641829fe24b4"
+		},
+		"inputs/coho/2015_Late Summer_Russian River_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "38ba9b03b6cc01f4897ff8aa2949212b"
+		},
+		"inputs/coho/2015_Late Summer_Russian River_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Late Summer_Russian River_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Late Summer_Russian River_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Late Summer_Russian River_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "bc0f95cd23e93807fdce641829fe24b4"
+		},
+		"inputs/coho/2015_Mid-Summer_Beaver Creek_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "eb77eed8f200b59f6bf265a8b15fc000"
+		},
+		"inputs/coho/2015_Mid-Summer_Beaver Creek_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Mid-Summer_Beaver Creek_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Mid-Summer_Beaver Creek_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Mid-Summer_Beaver Creek_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "c01d58a08130567e525f9205b6dd278f"
+		},
+		"inputs/coho/2015_Mid-Summer_Kenai River_Coho_Age_0/Diet_prop.csv" : {
+			"checksum" : "bec235978f18055b8b99ac6b774e67be"
+		},
+		"inputs/coho/2015_Mid-Summer_Kenai River_Coho_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Mid-Summer_Kenai River_Coho_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Mid-Summer_Kenai River_Coho_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Mid-Summer_Kenai River_Coho_Age_0/Temperature.csv" : {
+			"checksum" : "307d0f2e06a40c60d15ce505e0295924"
+		},
+		"inputs/coho/2015_Mid-Summer_Ptarmigan Creek_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "574490699f120e5ca2f3ea7a2ec8d12c"
+		},
+		"inputs/coho/2015_Mid-Summer_Ptarmigan Creek_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Mid-Summer_Ptarmigan Creek_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Mid-Summer_Ptarmigan Creek_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Mid-Summer_Ptarmigan Creek_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "f82d129b35b6c4688d9b3048b0f73897"
+		},
+		"inputs/coho/2015_Mid-Summer_Russian River_Coho_Age_0/Diet_prop.csv" : {
+			"checksum" : "018849c59b044e40d5524310fe669f29"
+		},
+		"inputs/coho/2015_Mid-Summer_Russian River_Coho_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Mid-Summer_Russian River_Coho_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Mid-Summer_Russian River_Coho_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Mid-Summer_Russian River_Coho_Age_0/Temperature.csv" : {
+			"checksum" : "d14fd2d7f99c318752f2a5eb41f4c0d1"
+		},
+		"inputs/coho/2015_Mid-Summer_Russian River_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "5e43316b9dce52422175e98403134632"
+		},
+		"inputs/coho/2015_Mid-Summer_Russian River_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2015_Mid-Summer_Russian River_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2015_Mid-Summer_Russian River_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2015_Mid-Summer_Russian River_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "d14fd2d7f99c318752f2a5eb41f4c0d1"
+		},
+		"inputs/coho/2016_Early Summer_Beaver Creek_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "4de4484a1b97777762b3154efa594bda"
+		},
+		"inputs/coho/2016_Early Summer_Beaver Creek_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Early Summer_Beaver Creek_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Early Summer_Beaver Creek_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Early Summer_Beaver Creek_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "bd58181a08c90ed2aaaff68eee51dae4"
+		},
+		"inputs/coho/2016_Early Summer_Ptarmigan Creek_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "976fc1f4f4a78e01c4cb7ee25283eae3"
+		},
+		"inputs/coho/2016_Early Summer_Ptarmigan Creek_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Early Summer_Ptarmigan Creek_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Early Summer_Ptarmigan Creek_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Early Summer_Ptarmigan Creek_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "4bb55a4a722d6c0e211cd0d3bb868c7c"
+		},
+		"inputs/coho/2016_Early Summer_Russian River_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "2026842a534f114c9e497ede9654f53f"
+		},
+		"inputs/coho/2016_Early Summer_Russian River_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Early Summer_Russian River_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Early Summer_Russian River_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Early Summer_Russian River_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "39523b4b56aeba0df487e94043899ba8"
+		},
+		"inputs/coho/2016_Fall_Beaver Creek_Coho_Age_0/Diet_prop.csv" : {
+			"checksum" : "38507de3756a8cdd2daa9591569430db"
+		},
+		"inputs/coho/2016_Fall_Beaver Creek_Coho_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Fall_Beaver Creek_Coho_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Fall_Beaver Creek_Coho_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Fall_Beaver Creek_Coho_Age_0/Temperature.csv" : {
+			"checksum" : "0f5b4e25e031a270746ec54d7d8ff29a"
+		},
+		"inputs/coho/2016_Fall_Beaver Creek_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "70f38ebd17380fea1bda9a6d9ee13f4e"
+		},
+		"inputs/coho/2016_Fall_Beaver Creek_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Fall_Beaver Creek_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Fall_Beaver Creek_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Fall_Beaver Creek_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "0f5b4e25e031a270746ec54d7d8ff29a"
+		},
+		"inputs/coho/2016_Fall_Russian River_Coho_Age_0/Diet_prop.csv" : {
+			"checksum" : "035869c6448032359c582a21b084c697"
+		},
+		"inputs/coho/2016_Fall_Russian River_Coho_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Fall_Russian River_Coho_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Fall_Russian River_Coho_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Fall_Russian River_Coho_Age_0/Temperature.csv" : {
+			"checksum" : "8e05c6fe34a2e6a9f89569af7a3dcbdf"
+		},
+		"inputs/coho/2016_Late Summer_Beaver Creek_Coho_Age_0/Diet_prop.csv" : {
+			"checksum" : "545f5dd14774311190a0216359a09201"
+		},
+		"inputs/coho/2016_Late Summer_Beaver Creek_Coho_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Late Summer_Beaver Creek_Coho_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Late Summer_Beaver Creek_Coho_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Late Summer_Beaver Creek_Coho_Age_0/Temperature.csv" : {
+			"checksum" : "cdce018e62f417463783e488d65b1ccd"
+		},
+		"inputs/coho/2016_Late Summer_Beaver Creek_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "7669d13143549ba6e53732d2d7ad8c92"
+		},
+		"inputs/coho/2016_Late Summer_Beaver Creek_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Late Summer_Beaver Creek_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Late Summer_Beaver Creek_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Late Summer_Beaver Creek_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "cdce018e62f417463783e488d65b1ccd"
+		},
+		"inputs/coho/2016_Late Summer_Ptarmigan Creek_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "3edd4d2b16a7d56f2854e44a9673b1fb"
+		},
+		"inputs/coho/2016_Late Summer_Ptarmigan Creek_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Late Summer_Ptarmigan Creek_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Late Summer_Ptarmigan Creek_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Late Summer_Ptarmigan Creek_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "c41ed9e92c83f5e66aa5f79cb6e42ac0"
+		},
+		"inputs/coho/2016_Late Summer_Russian River_Coho_Age_0/Diet_prop.csv" : {
+			"checksum" : "cae835d30f111ac326cf0fecf391957f"
+		},
+		"inputs/coho/2016_Late Summer_Russian River_Coho_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Late Summer_Russian River_Coho_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Late Summer_Russian River_Coho_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Late Summer_Russian River_Coho_Age_0/Temperature.csv" : {
+			"checksum" : "6f78ab99ca2fe0cf02f2be93b75f9cc2"
+		},
+		"inputs/coho/2016_Late Summer_Russian River_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "d21ca4119708c4073bb33f67648bc36f"
+		},
+		"inputs/coho/2016_Late Summer_Russian River_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Late Summer_Russian River_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Late Summer_Russian River_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Late Summer_Russian River_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "6f78ab99ca2fe0cf02f2be93b75f9cc2"
+		},
+		"inputs/coho/2016_Mid-Summer_Beaver Creek_Coho_Age_0/Diet_prop.csv" : {
+			"checksum" : "cd3d76a203d949a0cc8f3f65f58f92a2"
+		},
+		"inputs/coho/2016_Mid-Summer_Beaver Creek_Coho_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Mid-Summer_Beaver Creek_Coho_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Mid-Summer_Beaver Creek_Coho_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Mid-Summer_Beaver Creek_Coho_Age_0/Temperature.csv" : {
+			"checksum" : "f57536fa98a867f75908943e3210e7d6"
+		},
+		"inputs/coho/2016_Mid-Summer_Beaver Creek_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "4db422ac66d9505def8b0ccc8ee30cb6"
+		},
+		"inputs/coho/2016_Mid-Summer_Beaver Creek_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Mid-Summer_Beaver Creek_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Mid-Summer_Beaver Creek_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Mid-Summer_Beaver Creek_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "f57536fa98a867f75908943e3210e7d6"
+		},
+		"inputs/coho/2016_Mid-Summer_Ptarmigan Creek_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "3eea5a331ae7b0f4eb3acdcc8e79a633"
+		},
+		"inputs/coho/2016_Mid-Summer_Ptarmigan Creek_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Mid-Summer_Ptarmigan Creek_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Mid-Summer_Ptarmigan Creek_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Mid-Summer_Ptarmigan Creek_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "f49167da80121ccc1d28346557546966"
+		},
+		"inputs/coho/2016_Mid-Summer_Russian River_Coho_Age_0/Diet_prop.csv" : {
+			"checksum" : "0fef8e32e617d664e70b335d8df77f2f"
+		},
+		"inputs/coho/2016_Mid-Summer_Russian River_Coho_Age_0/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Mid-Summer_Russian River_Coho_Age_0/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Mid-Summer_Russian River_Coho_Age_0/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Mid-Summer_Russian River_Coho_Age_0/Temperature.csv" : {
+			"checksum" : "f96a94a29e095fefd5a1f4f6f009c6e6"
+		},
+		"inputs/coho/2016_Mid-Summer_Russian River_Coho_Age_1/Diet_prop.csv" : {
+			"checksum" : "3fb0f49442f7ee2a9c35f4bcd56549ef"
+		},
+		"inputs/coho/2016_Mid-Summer_Russian River_Coho_Age_1/Indigestible_Prey.csv" : {
+			"checksum" : "22d9f85f763e5efd14c215d5fd58f344"
+		},
+		"inputs/coho/2016_Mid-Summer_Russian River_Coho_Age_1/Pred_E.csv" : {
+			"checksum" : "89aa508139dd37e4753367a16e7c8b37"
+		},
+		"inputs/coho/2016_Mid-Summer_Russian River_Coho_Age_1/Prey_E.csv" : {
+			"checksum" : "1bbd8cedc163f6e643e2dc8f38334ffe"
+		},
+		"inputs/coho/2016_Mid-Summer_Russian River_Coho_Age_1/Temperature.csv" : {
+			"checksum" : "f96a94a29e095fefd5a1f4f6f009c6e6"
+		},
+		"inputs/Main_Inputs/Diet_prop.csv" : {
+			"checksum" : "f6c22931bc39d9d32cec5a80af0d9056"
+		},
+		"inputs/Main_Inputs/Indigestible_Prey.csv" : {
+			"checksum" : "66cea28c7596bb2ec7417199d430f755"
+		},
+		"inputs/Main_Inputs/Pred_E.csv" : {
+			"checksum" : "ca87cd66ad5c8d5cae441b0ace56f0f6"
+		},
+		"inputs/Main_Inputs/Prey_E.csv" : {
+			"checksum" : "bb5ae319c9fadf35f7e8877324bdb8d1"
+		},
+		"inputs/Main_Inputs/Temperature.csv" : {
+			"checksum" : "eee8d714d02007a5d550051acbac1ecd"
+		},
+		"model_function.R" : {
+			"checksum" : "3c8a88172e5914add380db65a62902ea"
+		},
+		"Output.csv" : {
+			"checksum" : "63e71674e270a04295ceb8ecdb5dadac"
+		},
+		"output/Model.csv" : {
+			"checksum" : "40b027313226474c950776711c349ee8"
+		},
+		"output/Parameters.csv" : {
+			"checksum" : "f001f8ea608a9476f333edb828e6be8f"
+		},
+		"output/Summary.csv" : {
+			"checksum" : "efa93dc7b988487d0fddf80e152aacd4"
+		},
+		"packrat/desc/assertthat" : {
+			"checksum" : "8d1395cb909e100c8433a01614da5f10"
+		},
+		"packrat/desc/BH" : {
+			"checksum" : "b17a3fe4de83f5bfa55d02090ffc061e"
+		},
+		"packrat/desc/bindr" : {
+			"checksum" : "53942f1f20a9fb82f954c9030678b6cf"
+		},
+		"packrat/desc/bindrcpp" : {
+			"checksum" : "f1acbadabc02c78d9a1aff0bcd4089d9"
+		},
+		"packrat/desc/cli" : {
+			"checksum" : "02ea9f48becaa2f6a68a77438943c7c5"
+		},
+		"packrat/desc/colorspace" : {
+			"checksum" : "85629c522af9fa84380a2018c4391e29"
+		},
+		"packrat/desc/crayon" : {
+			"checksum" : "edcd5810ba2f87d8215bd07b6c7e702f"
+		},
+		"packrat/desc/dichromat" : {
+			"checksum" : "3cdfeb9ab6a4156b031bd3a0cdaaeca4"
+		},
+		"packrat/desc/digest" : {
+			"checksum" : "b81ee92055656054f9da591347cbd417"
+		},
+		"packrat/desc/dplyr" : {
+			"checksum" : "bb15cd2e0fd504a78e42aa1580462837"
+		},
+		"packrat/desc/ggplot2" : {
+			"checksum" : "3b75a16d4bf5497d2a168dd87509dca3"
+		},
+		"packrat/desc/glue" : {
+			"checksum" : "24a925f5c72c7df842dca95b728b9d6e"
+		},
+		"packrat/desc/gtable" : {
+			"checksum" : "e70cd9fb2bdd54d941a899fb388d5af8"
+		},
+		"packrat/desc/htmltools" : {
+			"checksum" : "a63f132e868a2d4d753ccf9874111a1b"
+		},
+		"packrat/desc/httpuv" : {
+			"checksum" : "e05c050ff280b5d771df83870dc323a8"
+		},
+		"packrat/desc/jsonlite" : {
+			"checksum" : "aaa13777daafed750a31e9bcba079dff"
+		},
+		"packrat/desc/labeling" : {
+			"checksum" : "68ee057121e6303c655fa990fac07b56"
+		},
+		"packrat/desc/lazyeval" : {
+			"checksum" : "e11aba3dfa8e5cb0a9d5c9d2c20a39c1"
+		},
+		"packrat/desc/magrittr" : {
+			"checksum" : "94afb9deed6685e2a4a7591ec5adc17f"
+		},
+		"packrat/desc/MASS" : {
+			"checksum" : "eb48c1a5e7792146d7d7d5ba49bc209a"
+		},
+		"packrat/desc/mime" : {
+			"checksum" : "20a7b115cc2c15d52d91072689960117"
+		},
+		"packrat/desc/munsell" : {
+			"checksum" : "3dfeee266fff04dc3f6c2cc19b6fc474"
+		},
+		"packrat/desc/packrat" : {
+			"checksum" : "a1ade7be450dbb220d8e920424c38233"
+		},
+		"packrat/desc/pillar" : {
+			"checksum" : "0912b6d26a797688ed7e8b4b39e1996c"
+		},
+		"packrat/desc/pkgconfig" : {
+			"checksum" : "9b2f49fb530cdeca170089bf5beb9d19"
+		},
+		"packrat/desc/plogr" : {
+			"checksum" : "c86d4c38e6368d38af274f9a17066936"
+		},
+		"packrat/desc/plyr" : {
+			"checksum" : "61c58d2e0db9761a06ac862792d30dbe"
+		},
+		"packrat/desc/purrr" : {
+			"checksum" : "7aea0adfdea902b04094643dd8aa8962"
+		},
+		"packrat/desc/R6" : {
+			"checksum" : "08ccb1dd7c6ea75df4e7dbc31dde6341"
+		},
+		"packrat/desc/RColorBrewer" : {
+			"checksum" : "2077eba50e542359b463281212519a71"
+		},
+		"packrat/desc/Rcpp" : {
+			"checksum" : "af9fe3c8b3091334681f15d548eb5fe4"
+		},
+		"packrat/desc/reshape2" : {
+			"checksum" : "d761d212f0fe11eea036c1a2f5fd1c07"
+		},
+		"packrat/desc/rlang" : {
+			"checksum" : "2edcf8be08983900c8fee075f3953a48"
+		},
+		"packrat/desc/scales" : {
+			"checksum" : "d9f0f7faeb46440b7799622285470637"
+		},
+		"packrat/desc/shiny" : {
+			"checksum" : "22c11d0f83c95f482f02de3b2fdda8e3"
+		},
+		"packrat/desc/sourcetools" : {
+			"checksum" : "4eef9db51589d7ddcae14f4a0645f93c"
+		},
+		"packrat/desc/stringi" : {
+			"checksum" : "df83dcf333633104d28f247bd86c631f"
+		},
+		"packrat/desc/stringr" : {
+			"checksum" : "af826deaed2008faa579984ed8b05eb6"
+		},
+		"packrat/desc/tibble" : {
+			"checksum" : "4f3386bb3073709eb8701c6c83b82d04"
+		},
+		"packrat/desc/tidyr" : {
+			"checksum" : "8e7c0ba8f0b57d9c3d6866363edc984f"
+		},
+		"packrat/desc/tidyselect" : {
+			"checksum" : "7abc85f877e9e412eeb882cf746fa39d"
+		},
+		"packrat/desc/utf8" : {
+			"checksum" : "9d830f2a573199007b65b73d13f04c95"
+		},
+		"packrat/desc/viridisLite" : {
+			"checksum" : "b24aae370bf1f98ca4ce42d0cd33b0d9"
+		},
+		"packrat/desc/xtable" : {
+			"checksum" : "336dd7d674db212c3a62b9d1e27815a3"
+		},
+		"packrat/packrat.lock" : {
+			"checksum" : "a02e08d2ad38a548598b73d50eee8ced"
+		},
+		"Parameters_official.csv" : {
+			"checksum" : "756f95b67bd48bfd444553d8506f906c"
+		},
+		"README_FB4.txt" : {
+			"checksum" : "b6f18e8513723cd0aff9f41010703bd7"
+		},
+		"README.md" : {
+			"checksum" : "e904fa3906ea42b2010e3095e3b48b50"
+		},
+		"server.R" : {
+			"checksum" : "158175db906ab86ebdb08a7691f65d77"
+		},
+		"sim_examples/sim_size_inputs_FB4.1.csv" : {
+			"checksum" : "f531edcf760627f5d0146abe04df1ebe"
+		},
+		"Sub-Models/Contaminant Accumulation/Contaminant Assimilation.csv" : {
+			"checksum" : "676fe2eb0bfc58bdcfb0cd204263fdfa"
+		},
+		"Sub-Models/Contaminant Accumulation/Contaminant Concentration.csv" : {
+			"checksum" : "95f2262cc933f8406adfb2401a9f212b"
+		},
+		"Sub-Models/Contaminant Accumulation/Transfer Efficiency.csv" : {
+			"checksum" : "6e1c81d6d475e057d2494c08e7ba352f"
+		},
+		"Sub-Models/Mortality/Mortality.csv" : {
+			"checksum" : "78ae5bcd17dd67419e6ed466acb0ecaf"
+		},
+		"Sub-Models/Nutrient Regeneration/Nit_Ae.csv" : {
+			"checksum" : "896aa5da0453b95fb75f588ae5f20a96"
+		},
+		"Sub-Models/Nutrient Regeneration/Nit_Conc_Pred.csv" : {
+			"checksum" : "decc9d4a4ff5872d9eebcb97d5057fa8"
+		},
+		"Sub-Models/Nutrient Regeneration/Nit_Conc_Prey.csv" : {
+			"checksum" : "14ff065f09823165e88579fc81c5df22"
+		},
+		"Sub-Models/Nutrient Regeneration/Phos_Ae.csv" : {
+			"checksum" : "86c697f96e058993fc16375faa6bc9df"
+		},
+		"Sub-Models/Nutrient Regeneration/Phos_Conc_Pred.csv" : {
+			"checksum" : "94459cff189a077438f9cc0776d39f8c"
+		},
+		"Sub-Models/Nutrient Regeneration/Phos_Conc_Prey.csv" : {
+			"checksum" : "4c9b400360eafe5e8673bbc98ce99579"
+		},
+		"Sub-Models/Reproduction/Reproduction.csv" : {
+			"checksum" : "976dc62dace2836ac8c8038fe3177e37"
+		},
+		"ui.R" : {
+			"checksum" : "6c40c7ef1d5347bb8027546fe84349db"
+		},
+		"www/FB4.jpg" : {
+			"checksum" : "2e08320a4661074eebf413b068eac61c"
+		}
+	},
+	"users" : null
+}

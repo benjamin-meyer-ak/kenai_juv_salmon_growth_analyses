@@ -1,0 +1,42 @@
+"","Parameter","test_sim","test_sim_2"
+"1","Species","Alewife (adult)","Alewife (adult)"
+"2","Scientific name","Alosa pseudoharengus","Alosa pseudoharengus"
+"3","Reference","Stewart & Binkowski 1986","Stewart & Binkowski 1986"
+"4","Consumption equation","3","3"
+"5","CA","0.8464","0.8464"
+"6","CB","-0.3","-0.3"
+"7","CQ","3","3"
+"8","CTO","16","16"
+"9","CTM","18","18"
+"10","CTL","25","25"
+"11","CK1","0.17","0.17"
+"12","CK4","0.01","0.01"
+"13","Respiration equation","1","1"
+"14","RA","0.00367","0.00367"
+"15","RB","-0.215","-0.215"
+"16","RQ","0.0548","0.0548"
+"17","RTO","0.03","0.03"
+"18","RTM","0","0"
+"19","RTL","9","9"
+"20","RK1","22.08","22.08"
+"21","RK4","-0.045","-0.045"
+"22","RK5","0","0"
+"23","ACT","5.78","5.78"
+"24","BACT","0.149","0.149"
+"25","SDA","0.175","0.175"
+"26","Egestion equation","1","1"
+"27","FA","0.16","0.16"
+"28","FB",NA,NA
+"29","FG",NA,NA
+"30","Excretion equation","1","1"
+"31","UA","0.1","0.1"
+"32","UB",NA,NA
+"33","UG",NA,NA
+"34","Predator equation","1","1"
+"35","Energy density","5000 to 9500","5000 to 9500"
+"36","Alpha 1",NA,NA
+"37","Beta 1",NA,NA
+"38","Cutoff",NA,NA
+"39","Alpha 2",NA,NA
+"40","Beta 2",NA,NA
+"41","Notes","",""
