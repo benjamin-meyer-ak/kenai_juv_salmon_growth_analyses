@@ -9,7 +9,6 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache=TRUE,
 rm(list=ls())
 
 #require packages
-library(googlesheets)
 library(tidyverse)
 library(forcats)
 library(rmarkdown)
@@ -769,13 +768,13 @@ sim_diet_days <- sim_diet_days %>%
 # assign season names to each temperature observation
 
 # remove non-simulation period temperature data 
-filtered_temperature_data  <- 
-    daily_mean_temps %>% 
-    rowwise() %>% 
-    mutate(present = any(Date >= sim_extents_by_site$sim.start & Date <= sim_extents_by_site$sim.end)) %>% 
-    filter(present) %>% 
-    data.frame() %>%
-    select(-present)
+#filtered_temperature_data  <- 
+#    daily_mean_temps %>% 
+#    rowwise() %>% 
+#    mutate(present = any(Date >= sim_extents_by_site$sim.start & Date <= sim_extents_by_site$sim.end)) %>% 
+#    filter(present) %>% 
+#   data.frame() %>%
+#    select(-present)
 
 # create dataframe to specify simulation extents rounded to 15 minute intervals
 z <- sim_extents_by_site %>%
@@ -868,7 +867,6 @@ Each simulation will have a named folder containing the files "Diet_prop.csv" an
 
 </summary>
 
-761 - 1023
 
 ```{r}
 # a.) export water temperature csv files
@@ -1157,7 +1155,7 @@ predator <- 5000
 # collate to data frame
 Pred_E <- data.frame(day,predator)
 # write file
-write.csv(Pred_E, paste0(static_inputs_dir,Pred_E.csv), row.names = F)
+write.csv(Pred_E, paste0(static_inputs_dir,"Pred_E.csv"), row.names = F)
 
 
 ## Prey_E.csv
@@ -1320,8 +1318,6 @@ Map(file.copy,
     to = z$sim_dir,
     overwrite = T)
 
-
-
 ```
 
 </details>
@@ -1367,7 +1363,7 @@ sim_size_inputs_FB4.1 <- read_excel("other/inputs/diet_size_other/sim_size_input
 
 ## save input csv to local directory
 # name directory location
-input_csv_dir <- "other/outputs/simulations/sim_size_inputs_FB4.1.csv"
+input_csv_dir <- "other/FB4.1_2015_2016/sim_size_inputs_FB4.1.csv"
 
 # remove any previous output versions
 file.remove(input_csv_dir)
@@ -1390,6 +1386,8 @@ Final outcome: a csv for simulation size inputs is stored at
 # code is in "global.R" file
 
 # next steps: try to figure out new public release of fb4, which has "design" function for multiple simulations?
+
+# see also custom app created by Shaun Garnett (Upwork) at https://bemeyer.shinyapps.io/FishBioenergetics/
 
 ```
 
