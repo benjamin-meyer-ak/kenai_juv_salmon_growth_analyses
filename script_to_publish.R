@@ -1,4 +1,5 @@
 # SYNCH/PUBLISH BOOK TO BOOKDOWN.ORG (created this becuase the 'publish' button in corner of html interface window after render does not work)
+library(rsconnect)
 
 # clean out old versions
 bookdown::clean_book(TRUE)

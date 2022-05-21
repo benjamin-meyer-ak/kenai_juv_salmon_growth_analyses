@@ -338,7 +338,7 @@ We will import fish size and age, then associate each fish with its wet mass die
 
 </summary>
 
-```{r import all fish size and age data}
+```{r ,import all fish size and age data}
 
 # NOTE ON AGE STRUCTURE 3/28/18
 # This script originally imported google sheet titled "all_fish_ages.csv", which contained results output from the "fish_ages_all.R" script.  The "fish_ages_all.R" script used methods described in Ch. 5 of Ogle 2016 ("Introductory fisheries analyses with R") to age all captured fish from a subset of fish scale samples.  Resultant csv file was copied to the google sheet referenced here.
@@ -547,7 +547,7 @@ Explanation here...
 
 </summary>
 
-```{r, eval = F}
+```{r, }
 # Define temporal extents of proposed simulations
 
 # NOTE 1/22/18: this code also exists as a script at "/Users/bmeyer/Google Drive/Thesis/R Analysis/Thesis Analyses R Project/Overall_scripts_2015_2016/sampling_periods.R".  Attempted to just source("\path") this script in to the markdown document but, 'source' function prevents knitting through markdown for some reason.  
@@ -671,6 +671,9 @@ mpc_2016_3 <- t16 %>%
   filter(sample.event == "MPC-2016-3") %>%
   select(-season.end_x) %>%
   mutate(season.end = season.start + days(30))
+
+# remove old version
+rm(sim_extents_by_site)
 
 # final version of simulation extents
 sim_extents_by_site <- bind_rows(t_end15_1,t_end15,t_end16_1,t_end16,mpc_2016_3) %>%
@@ -830,7 +833,7 @@ sim_diet_days <- inner_join(z,sim_size_inputs_list,by="sim") %>%
 
 <br>
 
-How many unique simulations are included? There `r n_sims` unique simulations based on fish age, species, and river.
+
 
 ```{r , echo= F}
 n_sims <- sim_diet_days %>%
@@ -844,6 +847,10 @@ write.csv(unique(sim_diet_days$sim_name),"other/outputs/all_simulations.csv",row
 embed_file("other/outputs/all_simulations.csv",text = "Download list of all unique fish growth simulations.")
 
 ```
+
+<br>
+
+How many unique simulations are included? There `r n_sims` unique simulations based on fish age, species, and river.
 
 <br>
 
