@@ -16,24 +16,25 @@ description: "This is a minimal example of using the bookdown package to write a
 
 This document describes selected analyses undertaken in the Transactions of the American Fisheries Society (TAFS) manuscript by Meyer et al., in review April 2022. 
 
-The document outlines the modifications to analyses requested by the reviewers and editors.
+The document outlines the modifications to analyses requested by the reviewers and editors on the draft submitted in February 2022.
 
-
-The current draft in progress of the manuscript, along with the draft response to the TAFS decision letter, can be accessed in this project's GitHib repo at https://bit.ly/bmeyer_tafs_submission_2022.
+The current draft in progress of the manuscript, along with the draft response to the TAFS decision letter, can be accessed and are available for download in this project's GitHib repository at https://bit.ly/bmeyer_tafs_submission_2022.
 
 ### General approach
 
 We used field and lab observations from 2015-2016 to generate inputs for a bioenergetics model for juvenile Chinook and Coho Salmon in the Kenai River watershed, then used projected water temperatures from 2030-2039 and 2060-2069 to simulate their future summer growth.
 
-We used the 2015-2016 observations of diet, water temperature, and fish size as bioenergetics model inputs to generate P - values, or "proportions of maximum consumption" (values range 0 - 1) for fish cohorts in the study (unique stream/year/species/age). Next, to simulate fish growth under future water temperature conditions, we used observed fish size, P-values, and projected water temperatures to simulate future summer growth.
+We used the 2015-2016 observations of diet, water temperature, and fish size as bioenergetics model inputs to generate P - values, or "proportions of maximum consumption" (values range 0 - 1) for fish cohorts in the study (unique stream/year/species/age). Next, to simulate fish growth under future water temperature conditions, we used observed fish size, P-values, and projected water temperatures as bioenergetics model inputs.
 
 #### Edits to Manuscript for June 2022 Resubmission
 
-The following corrections are outlined in this document...
+The following manuscripts modifications are outlined in this online document:
 
---  In the manuscript draft submitted to TAFS in Spring 2022, the model inputs erroneously used dry weights of prey items, rather than wet weights as required by the model. In this re-submission, dry weights of prey items are instead used.
+--  In the original manuscript draft submitted to TAFS in Spring 2022, the model inputs erroneously used dry weights of prey items, rather than wet weights as required by the model. In this re-submission, dry weights of prey items are instead used for all bioenergetics simulatins.
 
---  Others... see letter
+--  Others... tempertaure ...
+
+--  Other modifications to the originally submitted manuscript are outlined in the "Reposnse to Request for Edits" document available in the project GitHub repository, available for download at https://bit.ly/bmeyer_tafs_submission_2022.
 
 
 ```{r include=FALSE}

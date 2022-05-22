@@ -47,8 +47,8 @@ population_column_list = list(
   "Mortality"="Mortality.number",
   "Mortality Biomass (g)"="Mortality.g")
 
-nutrient_column_list = list( 
-  "Nitrogen Egestion (g)"="Nitrogen.Egestion.g", ### Nutrient regeneration variables 
+nutrient_column_list = list(
+  "Nitrogen Egestion (g)"="Nitrogen.Egestion.g", ### Nutrient regeneration variables
   "Phosphorous Egestion (g)"="Phosphorous.Egestion.g",
   "N:P Egestion (mass ratio)"="N.to.P.Egestion",
   "Nitrogen Excretion (g)"="Nitrogen.Excretion.g",
@@ -79,7 +79,7 @@ input_folder_list
 folder_list = c()
 folder = input_folder_list[5]
 folder
-input_file_list = c("Diet_prop.csv", "Indigestible_Prey.csv","Pred_E.csv", "Prey_E.csv","Temperature.csv") 
+input_file_list = c("Diet_prop.csv", "Indigestible_Prey.csv","Pred_E.csv", "Prey_E.csv","Temperature.csv")
 input_file_list
 for(folder in input_folder_list){
   if(input_file_list %in% list.files(folder)){

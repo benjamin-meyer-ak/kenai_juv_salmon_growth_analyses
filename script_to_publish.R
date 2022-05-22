@@ -9,3 +9,4 @@ bookdown:: render_book()
 
 # publish book to https://bookdown.org/alaskasaurusrex_ak/kenai_juv_salmon_growth_analyses/
 bookdown::publish_book(name = "kenai_juv_salmon_growth_analyses", account = "alaskasaurusrex_ak")
+Y

@@ -1,59 +1,70 @@
-"x"
-"2015_Early Summer_Lower Beaver Creek_Coho_Age_1"
-"2015_Early Summer_Lower Kenai River_Chinook_Age_0"
-"2015_Early Summer_Lower Ptarmigan Creek_Coho_Age_1"
-"2015_Early Summer_Middle Beaver Creek_Coho_Age_1"
-"2015_Early Summer_Middle Ptarmigan Creek_Coho_Age_1"
-"2015_Early Summer_Middle Russian River_Coho_Age_0"
-"2015_Early Summer_Middle Russian River_Coho_Age_1"
-"2015_Early Summer_Upper Russian River_Coho_Age_0"
-"2015_Early Summer_Upper Russian River_Coho_Age_1"
-"2015_Mid-Summer_Lower Beaver Creek_Coho_Age_0"
-"2015_Mid-Summer_Lower Beaver Creek_Coho_Age_1"
-"2015_Mid-Summer_Lower Kenai River_Coho_Age_0"
-"2015_Mid-Summer_Lower Ptarmigan Creek_Coho_Age_1"
-"2015_Mid-Summer_Middle Beaver Creek_Coho_Age_1"
-"2015_Mid-Summer_Middle Kenai River_Chinook_Age_0"
-"2015_Mid-Summer_Middle Kenai River_Coho_Age_0"
-"2015_Mid-Summer_Middle Ptarmigan Creek_Coho_Age_1"
-"2015_Mid-Summer_Middle Russian River_Coho_Age_0"
-"2015_Mid-Summer_Middle Russian River_Coho_Age_1"
-"2015_Mid-Summer_Upper Russian River_Coho_Age_0"
-"2016_Early Summer_Lower Beaver Creek_Coho_Age_1"
-"2016_Early Summer_Lower Kenai River_Chinook_Age_0"
-"2016_Early Summer_Lower Ptarmigan Creek_Coho_Age_1"
-"2016_Early Summer_Lower Russian River_Chinook_Age_0"
-"2016_Early Summer_Lower Russian River_Coho_Age_1"
-"2016_Early Summer_Middle Beaver Creek_Coho_Age_1"
-"2016_Early Summer_Middle Russian River_Coho_Age_1"
-"2016_Early Summer_Upper Beaver Creek_Coho_Age_1"
-"2016_Late Summer_Lower Beaver Creek_Chinook_Age_0"
-"2016_Late Summer_Lower Beaver Creek_Coho_Age_0"
-"2016_Late Summer_Lower Beaver Creek_Coho_Age_1"
-"2016_Late Summer_Lower Kenai River_Chinook_Age_0"
-"2016_Late Summer_Lower Kenai River_Coho_Age_0"
-"2016_Late Summer_Lower Ptarmigan Creek_Coho_Age_0"
-"2016_Late Summer_Lower Russian River_Coho_Age_0"
-"2016_Late Summer_Middle Beaver Creek_Chinook_Age_0"
-"2016_Late Summer_Middle Beaver Creek_Coho_Age_1"
-"2016_Late Summer_Middle Kenai River_Chinook_Age_0"
-"2016_Late Summer_Middle Kenai River_Coho_Age_0"
-"2016_Late Summer_Middle Russian River_Coho_Age_0"
-"2016_Late Summer_Upper Beaver Creek_Chinook_Age_0"
-"2016_Late Summer_Upper Beaver Creek_Coho_Age_1"
-"2016_Late Summer_Upper Russian River_Coho_Age_0"
-"2016_Mid-Summer_Lower Beaver Creek_Chinook_Age_0"
-"2016_Mid-Summer_Lower Beaver Creek_Coho_Age_0"
-"2016_Mid-Summer_Lower Beaver Creek_Coho_Age_1"
-"2016_Mid-Summer_Lower Kenai River_Chinook_Age_0"
-"2016_Mid-Summer_Lower Ptarmigan Creek_Chinook_Age_0"
-"2016_Mid-Summer_Lower Ptarmigan Creek_Coho_Age_1"
-"2016_Mid-Summer_Lower Russian River_Coho_Age_0"
-"2016_Mid-Summer_Middle Beaver Creek_Chinook_Age_0"
-"2016_Mid-Summer_Middle Beaver Creek_Coho_Age_1"
-"2016_Mid-Summer_Middle Ptarmigan Creek_Coho_Age_1"
-"2016_Mid-Summer_Middle Russian River_Coho_Age_0"
-"2016_Mid-Summer_Middle Russian River_Coho_Age_1"
-"2016_Mid-Summer_Upper Beaver Creek_Coho_Age_1"
-"2016_Mid-Summer_Upper Russian River_Coho_Age_0"
-"2016_Mid-Summer_Upper Russian River_Coho_Age_1"
+"Stream_Name","sample.event","sample.event.num","year","site","sim.start","sim.end","season","days"
+"Beaver Creek","LBC-2015-1","1","2015","Lower Beaver Creek",2015-06-04 14:14:00,2015-06-29 01:00:00,"Early Summer",24
+"Beaver Creek","LBC-2015-2","2","2015","Lower Beaver Creek",2015-06-29 01:00:00,2015-08-06 01:00:00,"Mid-Summer",38
+"Beaver Creek","MBC-2015-1","1","2015","Middle Beaver Creek",2015-06-07 12:05:00,2015-07-13 11:10:00,"Early Summer",36
+"Beaver Creek","MBC-2015-2","2","2015","Middle Beaver Creek",2015-07-13 11:10:00,2015-08-10 11:49:00,"Mid-Summer",28
+"Beaver Creek","UBC-2015-1","1","2015","Upper Beaver Creek",2015-06-06 12:22:00,2015-07-02 11:33:00,"Early Summer",26
+"Beaver Creek","UBC-2015-2","2","2015","Upper Beaver Creek",2015-07-02 11:33:00,2015-08-07 11:42:00,"Mid-Summer",36
+"Kenai River","MSKR-2015-1","1","2015","Lower Kenai River",2015-06-22 13:00:00,2015-07-23 12:25:00,"Early Summer",31
+"Kenai River","MSKR-2015-2","2","2015","Lower Kenai River",2015-07-23 12:25:00,2015-08-13 12:16:00,"Mid-Summer",21
+"Kenai River","MSRR-2015-1","1","2015","Middle Kenai River",2015-06-09 12:10:00,2015-07-24 13:04:00,"Early Summer",45
+"Kenai River","MSRR-2015-2","2","2015","Middle Kenai River",2015-07-24 13:04:00,2015-08-17 12:45:00,"Mid-Summer",24
+"Ptarmigan Creek","LPC-2015-1","1","2015","Lower Ptarmigan Creek",2015-06-23 15:38:00,2015-07-30 12:39:00,"Early Summer",37
+"Ptarmigan Creek","LPC-2015-2","2","2015","Lower Ptarmigan Creek",2015-07-30 12:39:00,2015-08-25 12:33:00,"Mid-Summer",26
+"Ptarmigan Creek","MPC-2015-1","1","2015","Middle Ptarmigan Creek",2015-06-24 13:38:00,2015-07-16 12:37:00,"Early Summer",22
+"Ptarmigan Creek","MPC-2015-2","2","2015","Middle Ptarmigan Creek",2015-07-16 12:37:00,2015-08-26 13:36:00,"Mid-Summer",41
+"Russian River","LRR-2015-1","1","2015","Lower Russian River",2015-06-08 16:34:00,2015-07-14 12:00:00,"Early Summer",36
+"Russian River","LRR-2015-2","2","2015","Lower Russian River",2015-07-14 12:00:00,2015-08-11 12:00:00,"Mid-Summer",28
+"Russian River","MRR-2015-1","1","2015","Middle Russian River",2015-06-19 13:45:00,2015-07-15 12:30:00,"Early Summer",26
+"Russian River","MRR-2015-2","2","2015","Middle Russian River",2015-07-15 12:30:00,2015-08-12 12:22:00,"Mid-Summer",28
+"Russian River","URR-2015-1","1","2015","Upper Russian River",2015-06-16 12:25:00,2015-07-21 11:10:00,"Early Summer",35
+"Russian River","URR-2015-2","2","2015","Upper Russian River",2015-07-21 11:10:00,2015-08-20 12:42:00,"Mid-Summer",30
+"Beaver Creek","LBC-2015-3","3","2015","Lower Beaver Creek",2015-08-06 01:00:00,2015-09-05 01:00:00,"Late Summer",30
+"Beaver Creek","MBC-2015-3","3","2015","Middle Beaver Creek",2015-08-10 11:49:00,2015-09-09 11:49:00,"Late Summer",30
+"Beaver Creek","UBC-2015-3","3","2015","Upper Beaver Creek",2015-08-07 11:42:00,2015-09-06 11:42:00,"Late Summer",30
+"Kenai River","MSKR-2015-3","3","2015","Lower Kenai River",2015-08-13 12:16:00,2015-09-12 12:16:00,"Late Summer",30
+"Kenai River","MSRR-2015-3","3","2015","Middle Kenai River",2015-08-17 12:45:00,2015-09-16 12:45:00,"Late Summer",30
+"Ptarmigan Creek","LPC-2015-3","3","2015","Lower Ptarmigan Creek",2015-08-25 12:33:00,2015-09-24 12:33:00,"Late Summer",30
+"Ptarmigan Creek","MPC-2015-3","3","2015","Middle Ptarmigan Creek",2015-08-26 13:36:00,2015-09-25 13:36:00,"Late Summer",30
+"Russian River","LRR-2015-3","3","2015","Lower Russian River",2015-08-11 12:00:00,2015-09-10 12:00:00,"Late Summer",30
+"Russian River","MRR-2015-3","3","2015","Middle Russian River",2015-08-12 12:22:00,2015-09-11 12:22:00,"Late Summer",30
+"Russian River","URR-2015-3","3","2015","Upper Russian River",2015-08-20 12:42:00,2015-09-19 12:42:00,"Late Summer",30
+"Beaver Creek","LBC-2016-1","1","2016","Lower Beaver Creek",2016-05-24 11:36:00,2016-06-21 01:00:00,"Early Summer",28
+"Beaver Creek","LBC-2016-2","2","2016","Lower Beaver Creek",2016-06-21 01:00:00,2016-07-19 12:30:00,"Mid-Summer",28
+"Beaver Creek","LBC-2016-3","3","2016","Lower Beaver Creek",2016-07-19 12:30:00,2016-08-15 11:55:00,"Late Summer",27
+"Beaver Creek","MBC-2016-1","1","2016","Middle Beaver Creek",2016-05-25 11:37:00,2016-06-20 11:15:00,"Early Summer",26
+"Beaver Creek","MBC-2016-2","2","2016","Middle Beaver Creek",2016-06-20 11:15:00,2016-07-20 11:30:00,"Mid-Summer",30
+"Beaver Creek","MBC-2016-3","3","2016","Middle Beaver Creek",2016-07-20 11:30:00,2016-08-16 11:30:00,"Late Summer",27
+"Beaver Creek","UBC-2016-1","1","2016","Upper Beaver Creek",2016-05-26 12:35:00,2016-06-22 12:45:00,"Early Summer",27
+"Beaver Creek","UBC-2016-2","2","2016","Upper Beaver Creek",2016-06-22 12:45:00,2016-07-22 12:45:00,"Mid-Summer",30
+"Beaver Creek","UBC-2016-3","3","2016","Upper Beaver Creek",2016-07-22 12:45:00,2016-08-17 13:55:00,"Late Summer",26
+"Kenai River","MSKR-2016-1","1","2016","Lower Kenai River",2016-05-30 11:35:00,2016-06-28 11:05:00,"Early Summer",29
+"Kenai River","MSKR-2016-2","2","2016","Lower Kenai River",2016-06-28 11:05:00,2016-08-01 11:45:00,"Mid-Summer",34
+"Kenai River","MSKR-2016-3","3","2016","Lower Kenai River",2016-08-01 11:45:00,2016-08-31 11:25:00,"Late Summer",30
+"Kenai River","MSRR-2016-1","1","2016","Middle Kenai River",2016-06-02 11:00:00,2016-06-29 11:35:00,"Early Summer",27
+"Kenai River","MSRR-2016-2","2","2016","Middle Kenai River",2016-06-29 11:35:00,2016-08-02 13:00:00,"Mid-Summer",34
+"Kenai River","MSRR-2016-3","3","2016","Middle Kenai River",2016-08-02 13:00:00,2016-09-04 11:50:00,"Late Summer",33
+"Ptarmigan Creek","LPC-2016-1","1","2016","Lower Ptarmigan Creek",2016-06-05 13:30:00,2016-07-01 11:25:00,"Early Summer",26
+"Ptarmigan Creek","LPC-2016-2","2","2016","Lower Ptarmigan Creek",2016-07-01 11:25:00,2016-08-10 01:00:00,"Mid-Summer",40
+"Ptarmigan Creek","LPC-2016-3","3","2016","Lower Ptarmigan Creek",2016-08-10 01:00:00,2016-09-17 12:05:00,"Late Summer",38
+"Ptarmigan Creek","MPC-2016-1","1","2016","Middle Ptarmigan Creek",2016-06-06 01:00:00,2016-07-02 11:10:00,"Early Summer",26
+"Ptarmigan Creek","MPC-2016-2","2","2016","Middle Ptarmigan Creek",2016-07-02 11:10:00,2016-08-11 12:05:00,"Mid-Summer",40
+"Russian River","LRR-2016-1","1","2016","Lower Russian River",2016-05-31 12:25:00,2016-07-18 12:20:00,"Early Summer",48
+"Russian River","LRR-2016-2","2","2016","Lower Russian River",2016-07-18 12:20:00,2016-08-09 12:35:00,"Mid-Summer",22
+"Russian River","LRR-2016-3","3","2016","Lower Russian River",2016-08-09 12:35:00,2016-09-02 12:35:00,"Late Summer",24
+"Russian River","MRR-2016-1","1","2016","Middle Russian River",2016-06-01 11:30:00,2016-06-30 13:55:00,"Early Summer",29
+"Russian River","MRR-2016-2","2","2016","Middle Russian River",2016-06-30 13:55:00,2016-08-06 13:00:00,"Mid-Summer",37
+"Russian River","MRR-2016-3","3","2016","Middle Russian River",2016-08-06 13:00:00,2016-09-03 12:45:00,"Late Summer",28
+"Russian River","URR-2016-1","1","2016","Upper Russian River",2016-06-08 12:55:00,2016-07-08 01:00:00,"Early Summer",30
+"Russian River","URR-2016-2","2","2016","Upper Russian River",2016-07-08 01:00:00,2016-08-04 14:05:00,"Mid-Summer",28
+"Russian River","URR-2016-3","3","2016","Upper Russian River",2016-08-04 14:05:00,2016-09-11 13:05:00,"Late Summer",38
+"Beaver Creek","LBC-2016-4","4","2016","Lower Beaver Creek",2016-08-15 11:55:00,2016-09-14 11:55:00,"Fall",30
+"Beaver Creek","MBC-2016-4","4","2016","Middle Beaver Creek",2016-08-16 11:30:00,2016-09-15 11:30:00,"Fall",30
+"Beaver Creek","UBC-2016-4","4","2016","Upper Beaver Creek",2016-08-17 13:55:00,2016-09-16 13:55:00,"Fall",30
+"Kenai River","MSKR-2016-4","4","2016","Lower Kenai River",2016-08-31 11:25:00,2016-09-30 11:25:00,"Fall",30
+"Kenai River","MSRR-2016-4","4","2016","Middle Kenai River",2016-09-04 11:50:00,2016-10-04 11:50:00,"Fall",30
+"Ptarmigan Creek","LPC-2016-4","4","2016","Lower Ptarmigan Creek",2016-09-17 12:05:00,2016-10-17 12:05:00,"Fall",30
+"Russian River","LRR-2016-4","4","2016","Lower Russian River",2016-09-02 12:35:00,2016-10-02 12:35:00,"Fall",30
+"Russian River","MRR-2016-4","4","2016","Middle Russian River",2016-09-03 12:45:00,2016-10-03 12:45:00,"Fall",30
+"Russian River","URR-2016-4","4","2016","Upper Russian River",2016-09-11 13:05:00,2016-10-11 13:05:00,"Fall",30
+"Ptarmigan Creek","MPC-2016-3","3","2016","Middle Ptarmigan Creek",2016-08-11 12:05:00,2016-09-10 12:05:00,"Late Summer",30

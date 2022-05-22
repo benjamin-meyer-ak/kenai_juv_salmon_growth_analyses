@@ -1,0 +1,312 @@
+"Stream_Name","spp","age","FishEggs","InvertAquatic_AqOrigin","InvertTerrestrial","InvertTerrestrial_AqOrigin","SalmonEggs","sample.event","sample.event.num","year","site","sim.start","sim.end","season","days"
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"LBC-2015-1","1","2015","Lower Beaver Creek",2015-06-04 14:14:00,2015-06-29 01:00:00,"Early Summer",24
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"LBC-2015-2","2","2015","Lower Beaver Creek",2015-06-29 01:00:00,2015-08-06 01:00:00,"Mid-Summer",38
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"MBC-2015-1","1","2015","Middle Beaver Creek",2015-06-07 12:05:00,2015-07-13 11:10:00,"Early Summer",36
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"MBC-2015-2","2","2015","Middle Beaver Creek",2015-07-13 11:10:00,2015-08-10 11:49:00,"Mid-Summer",28
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"UBC-2015-1","1","2015","Upper Beaver Creek",2015-06-06 12:22:00,2015-07-02 11:33:00,"Early Summer",26
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"UBC-2015-2","2","2015","Upper Beaver Creek",2015-07-02 11:33:00,2015-08-07 11:42:00,"Mid-Summer",36
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"LBC-2015-3","3","2015","Lower Beaver Creek",2015-08-06 01:00:00,2015-09-05 01:00:00,"Late Summer",30
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"MBC-2015-3","3","2015","Middle Beaver Creek",2015-08-10 11:49:00,2015-09-09 11:49:00,"Late Summer",30
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"UBC-2015-3","3","2015","Upper Beaver Creek",2015-08-07 11:42:00,2015-09-06 11:42:00,"Late Summer",30
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"LBC-2016-1","1","2016","Lower Beaver Creek",2016-05-24 11:36:00,2016-06-21 01:00:00,"Early Summer",28
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"LBC-2016-2","2","2016","Lower Beaver Creek",2016-06-21 01:00:00,2016-07-19 12:30:00,"Mid-Summer",28
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"LBC-2016-3","3","2016","Lower Beaver Creek",2016-07-19 12:30:00,2016-08-15 11:55:00,"Late Summer",27
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"MBC-2016-1","1","2016","Middle Beaver Creek",2016-05-25 11:37:00,2016-06-20 11:15:00,"Early Summer",26
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"MBC-2016-2","2","2016","Middle Beaver Creek",2016-06-20 11:15:00,2016-07-20 11:30:00,"Mid-Summer",30
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"MBC-2016-3","3","2016","Middle Beaver Creek",2016-07-20 11:30:00,2016-08-16 11:30:00,"Late Summer",27
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"UBC-2016-1","1","2016","Upper Beaver Creek",2016-05-26 12:35:00,2016-06-22 12:45:00,"Early Summer",27
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"UBC-2016-2","2","2016","Upper Beaver Creek",2016-06-22 12:45:00,2016-07-22 12:45:00,"Mid-Summer",30
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"UBC-2016-3","3","2016","Upper Beaver Creek",2016-07-22 12:45:00,2016-08-17 13:55:00,"Late Summer",26
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"LBC-2016-4","4","2016","Lower Beaver Creek",2016-08-15 11:55:00,2016-09-14 11:55:00,"Fall",30
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"MBC-2016-4","4","2016","Middle Beaver Creek",2016-08-16 11:30:00,2016-09-15 11:30:00,"Fall",30
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA,"UBC-2016-4","4","2016","Upper Beaver Creek",2016-08-17 13:55:00,2016-09-16 13:55:00,"Fall",30
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"LBC-2015-1","1","2015","Lower Beaver Creek",2015-06-04 14:14:00,2015-06-29 01:00:00,"Early Summer",24
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"LBC-2015-2","2","2015","Lower Beaver Creek",2015-06-29 01:00:00,2015-08-06 01:00:00,"Mid-Summer",38
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"MBC-2015-1","1","2015","Middle Beaver Creek",2015-06-07 12:05:00,2015-07-13 11:10:00,"Early Summer",36
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"MBC-2015-2","2","2015","Middle Beaver Creek",2015-07-13 11:10:00,2015-08-10 11:49:00,"Mid-Summer",28
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"UBC-2015-1","1","2015","Upper Beaver Creek",2015-06-06 12:22:00,2015-07-02 11:33:00,"Early Summer",26
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"UBC-2015-2","2","2015","Upper Beaver Creek",2015-07-02 11:33:00,2015-08-07 11:42:00,"Mid-Summer",36
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"LBC-2015-3","3","2015","Lower Beaver Creek",2015-08-06 01:00:00,2015-09-05 01:00:00,"Late Summer",30
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"MBC-2015-3","3","2015","Middle Beaver Creek",2015-08-10 11:49:00,2015-09-09 11:49:00,"Late Summer",30
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"UBC-2015-3","3","2015","Upper Beaver Creek",2015-08-07 11:42:00,2015-09-06 11:42:00,"Late Summer",30
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"LBC-2016-1","1","2016","Lower Beaver Creek",2016-05-24 11:36:00,2016-06-21 01:00:00,"Early Summer",28
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"LBC-2016-2","2","2016","Lower Beaver Creek",2016-06-21 01:00:00,2016-07-19 12:30:00,"Mid-Summer",28
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"LBC-2016-3","3","2016","Lower Beaver Creek",2016-07-19 12:30:00,2016-08-15 11:55:00,"Late Summer",27
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"MBC-2016-1","1","2016","Middle Beaver Creek",2016-05-25 11:37:00,2016-06-20 11:15:00,"Early Summer",26
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"MBC-2016-2","2","2016","Middle Beaver Creek",2016-06-20 11:15:00,2016-07-20 11:30:00,"Mid-Summer",30
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"MBC-2016-3","3","2016","Middle Beaver Creek",2016-07-20 11:30:00,2016-08-16 11:30:00,"Late Summer",27
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"UBC-2016-1","1","2016","Upper Beaver Creek",2016-05-26 12:35:00,2016-06-22 12:45:00,"Early Summer",27
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"UBC-2016-2","2","2016","Upper Beaver Creek",2016-06-22 12:45:00,2016-07-22 12:45:00,"Mid-Summer",30
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"UBC-2016-3","3","2016","Upper Beaver Creek",2016-07-22 12:45:00,2016-08-17 13:55:00,"Late Summer",26
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"LBC-2016-4","4","2016","Lower Beaver Creek",2016-08-15 11:55:00,2016-09-14 11:55:00,"Fall",30
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"MBC-2016-4","4","2016","Middle Beaver Creek",2016-08-16 11:30:00,2016-09-15 11:30:00,"Fall",30
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA,"UBC-2016-4","4","2016","Upper Beaver Creek",2016-08-17 13:55:00,2016-09-16 13:55:00,"Fall",30
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"LBC-2015-1","1","2015","Lower Beaver Creek",2015-06-04 14:14:00,2015-06-29 01:00:00,"Early Summer",24
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"LBC-2015-2","2","2015","Lower Beaver Creek",2015-06-29 01:00:00,2015-08-06 01:00:00,"Mid-Summer",38
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"MBC-2015-1","1","2015","Middle Beaver Creek",2015-06-07 12:05:00,2015-07-13 11:10:00,"Early Summer",36
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"MBC-2015-2","2","2015","Middle Beaver Creek",2015-07-13 11:10:00,2015-08-10 11:49:00,"Mid-Summer",28
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"UBC-2015-1","1","2015","Upper Beaver Creek",2015-06-06 12:22:00,2015-07-02 11:33:00,"Early Summer",26
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"UBC-2015-2","2","2015","Upper Beaver Creek",2015-07-02 11:33:00,2015-08-07 11:42:00,"Mid-Summer",36
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"LBC-2015-3","3","2015","Lower Beaver Creek",2015-08-06 01:00:00,2015-09-05 01:00:00,"Late Summer",30
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"MBC-2015-3","3","2015","Middle Beaver Creek",2015-08-10 11:49:00,2015-09-09 11:49:00,"Late Summer",30
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"UBC-2015-3","3","2015","Upper Beaver Creek",2015-08-07 11:42:00,2015-09-06 11:42:00,"Late Summer",30
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"LBC-2016-1","1","2016","Lower Beaver Creek",2016-05-24 11:36:00,2016-06-21 01:00:00,"Early Summer",28
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"LBC-2016-2","2","2016","Lower Beaver Creek",2016-06-21 01:00:00,2016-07-19 12:30:00,"Mid-Summer",28
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"LBC-2016-3","3","2016","Lower Beaver Creek",2016-07-19 12:30:00,2016-08-15 11:55:00,"Late Summer",27
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"MBC-2016-1","1","2016","Middle Beaver Creek",2016-05-25 11:37:00,2016-06-20 11:15:00,"Early Summer",26
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"MBC-2016-2","2","2016","Middle Beaver Creek",2016-06-20 11:15:00,2016-07-20 11:30:00,"Mid-Summer",30
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"MBC-2016-3","3","2016","Middle Beaver Creek",2016-07-20 11:30:00,2016-08-16 11:30:00,"Late Summer",27
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"UBC-2016-1","1","2016","Upper Beaver Creek",2016-05-26 12:35:00,2016-06-22 12:45:00,"Early Summer",27
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"UBC-2016-2","2","2016","Upper Beaver Creek",2016-06-22 12:45:00,2016-07-22 12:45:00,"Mid-Summer",30
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"UBC-2016-3","3","2016","Upper Beaver Creek",2016-07-22 12:45:00,2016-08-17 13:55:00,"Late Summer",26
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"LBC-2016-4","4","2016","Lower Beaver Creek",2016-08-15 11:55:00,2016-09-14 11:55:00,"Fall",30
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"MBC-2016-4","4","2016","Middle Beaver Creek",2016-08-16 11:30:00,2016-09-15 11:30:00,"Fall",30
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA,"UBC-2016-4","4","2016","Upper Beaver Creek",2016-08-17 13:55:00,2016-09-16 13:55:00,"Fall",30
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"LBC-2015-1","1","2015","Lower Beaver Creek",2015-06-04 14:14:00,2015-06-29 01:00:00,"Early Summer",24
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"LBC-2015-2","2","2015","Lower Beaver Creek",2015-06-29 01:00:00,2015-08-06 01:00:00,"Mid-Summer",38
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"MBC-2015-1","1","2015","Middle Beaver Creek",2015-06-07 12:05:00,2015-07-13 11:10:00,"Early Summer",36
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"MBC-2015-2","2","2015","Middle Beaver Creek",2015-07-13 11:10:00,2015-08-10 11:49:00,"Mid-Summer",28
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"UBC-2015-1","1","2015","Upper Beaver Creek",2015-06-06 12:22:00,2015-07-02 11:33:00,"Early Summer",26
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"UBC-2015-2","2","2015","Upper Beaver Creek",2015-07-02 11:33:00,2015-08-07 11:42:00,"Mid-Summer",36
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"LBC-2015-3","3","2015","Lower Beaver Creek",2015-08-06 01:00:00,2015-09-05 01:00:00,"Late Summer",30
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"MBC-2015-3","3","2015","Middle Beaver Creek",2015-08-10 11:49:00,2015-09-09 11:49:00,"Late Summer",30
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"UBC-2015-3","3","2015","Upper Beaver Creek",2015-08-07 11:42:00,2015-09-06 11:42:00,"Late Summer",30
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"LBC-2016-1","1","2016","Lower Beaver Creek",2016-05-24 11:36:00,2016-06-21 01:00:00,"Early Summer",28
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"LBC-2016-2","2","2016","Lower Beaver Creek",2016-06-21 01:00:00,2016-07-19 12:30:00,"Mid-Summer",28
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"LBC-2016-3","3","2016","Lower Beaver Creek",2016-07-19 12:30:00,2016-08-15 11:55:00,"Late Summer",27
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"MBC-2016-1","1","2016","Middle Beaver Creek",2016-05-25 11:37:00,2016-06-20 11:15:00,"Early Summer",26
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"MBC-2016-2","2","2016","Middle Beaver Creek",2016-06-20 11:15:00,2016-07-20 11:30:00,"Mid-Summer",30
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"MBC-2016-3","3","2016","Middle Beaver Creek",2016-07-20 11:30:00,2016-08-16 11:30:00,"Late Summer",27
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"UBC-2016-1","1","2016","Upper Beaver Creek",2016-05-26 12:35:00,2016-06-22 12:45:00,"Early Summer",27
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"UBC-2016-2","2","2016","Upper Beaver Creek",2016-06-22 12:45:00,2016-07-22 12:45:00,"Mid-Summer",30
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"UBC-2016-3","3","2016","Upper Beaver Creek",2016-07-22 12:45:00,2016-08-17 13:55:00,"Late Summer",26
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"LBC-2016-4","4","2016","Lower Beaver Creek",2016-08-15 11:55:00,2016-09-14 11:55:00,"Fall",30
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"MBC-2016-4","4","2016","Middle Beaver Creek",2016-08-16 11:30:00,2016-09-15 11:30:00,"Fall",30
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA,"UBC-2016-4","4","2016","Upper Beaver Creek",2016-08-17 13:55:00,2016-09-16 13:55:00,"Fall",30
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"LBC-2015-1","1","2015","Lower Beaver Creek",2015-06-04 14:14:00,2015-06-29 01:00:00,"Early Summer",24
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"LBC-2015-2","2","2015","Lower Beaver Creek",2015-06-29 01:00:00,2015-08-06 01:00:00,"Mid-Summer",38
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"MBC-2015-1","1","2015","Middle Beaver Creek",2015-06-07 12:05:00,2015-07-13 11:10:00,"Early Summer",36
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"MBC-2015-2","2","2015","Middle Beaver Creek",2015-07-13 11:10:00,2015-08-10 11:49:00,"Mid-Summer",28
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"UBC-2015-1","1","2015","Upper Beaver Creek",2015-06-06 12:22:00,2015-07-02 11:33:00,"Early Summer",26
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"UBC-2015-2","2","2015","Upper Beaver Creek",2015-07-02 11:33:00,2015-08-07 11:42:00,"Mid-Summer",36
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"LBC-2015-3","3","2015","Lower Beaver Creek",2015-08-06 01:00:00,2015-09-05 01:00:00,"Late Summer",30
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"MBC-2015-3","3","2015","Middle Beaver Creek",2015-08-10 11:49:00,2015-09-09 11:49:00,"Late Summer",30
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"UBC-2015-3","3","2015","Upper Beaver Creek",2015-08-07 11:42:00,2015-09-06 11:42:00,"Late Summer",30
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"LBC-2016-1","1","2016","Lower Beaver Creek",2016-05-24 11:36:00,2016-06-21 01:00:00,"Early Summer",28
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"LBC-2016-2","2","2016","Lower Beaver Creek",2016-06-21 01:00:00,2016-07-19 12:30:00,"Mid-Summer",28
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"LBC-2016-3","3","2016","Lower Beaver Creek",2016-07-19 12:30:00,2016-08-15 11:55:00,"Late Summer",27
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"MBC-2016-1","1","2016","Middle Beaver Creek",2016-05-25 11:37:00,2016-06-20 11:15:00,"Early Summer",26
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"MBC-2016-2","2","2016","Middle Beaver Creek",2016-06-20 11:15:00,2016-07-20 11:30:00,"Mid-Summer",30
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"MBC-2016-3","3","2016","Middle Beaver Creek",2016-07-20 11:30:00,2016-08-16 11:30:00,"Late Summer",27
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"UBC-2016-1","1","2016","Upper Beaver Creek",2016-05-26 12:35:00,2016-06-22 12:45:00,"Early Summer",27
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"UBC-2016-2","2","2016","Upper Beaver Creek",2016-06-22 12:45:00,2016-07-22 12:45:00,"Mid-Summer",30
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"UBC-2016-3","3","2016","Upper Beaver Creek",2016-07-22 12:45:00,2016-08-17 13:55:00,"Late Summer",26
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"LBC-2016-4","4","2016","Lower Beaver Creek",2016-08-15 11:55:00,2016-09-14 11:55:00,"Fall",30
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"MBC-2016-4","4","2016","Middle Beaver Creek",2016-08-16 11:30:00,2016-09-15 11:30:00,"Fall",30
+"Beaver Creek","Coho",2,NA,0.285,0.035,0.68,NA,"UBC-2016-4","4","2016","Upper Beaver Creek",2016-08-17 13:55:00,2016-09-16 13:55:00,"Fall",30
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018,"MSKR-2015-1","1","2015","Lower Kenai River",2015-06-22 13:00:00,2015-07-23 12:25:00,"Early Summer",31
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018,"MSKR-2015-2","2","2015","Lower Kenai River",2015-07-23 12:25:00,2015-08-13 12:16:00,"Mid-Summer",21
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018,"MSRR-2015-1","1","2015","Middle Kenai River",2015-06-09 12:10:00,2015-07-24 13:04:00,"Early Summer",45
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018,"MSRR-2015-2","2","2015","Middle Kenai River",2015-07-24 13:04:00,2015-08-17 12:45:00,"Mid-Summer",24
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018,"MSKR-2015-3","3","2015","Lower Kenai River",2015-08-13 12:16:00,2015-09-12 12:16:00,"Late Summer",30
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018,"MSRR-2015-3","3","2015","Middle Kenai River",2015-08-17 12:45:00,2015-09-16 12:45:00,"Late Summer",30
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018,"MSKR-2016-1","1","2016","Lower Kenai River",2016-05-30 11:35:00,2016-06-28 11:05:00,"Early Summer",29
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018,"MSKR-2016-2","2","2016","Lower Kenai River",2016-06-28 11:05:00,2016-08-01 11:45:00,"Mid-Summer",34
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018,"MSKR-2016-3","3","2016","Lower Kenai River",2016-08-01 11:45:00,2016-08-31 11:25:00,"Late Summer",30
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018,"MSRR-2016-1","1","2016","Middle Kenai River",2016-06-02 11:00:00,2016-06-29 11:35:00,"Early Summer",27
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018,"MSRR-2016-2","2","2016","Middle Kenai River",2016-06-29 11:35:00,2016-08-02 13:00:00,"Mid-Summer",34
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018,"MSRR-2016-3","3","2016","Middle Kenai River",2016-08-02 13:00:00,2016-09-04 11:50:00,"Late Summer",33
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018,"MSKR-2016-4","4","2016","Lower Kenai River",2016-08-31 11:25:00,2016-09-30 11:25:00,"Fall",30
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018,"MSRR-2016-4","4","2016","Middle Kenai River",2016-09-04 11:50:00,2016-10-04 11:50:00,"Fall",30
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA,"MSKR-2015-1","1","2015","Lower Kenai River",2015-06-22 13:00:00,2015-07-23 12:25:00,"Early Summer",31
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA,"MSKR-2015-2","2","2015","Lower Kenai River",2015-07-23 12:25:00,2015-08-13 12:16:00,"Mid-Summer",21
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA,"MSRR-2015-1","1","2015","Middle Kenai River",2015-06-09 12:10:00,2015-07-24 13:04:00,"Early Summer",45
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA,"MSRR-2015-2","2","2015","Middle Kenai River",2015-07-24 13:04:00,2015-08-17 12:45:00,"Mid-Summer",24
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA,"MSKR-2015-3","3","2015","Lower Kenai River",2015-08-13 12:16:00,2015-09-12 12:16:00,"Late Summer",30
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA,"MSRR-2015-3","3","2015","Middle Kenai River",2015-08-17 12:45:00,2015-09-16 12:45:00,"Late Summer",30
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA,"MSKR-2016-1","1","2016","Lower Kenai River",2016-05-30 11:35:00,2016-06-28 11:05:00,"Early Summer",29
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA,"MSKR-2016-2","2","2016","Lower Kenai River",2016-06-28 11:05:00,2016-08-01 11:45:00,"Mid-Summer",34
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA,"MSKR-2016-3","3","2016","Lower Kenai River",2016-08-01 11:45:00,2016-08-31 11:25:00,"Late Summer",30
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA,"MSRR-2016-1","1","2016","Middle Kenai River",2016-06-02 11:00:00,2016-06-29 11:35:00,"Early Summer",27
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA,"MSRR-2016-2","2","2016","Middle Kenai River",2016-06-29 11:35:00,2016-08-02 13:00:00,"Mid-Summer",34
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA,"MSRR-2016-3","3","2016","Middle Kenai River",2016-08-02 13:00:00,2016-09-04 11:50:00,"Late Summer",33
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA,"MSKR-2016-4","4","2016","Lower Kenai River",2016-08-31 11:25:00,2016-09-30 11:25:00,"Fall",30
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA,"MSRR-2016-4","4","2016","Middle Kenai River",2016-09-04 11:50:00,2016-10-04 11:50:00,"Fall",30
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534,"MSKR-2015-1","1","2015","Lower Kenai River",2015-06-22 13:00:00,2015-07-23 12:25:00,"Early Summer",31
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534,"MSKR-2015-2","2","2015","Lower Kenai River",2015-07-23 12:25:00,2015-08-13 12:16:00,"Mid-Summer",21
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534,"MSRR-2015-1","1","2015","Middle Kenai River",2015-06-09 12:10:00,2015-07-24 13:04:00,"Early Summer",45
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534,"MSRR-2015-2","2","2015","Middle Kenai River",2015-07-24 13:04:00,2015-08-17 12:45:00,"Mid-Summer",24
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534,"MSKR-2015-3","3","2015","Lower Kenai River",2015-08-13 12:16:00,2015-09-12 12:16:00,"Late Summer",30
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534,"MSRR-2015-3","3","2015","Middle Kenai River",2015-08-17 12:45:00,2015-09-16 12:45:00,"Late Summer",30
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534,"MSKR-2016-1","1","2016","Lower Kenai River",2016-05-30 11:35:00,2016-06-28 11:05:00,"Early Summer",29
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534,"MSKR-2016-2","2","2016","Lower Kenai River",2016-06-28 11:05:00,2016-08-01 11:45:00,"Mid-Summer",34
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534,"MSKR-2016-3","3","2016","Lower Kenai River",2016-08-01 11:45:00,2016-08-31 11:25:00,"Late Summer",30
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534,"MSRR-2016-1","1","2016","Middle Kenai River",2016-06-02 11:00:00,2016-06-29 11:35:00,"Early Summer",27
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534,"MSRR-2016-2","2","2016","Middle Kenai River",2016-06-29 11:35:00,2016-08-02 13:00:00,"Mid-Summer",34
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534,"MSRR-2016-3","3","2016","Middle Kenai River",2016-08-02 13:00:00,2016-09-04 11:50:00,"Late Summer",33
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534,"MSKR-2016-4","4","2016","Lower Kenai River",2016-08-31 11:25:00,2016-09-30 11:25:00,"Fall",30
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534,"MSRR-2016-4","4","2016","Middle Kenai River",2016-09-04 11:50:00,2016-10-04 11:50:00,"Fall",30
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115,"MSKR-2015-1","1","2015","Lower Kenai River",2015-06-22 13:00:00,2015-07-23 12:25:00,"Early Summer",31
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115,"MSKR-2015-2","2","2015","Lower Kenai River",2015-07-23 12:25:00,2015-08-13 12:16:00,"Mid-Summer",21
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115,"MSRR-2015-1","1","2015","Middle Kenai River",2015-06-09 12:10:00,2015-07-24 13:04:00,"Early Summer",45
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115,"MSRR-2015-2","2","2015","Middle Kenai River",2015-07-24 13:04:00,2015-08-17 12:45:00,"Mid-Summer",24
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115,"MSKR-2015-3","3","2015","Lower Kenai River",2015-08-13 12:16:00,2015-09-12 12:16:00,"Late Summer",30
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115,"MSRR-2015-3","3","2015","Middle Kenai River",2015-08-17 12:45:00,2015-09-16 12:45:00,"Late Summer",30
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115,"MSKR-2016-1","1","2016","Lower Kenai River",2016-05-30 11:35:00,2016-06-28 11:05:00,"Early Summer",29
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115,"MSKR-2016-2","2","2016","Lower Kenai River",2016-06-28 11:05:00,2016-08-01 11:45:00,"Mid-Summer",34
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115,"MSKR-2016-3","3","2016","Lower Kenai River",2016-08-01 11:45:00,2016-08-31 11:25:00,"Late Summer",30
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115,"MSRR-2016-1","1","2016","Middle Kenai River",2016-06-02 11:00:00,2016-06-29 11:35:00,"Early Summer",27
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115,"MSRR-2016-2","2","2016","Middle Kenai River",2016-06-29 11:35:00,2016-08-02 13:00:00,"Mid-Summer",34
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115,"MSRR-2016-3","3","2016","Middle Kenai River",2016-08-02 13:00:00,2016-09-04 11:50:00,"Late Summer",33
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115,"MSKR-2016-4","4","2016","Lower Kenai River",2016-08-31 11:25:00,2016-09-30 11:25:00,"Fall",30
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115,"MSRR-2016-4","4","2016","Middle Kenai River",2016-09-04 11:50:00,2016-10-04 11:50:00,"Fall",30
+"Kenai River","Coho",2,NA,0.111,0.21,0.679,NA,"MSKR-2015-1","1","2015","Lower Kenai River",2015-06-22 13:00:00,2015-07-23 12:25:00,"Early Summer",31
+"Kenai River","Coho",2,NA,0.111,0.21,0.679,NA,"MSKR-2015-2","2","2015","Lower Kenai River",2015-07-23 12:25:00,2015-08-13 12:16:00,"Mid-Summer",21
+"Kenai River","Coho",2,NA,0.111,0.21,0.679,NA,"MSRR-2015-1","1","2015","Middle Kenai River",2015-06-09 12:10:00,2015-07-24 13:04:00,"Early Summer",45
+"Kenai River","Coho",2,NA,0.111,0.21,0.679,NA,"MSRR-2015-2","2","2015","Middle Kenai River",2015-07-24 13:04:00,2015-08-17 12:45:00,"Mid-Summer",24
+"Kenai River","Coho",2,NA,0.111,0.21,0.679,NA,"MSKR-2015-3","3","2015","Lower Kenai River",2015-08-13 12:16:00,2015-09-12 12:16:00,"Late Summer",30
+"Kenai River","Coho",2,NA,0.111,0.21,0.679,NA,"MSRR-2015-3","3","2015","Middle Kenai River",2015-08-17 12:45:00,2015-09-16 12:45:00,"Late Summer",30
+"Kenai River","Coho",2,NA,0.111,0.21,0.679,NA,"MSKR-2016-1","1","2016","Lower Kenai River",2016-05-30 11:35:00,2016-06-28 11:05:00,"Early Summer",29
+"Kenai River","Coho",2,NA,0.111,0.21,0.679,NA,"MSKR-2016-2","2","2016","Lower Kenai River",2016-06-28 11:05:00,2016-08-01 11:45:00,"Mid-Summer",34
+"Kenai River","Coho",2,NA,0.111,0.21,0.679,NA,"MSKR-2016-3","3","2016","Lower Kenai River",2016-08-01 11:45:00,2016-08-31 11:25:00,"Late Summer",30
+"Kenai River","Coho",2,NA,0.111,0.21,0.679,NA,"MSRR-2016-1","1","2016","Middle Kenai River",2016-06-02 11:00:00,2016-06-29 11:35:00,"Early Summer",27
+"Kenai River","Coho",2,NA,0.111,0.21,0.679,NA,"MSRR-2016-2","2","2016","Middle Kenai River",2016-06-29 11:35:00,2016-08-02 13:00:00,"Mid-Summer",34
+"Kenai River","Coho",2,NA,0.111,0.21,0.679,NA,"MSRR-2016-3","3","2016","Middle Kenai River",2016-08-02 13:00:00,2016-09-04 11:50:00,"Late Summer",33
+"Kenai River","Coho",2,NA,0.111,0.21,0.679,NA,"MSKR-2016-4","4","2016","Lower Kenai River",2016-08-31 11:25:00,2016-09-30 11:25:00,"Fall",30
+"Kenai River","Coho",2,NA,0.111,0.21,0.679,NA,"MSRR-2016-4","4","2016","Middle Kenai River",2016-09-04 11:50:00,2016-10-04 11:50:00,"Fall",30
+"Ptarmigan Creek","Chinook",0,NA,0.734,0.092,0.174,NA,"LPC-2015-1","1","2015","Lower Ptarmigan Creek",2015-06-23 15:38:00,2015-07-30 12:39:00,"Early Summer",37
+"Ptarmigan Creek","Chinook",0,NA,0.734,0.092,0.174,NA,"LPC-2015-2","2","2015","Lower Ptarmigan Creek",2015-07-30 12:39:00,2015-08-25 12:33:00,"Mid-Summer",26
+"Ptarmigan Creek","Chinook",0,NA,0.734,0.092,0.174,NA,"MPC-2015-1","1","2015","Middle Ptarmigan Creek",2015-06-24 13:38:00,2015-07-16 12:37:00,"Early Summer",22
+"Ptarmigan Creek","Chinook",0,NA,0.734,0.092,0.174,NA,"MPC-2015-2","2","2015","Middle Ptarmigan Creek",2015-07-16 12:37:00,2015-08-26 13:36:00,"Mid-Summer",41
+"Ptarmigan Creek","Chinook",0,NA,0.734,0.092,0.174,NA,"LPC-2015-3","3","2015","Lower Ptarmigan Creek",2015-08-25 12:33:00,2015-09-24 12:33:00,"Late Summer",30
+"Ptarmigan Creek","Chinook",0,NA,0.734,0.092,0.174,NA,"MPC-2015-3","3","2015","Middle Ptarmigan Creek",2015-08-26 13:36:00,2015-09-25 13:36:00,"Late Summer",30
+"Ptarmigan Creek","Chinook",0,NA,0.734,0.092,0.174,NA,"LPC-2016-1","1","2016","Lower Ptarmigan Creek",2016-06-05 13:30:00,2016-07-01 11:25:00,"Early Summer",26
+"Ptarmigan Creek","Chinook",0,NA,0.734,0.092,0.174,NA,"LPC-2016-2","2","2016","Lower Ptarmigan Creek",2016-07-01 11:25:00,2016-08-10 01:00:00,"Mid-Summer",40
+"Ptarmigan Creek","Chinook",0,NA,0.734,0.092,0.174,NA,"LPC-2016-3","3","2016","Lower Ptarmigan Creek",2016-08-10 01:00:00,2016-09-17 12:05:00,"Late Summer",38
+"Ptarmigan Creek","Chinook",0,NA,0.734,0.092,0.174,NA,"MPC-2016-1","1","2016","Middle Ptarmigan Creek",2016-06-06 01:00:00,2016-07-02 11:10:00,"Early Summer",26
+"Ptarmigan Creek","Chinook",0,NA,0.734,0.092,0.174,NA,"MPC-2016-2","2","2016","Middle Ptarmigan Creek",2016-07-02 11:10:00,2016-08-11 12:05:00,"Mid-Summer",40
+"Ptarmigan Creek","Chinook",0,NA,0.734,0.092,0.174,NA,"LPC-2016-4","4","2016","Lower Ptarmigan Creek",2016-09-17 12:05:00,2016-10-17 12:05:00,"Fall",30
+"Ptarmigan Creek","Chinook",0,NA,0.734,0.092,0.174,NA,"MPC-2016-3","3","2016","Middle Ptarmigan Creek",2016-08-11 12:05:00,2016-09-10 12:05:00,"Late Summer",30
+"Ptarmigan Creek","Coho",0,NA,0.134,0.026,0.098,0.742,"LPC-2015-1","1","2015","Lower Ptarmigan Creek",2015-06-23 15:38:00,2015-07-30 12:39:00,"Early Summer",37
+"Ptarmigan Creek","Coho",0,NA,0.134,0.026,0.098,0.742,"LPC-2015-2","2","2015","Lower Ptarmigan Creek",2015-07-30 12:39:00,2015-08-25 12:33:00,"Mid-Summer",26
+"Ptarmigan Creek","Coho",0,NA,0.134,0.026,0.098,0.742,"MPC-2015-1","1","2015","Middle Ptarmigan Creek",2015-06-24 13:38:00,2015-07-16 12:37:00,"Early Summer",22
+"Ptarmigan Creek","Coho",0,NA,0.134,0.026,0.098,0.742,"MPC-2015-2","2","2015","Middle Ptarmigan Creek",2015-07-16 12:37:00,2015-08-26 13:36:00,"Mid-Summer",41
+"Ptarmigan Creek","Coho",0,NA,0.134,0.026,0.098,0.742,"LPC-2015-3","3","2015","Lower Ptarmigan Creek",2015-08-25 12:33:00,2015-09-24 12:33:00,"Late Summer",30
+"Ptarmigan Creek","Coho",0,NA,0.134,0.026,0.098,0.742,"MPC-2015-3","3","2015","Middle Ptarmigan Creek",2015-08-26 13:36:00,2015-09-25 13:36:00,"Late Summer",30
+"Ptarmigan Creek","Coho",0,NA,0.134,0.026,0.098,0.742,"LPC-2016-1","1","2016","Lower Ptarmigan Creek",2016-06-05 13:30:00,2016-07-01 11:25:00,"Early Summer",26
+"Ptarmigan Creek","Coho",0,NA,0.134,0.026,0.098,0.742,"LPC-2016-2","2","2016","Lower Ptarmigan Creek",2016-07-01 11:25:00,2016-08-10 01:00:00,"Mid-Summer",40
+"Ptarmigan Creek","Coho",0,NA,0.134,0.026,0.098,0.742,"LPC-2016-3","3","2016","Lower Ptarmigan Creek",2016-08-10 01:00:00,2016-09-17 12:05:00,"Late Summer",38
+"Ptarmigan Creek","Coho",0,NA,0.134,0.026,0.098,0.742,"MPC-2016-1","1","2016","Middle Ptarmigan Creek",2016-06-06 01:00:00,2016-07-02 11:10:00,"Early Summer",26
+"Ptarmigan Creek","Coho",0,NA,0.134,0.026,0.098,0.742,"MPC-2016-2","2","2016","Middle Ptarmigan Creek",2016-07-02 11:10:00,2016-08-11 12:05:00,"Mid-Summer",40
+"Ptarmigan Creek","Coho",0,NA,0.134,0.026,0.098,0.742,"LPC-2016-4","4","2016","Lower Ptarmigan Creek",2016-09-17 12:05:00,2016-10-17 12:05:00,"Fall",30
+"Ptarmigan Creek","Coho",0,NA,0.134,0.026,0.098,0.742,"MPC-2016-3","3","2016","Middle Ptarmigan Creek",2016-08-11 12:05:00,2016-09-10 12:05:00,"Late Summer",30
+"Ptarmigan Creek","Coho",1,0.05,0.591,0.136,0.163,0.061,"LPC-2015-1","1","2015","Lower Ptarmigan Creek",2015-06-23 15:38:00,2015-07-30 12:39:00,"Early Summer",37
+"Ptarmigan Creek","Coho",1,0.05,0.591,0.136,0.163,0.061,"LPC-2015-2","2","2015","Lower Ptarmigan Creek",2015-07-30 12:39:00,2015-08-25 12:33:00,"Mid-Summer",26
+"Ptarmigan Creek","Coho",1,0.05,0.591,0.136,0.163,0.061,"MPC-2015-1","1","2015","Middle Ptarmigan Creek",2015-06-24 13:38:00,2015-07-16 12:37:00,"Early Summer",22
+"Ptarmigan Creek","Coho",1,0.05,0.591,0.136,0.163,0.061,"MPC-2015-2","2","2015","Middle Ptarmigan Creek",2015-07-16 12:37:00,2015-08-26 13:36:00,"Mid-Summer",41
+"Ptarmigan Creek","Coho",1,0.05,0.591,0.136,0.163,0.061,"LPC-2015-3","3","2015","Lower Ptarmigan Creek",2015-08-25 12:33:00,2015-09-24 12:33:00,"Late Summer",30
+"Ptarmigan Creek","Coho",1,0.05,0.591,0.136,0.163,0.061,"MPC-2015-3","3","2015","Middle Ptarmigan Creek",2015-08-26 13:36:00,2015-09-25 13:36:00,"Late Summer",30
+"Ptarmigan Creek","Coho",1,0.05,0.591,0.136,0.163,0.061,"LPC-2016-1","1","2016","Lower Ptarmigan Creek",2016-06-05 13:30:00,2016-07-01 11:25:00,"Early Summer",26
+"Ptarmigan Creek","Coho",1,0.05,0.591,0.136,0.163,0.061,"LPC-2016-2","2","2016","Lower Ptarmigan Creek",2016-07-01 11:25:00,2016-08-10 01:00:00,"Mid-Summer",40
+"Ptarmigan Creek","Coho",1,0.05,0.591,0.136,0.163,0.061,"LPC-2016-3","3","2016","Lower Ptarmigan Creek",2016-08-10 01:00:00,2016-09-17 12:05:00,"Late Summer",38
+"Ptarmigan Creek","Coho",1,0.05,0.591,0.136,0.163,0.061,"MPC-2016-1","1","2016","Middle Ptarmigan Creek",2016-06-06 01:00:00,2016-07-02 11:10:00,"Early Summer",26
+"Ptarmigan Creek","Coho",1,0.05,0.591,0.136,0.163,0.061,"MPC-2016-2","2","2016","Middle Ptarmigan Creek",2016-07-02 11:10:00,2016-08-11 12:05:00,"Mid-Summer",40
+"Ptarmigan Creek","Coho",1,0.05,0.591,0.136,0.163,0.061,"LPC-2016-4","4","2016","Lower Ptarmigan Creek",2016-09-17 12:05:00,2016-10-17 12:05:00,"Fall",30
+"Ptarmigan Creek","Coho",1,0.05,0.591,0.136,0.163,0.061,"MPC-2016-3","3","2016","Middle Ptarmigan Creek",2016-08-11 12:05:00,2016-09-10 12:05:00,"Late Summer",30
+"Ptarmigan Creek","Coho",2,NA,0.724,0.062,0.214,NA,"LPC-2015-1","1","2015","Lower Ptarmigan Creek",2015-06-23 15:38:00,2015-07-30 12:39:00,"Early Summer",37
+"Ptarmigan Creek","Coho",2,NA,0.724,0.062,0.214,NA,"LPC-2015-2","2","2015","Lower Ptarmigan Creek",2015-07-30 12:39:00,2015-08-25 12:33:00,"Mid-Summer",26
+"Ptarmigan Creek","Coho",2,NA,0.724,0.062,0.214,NA,"MPC-2015-1","1","2015","Middle Ptarmigan Creek",2015-06-24 13:38:00,2015-07-16 12:37:00,"Early Summer",22
+"Ptarmigan Creek","Coho",2,NA,0.724,0.062,0.214,NA,"MPC-2015-2","2","2015","Middle Ptarmigan Creek",2015-07-16 12:37:00,2015-08-26 13:36:00,"Mid-Summer",41
+"Ptarmigan Creek","Coho",2,NA,0.724,0.062,0.214,NA,"LPC-2015-3","3","2015","Lower Ptarmigan Creek",2015-08-25 12:33:00,2015-09-24 12:33:00,"Late Summer",30
+"Ptarmigan Creek","Coho",2,NA,0.724,0.062,0.214,NA,"MPC-2015-3","3","2015","Middle Ptarmigan Creek",2015-08-26 13:36:00,2015-09-25 13:36:00,"Late Summer",30
+"Ptarmigan Creek","Coho",2,NA,0.724,0.062,0.214,NA,"LPC-2016-1","1","2016","Lower Ptarmigan Creek",2016-06-05 13:30:00,2016-07-01 11:25:00,"Early Summer",26
+"Ptarmigan Creek","Coho",2,NA,0.724,0.062,0.214,NA,"LPC-2016-2","2","2016","Lower Ptarmigan Creek",2016-07-01 11:25:00,2016-08-10 01:00:00,"Mid-Summer",40
+"Ptarmigan Creek","Coho",2,NA,0.724,0.062,0.214,NA,"LPC-2016-3","3","2016","Lower Ptarmigan Creek",2016-08-10 01:00:00,2016-09-17 12:05:00,"Late Summer",38
+"Ptarmigan Creek","Coho",2,NA,0.724,0.062,0.214,NA,"MPC-2016-1","1","2016","Middle Ptarmigan Creek",2016-06-06 01:00:00,2016-07-02 11:10:00,"Early Summer",26
+"Ptarmigan Creek","Coho",2,NA,0.724,0.062,0.214,NA,"MPC-2016-2","2","2016","Middle Ptarmigan Creek",2016-07-02 11:10:00,2016-08-11 12:05:00,"Mid-Summer",40
+"Ptarmigan Creek","Coho",2,NA,0.724,0.062,0.214,NA,"LPC-2016-4","4","2016","Lower Ptarmigan Creek",2016-09-17 12:05:00,2016-10-17 12:05:00,"Fall",30
+"Ptarmigan Creek","Coho",2,NA,0.724,0.062,0.214,NA,"MPC-2016-3","3","2016","Middle Ptarmigan Creek",2016-08-11 12:05:00,2016-09-10 12:05:00,"Late Summer",30
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"LRR-2015-1","1","2015","Lower Russian River",2015-06-08 16:34:00,2015-07-14 12:00:00,"Early Summer",36
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"LRR-2015-2","2","2015","Lower Russian River",2015-07-14 12:00:00,2015-08-11 12:00:00,"Mid-Summer",28
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"MRR-2015-1","1","2015","Middle Russian River",2015-06-19 13:45:00,2015-07-15 12:30:00,"Early Summer",26
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"MRR-2015-2","2","2015","Middle Russian River",2015-07-15 12:30:00,2015-08-12 12:22:00,"Mid-Summer",28
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"URR-2015-1","1","2015","Upper Russian River",2015-06-16 12:25:00,2015-07-21 11:10:00,"Early Summer",35
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"URR-2015-2","2","2015","Upper Russian River",2015-07-21 11:10:00,2015-08-20 12:42:00,"Mid-Summer",30
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"LRR-2015-3","3","2015","Lower Russian River",2015-08-11 12:00:00,2015-09-10 12:00:00,"Late Summer",30
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"MRR-2015-3","3","2015","Middle Russian River",2015-08-12 12:22:00,2015-09-11 12:22:00,"Late Summer",30
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"URR-2015-3","3","2015","Upper Russian River",2015-08-20 12:42:00,2015-09-19 12:42:00,"Late Summer",30
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"LRR-2016-1","1","2016","Lower Russian River",2016-05-31 12:25:00,2016-07-18 12:20:00,"Early Summer",48
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"LRR-2016-2","2","2016","Lower Russian River",2016-07-18 12:20:00,2016-08-09 12:35:00,"Mid-Summer",22
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"LRR-2016-3","3","2016","Lower Russian River",2016-08-09 12:35:00,2016-09-02 12:35:00,"Late Summer",24
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"MRR-2016-1","1","2016","Middle Russian River",2016-06-01 11:30:00,2016-06-30 13:55:00,"Early Summer",29
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"MRR-2016-2","2","2016","Middle Russian River",2016-06-30 13:55:00,2016-08-06 13:00:00,"Mid-Summer",37
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"MRR-2016-3","3","2016","Middle Russian River",2016-08-06 13:00:00,2016-09-03 12:45:00,"Late Summer",28
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"URR-2016-1","1","2016","Upper Russian River",2016-06-08 12:55:00,2016-07-08 01:00:00,"Early Summer",30
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"URR-2016-2","2","2016","Upper Russian River",2016-07-08 01:00:00,2016-08-04 14:05:00,"Mid-Summer",28
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"URR-2016-3","3","2016","Upper Russian River",2016-08-04 14:05:00,2016-09-11 13:05:00,"Late Summer",38
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"LRR-2016-4","4","2016","Lower Russian River",2016-09-02 12:35:00,2016-10-02 12:35:00,"Fall",30
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"MRR-2016-4","4","2016","Middle Russian River",2016-09-03 12:45:00,2016-10-03 12:45:00,"Fall",30
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449,"URR-2016-4","4","2016","Upper Russian River",2016-09-11 13:05:00,2016-10-11 13:05:00,"Fall",30
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"LRR-2015-1","1","2015","Lower Russian River",2015-06-08 16:34:00,2015-07-14 12:00:00,"Early Summer",36
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"LRR-2015-2","2","2015","Lower Russian River",2015-07-14 12:00:00,2015-08-11 12:00:00,"Mid-Summer",28
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"MRR-2015-1","1","2015","Middle Russian River",2015-06-19 13:45:00,2015-07-15 12:30:00,"Early Summer",26
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"MRR-2015-2","2","2015","Middle Russian River",2015-07-15 12:30:00,2015-08-12 12:22:00,"Mid-Summer",28
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"URR-2015-1","1","2015","Upper Russian River",2015-06-16 12:25:00,2015-07-21 11:10:00,"Early Summer",35
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"URR-2015-2","2","2015","Upper Russian River",2015-07-21 11:10:00,2015-08-20 12:42:00,"Mid-Summer",30
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"LRR-2015-3","3","2015","Lower Russian River",2015-08-11 12:00:00,2015-09-10 12:00:00,"Late Summer",30
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"MRR-2015-3","3","2015","Middle Russian River",2015-08-12 12:22:00,2015-09-11 12:22:00,"Late Summer",30
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"URR-2015-3","3","2015","Upper Russian River",2015-08-20 12:42:00,2015-09-19 12:42:00,"Late Summer",30
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"LRR-2016-1","1","2016","Lower Russian River",2016-05-31 12:25:00,2016-07-18 12:20:00,"Early Summer",48
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"LRR-2016-2","2","2016","Lower Russian River",2016-07-18 12:20:00,2016-08-09 12:35:00,"Mid-Summer",22
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"LRR-2016-3","3","2016","Lower Russian River",2016-08-09 12:35:00,2016-09-02 12:35:00,"Late Summer",24
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"MRR-2016-1","1","2016","Middle Russian River",2016-06-01 11:30:00,2016-06-30 13:55:00,"Early Summer",29
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"MRR-2016-2","2","2016","Middle Russian River",2016-06-30 13:55:00,2016-08-06 13:00:00,"Mid-Summer",37
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"MRR-2016-3","3","2016","Middle Russian River",2016-08-06 13:00:00,2016-09-03 12:45:00,"Late Summer",28
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"URR-2016-1","1","2016","Upper Russian River",2016-06-08 12:55:00,2016-07-08 01:00:00,"Early Summer",30
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"URR-2016-2","2","2016","Upper Russian River",2016-07-08 01:00:00,2016-08-04 14:05:00,"Mid-Summer",28
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"URR-2016-3","3","2016","Upper Russian River",2016-08-04 14:05:00,2016-09-11 13:05:00,"Late Summer",38
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"LRR-2016-4","4","2016","Lower Russian River",2016-09-02 12:35:00,2016-10-02 12:35:00,"Fall",30
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"MRR-2016-4","4","2016","Middle Russian River",2016-09-03 12:45:00,2016-10-03 12:45:00,"Fall",30
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119,"URR-2016-4","4","2016","Upper Russian River",2016-09-11 13:05:00,2016-10-11 13:05:00,"Fall",30
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"LRR-2015-1","1","2015","Lower Russian River",2015-06-08 16:34:00,2015-07-14 12:00:00,"Early Summer",36
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"LRR-2015-2","2","2015","Lower Russian River",2015-07-14 12:00:00,2015-08-11 12:00:00,"Mid-Summer",28
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"MRR-2015-1","1","2015","Middle Russian River",2015-06-19 13:45:00,2015-07-15 12:30:00,"Early Summer",26
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"MRR-2015-2","2","2015","Middle Russian River",2015-07-15 12:30:00,2015-08-12 12:22:00,"Mid-Summer",28
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"URR-2015-1","1","2015","Upper Russian River",2015-06-16 12:25:00,2015-07-21 11:10:00,"Early Summer",35
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"URR-2015-2","2","2015","Upper Russian River",2015-07-21 11:10:00,2015-08-20 12:42:00,"Mid-Summer",30
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"LRR-2015-3","3","2015","Lower Russian River",2015-08-11 12:00:00,2015-09-10 12:00:00,"Late Summer",30
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"MRR-2015-3","3","2015","Middle Russian River",2015-08-12 12:22:00,2015-09-11 12:22:00,"Late Summer",30
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"URR-2015-3","3","2015","Upper Russian River",2015-08-20 12:42:00,2015-09-19 12:42:00,"Late Summer",30
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"LRR-2016-1","1","2016","Lower Russian River",2016-05-31 12:25:00,2016-07-18 12:20:00,"Early Summer",48
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"LRR-2016-2","2","2016","Lower Russian River",2016-07-18 12:20:00,2016-08-09 12:35:00,"Mid-Summer",22
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"LRR-2016-3","3","2016","Lower Russian River",2016-08-09 12:35:00,2016-09-02 12:35:00,"Late Summer",24
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"MRR-2016-1","1","2016","Middle Russian River",2016-06-01 11:30:00,2016-06-30 13:55:00,"Early Summer",29
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"MRR-2016-2","2","2016","Middle Russian River",2016-06-30 13:55:00,2016-08-06 13:00:00,"Mid-Summer",37
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"MRR-2016-3","3","2016","Middle Russian River",2016-08-06 13:00:00,2016-09-03 12:45:00,"Late Summer",28
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"URR-2016-1","1","2016","Upper Russian River",2016-06-08 12:55:00,2016-07-08 01:00:00,"Early Summer",30
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"URR-2016-2","2","2016","Upper Russian River",2016-07-08 01:00:00,2016-08-04 14:05:00,"Mid-Summer",28
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"URR-2016-3","3","2016","Upper Russian River",2016-08-04 14:05:00,2016-09-11 13:05:00,"Late Summer",38
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"LRR-2016-4","4","2016","Lower Russian River",2016-09-02 12:35:00,2016-10-02 12:35:00,"Fall",30
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"MRR-2016-4","4","2016","Middle Russian River",2016-09-03 12:45:00,2016-10-03 12:45:00,"Fall",30
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041,"URR-2016-4","4","2016","Upper Russian River",2016-09-11 13:05:00,2016-10-11 13:05:00,"Fall",30
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"LRR-2015-1","1","2015","Lower Russian River",2015-06-08 16:34:00,2015-07-14 12:00:00,"Early Summer",36
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"LRR-2015-2","2","2015","Lower Russian River",2015-07-14 12:00:00,2015-08-11 12:00:00,"Mid-Summer",28
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"MRR-2015-1","1","2015","Middle Russian River",2015-06-19 13:45:00,2015-07-15 12:30:00,"Early Summer",26
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"MRR-2015-2","2","2015","Middle Russian River",2015-07-15 12:30:00,2015-08-12 12:22:00,"Mid-Summer",28
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"URR-2015-1","1","2015","Upper Russian River",2015-06-16 12:25:00,2015-07-21 11:10:00,"Early Summer",35
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"URR-2015-2","2","2015","Upper Russian River",2015-07-21 11:10:00,2015-08-20 12:42:00,"Mid-Summer",30
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"LRR-2015-3","3","2015","Lower Russian River",2015-08-11 12:00:00,2015-09-10 12:00:00,"Late Summer",30
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"MRR-2015-3","3","2015","Middle Russian River",2015-08-12 12:22:00,2015-09-11 12:22:00,"Late Summer",30
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"URR-2015-3","3","2015","Upper Russian River",2015-08-20 12:42:00,2015-09-19 12:42:00,"Late Summer",30
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"LRR-2016-1","1","2016","Lower Russian River",2016-05-31 12:25:00,2016-07-18 12:20:00,"Early Summer",48
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"LRR-2016-2","2","2016","Lower Russian River",2016-07-18 12:20:00,2016-08-09 12:35:00,"Mid-Summer",22
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"LRR-2016-3","3","2016","Lower Russian River",2016-08-09 12:35:00,2016-09-02 12:35:00,"Late Summer",24
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"MRR-2016-1","1","2016","Middle Russian River",2016-06-01 11:30:00,2016-06-30 13:55:00,"Early Summer",29
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"MRR-2016-2","2","2016","Middle Russian River",2016-06-30 13:55:00,2016-08-06 13:00:00,"Mid-Summer",37
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"MRR-2016-3","3","2016","Middle Russian River",2016-08-06 13:00:00,2016-09-03 12:45:00,"Late Summer",28
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"URR-2016-1","1","2016","Upper Russian River",2016-06-08 12:55:00,2016-07-08 01:00:00,"Early Summer",30
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"URR-2016-2","2","2016","Upper Russian River",2016-07-08 01:00:00,2016-08-04 14:05:00,"Mid-Summer",28
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"URR-2016-3","3","2016","Upper Russian River",2016-08-04 14:05:00,2016-09-11 13:05:00,"Late Summer",38
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"LRR-2016-4","4","2016","Lower Russian River",2016-09-02 12:35:00,2016-10-02 12:35:00,"Fall",30
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"MRR-2016-4","4","2016","Middle Russian River",2016-09-03 12:45:00,2016-10-03 12:45:00,"Fall",30
+"Russian River","Coho",2,NA,0.612,0.112,0.164,0.113,"URR-2016-4","4","2016","Upper Russian River",2016-09-11 13:05:00,2016-10-11 13:05:00,"Fall",30

@@ -45,7 +45,7 @@ The following files are required as inputs for an individual growth simulation i
 
 5.  Diet_Prop.csv; cols: day (DOY), diet1, diet2, diet3... (diet proportions)
 
-In the following section, we will generate input files using observed data from the 2015 and 2016 field seasons for individual cohorts (individual year, river, species, and age; e.g. "2015 Beaver Creek Age 1 Coho").
+In this section, we will generate input files using observed data from the 2015 and 2016 field seasons for individual cohorts (individual year, river, species, and age; e.g. "2015 Beaver Creek Age 1 Coho").
 
 <br>
 
@@ -77,7 +77,7 @@ daily_mean_temps <- read.csv("other/inputs/temperature/observed_water_temp/daily
 
 ### Diet Inputs
 
-We used estimated wet mass values of prey items collected in gastric lavage samples.
+In the originally submitted manuscript, we used estimated dry mass values of prey items collected in gastric lavage samples, as executed below:
 
 <details>
 
@@ -217,9 +217,9 @@ embed_file("other/outputs/diet/diet_v1.csv",text = "Download Original Version of
 
 <br>
 
-However, to use these prey item mass values as inputs in our bioenergetics model, **we need them in wet weight rather than dry mass**. The original manuscript submitted to TAFS erroneously used dry weights.
+However, to use these prey item mass values as inputs in our bioenergetics models, **we need them in wet weight rather than dry mass**. The original manuscript submitted to TAFS erroneously used dry weights.
 
-To perform this needed transformation from dry mass to wet mass of prey items, we will apply wet/dry ratio values from the manuscript McCarthy 2009, along with four other literature sources. The table below summarises these wet/dry mass conversion and energy density values.
+To perform this needed transformation from dry mass to wet mass of prey items, we will apply wet/dry ratio values from the manuscript McCarthy 2009, along with four other literature sources. The downloadable table below summarises these wet/dry mass conversion and energy density values.
 
 <br>
 
@@ -322,13 +322,13 @@ diet %<>% mutate(wm_mg = dm_mg / wet_dry_ratio)
 
 <br>
 
-At this stage, we have estimated wet weights and energy density for each diet item from each gastric lavage sample.
+At this stage, we now are using estimated wet weights for each diet item from each gastric lavage sample.
 
 <br>
 
 ### Fish size and age
 
-We will import fish size and age, then associate each fish with its wet mass diet data.
+We will import fish size and age, then for those fish from which we collected gastric lavage samples, associate each fish with its own wet mass diet data.
 
 <details>
 
@@ -427,9 +427,7 @@ diet <- left_join(diet, fish_ages, by = c("sample.id"))  %>%
 
 <br>
 
-Before proceeding with preparing diet proportions, we have a bit more work to do finalizing this data.
-
-For example, a few fish have diet data but no age. We will remove these fish.
+Next, before proceeding with preparing diet proportions, we have a bit more work to do finalizing fish size and age data. For example, a few fish have diet data but no age. We will remove these fish.
 
 ##### How many fish have diet samples, but no age designation?
 
@@ -463,7 +461,7 @@ There are `r diet_no_age` fish with diet samples but no age manually assigned. T
 
 ### Define scale of diet and growth input pooling/segregation
 
-We will group fish growth data at the space/time scale of:
+We will group fish growth simulation inputs at the space/time scale of:
 
 -   Individual River (pool data among sites within each river)
 
@@ -530,14 +528,14 @@ wm_sum_by_event <- diet %>%
 ```{r, echo = F}
 write.csv(wm_sum_by_event,"other/outputs/diet/wet_mass_diet_proportions.csv",row.names = F)
 
-embed_file("other/outputs/diet/wet_mass_diet_proportions.csv",text = "Download wet mass diet proportions by prey  ategory for each fish cohort.")
+embed_file("other/outputs/diet/wet_mass_diet_proportions.csv",text = "Download wet mass diet proportions by prey category for each fish cohort.")
 ```
 
 <br>
 
 ##### Define temporal extents of proposed simulations
 
-Explanation here...
+We set the time period of each simulation as the period of day leading up from the prior field sampling event. For example, suppose that one field sampling event at Lower Beaver Creek occurred on June 1, 2015 and the next one on July 1, 2015. In this case the simulations for "Early Summer Lower Beaver Creek" runs for 30 days and uses diet inputs based on field data from June 1, 2015. Overall, we constrained the time period of our summer growth simulations to the period of days for which field data was available form both 2015 and 2016.
 
 <details>
 
@@ -697,7 +695,8 @@ rm(t_end15,t_end15_1,t_end16,t_end16_1,mpc_2016_3)
 diet_prop_seasons <- left_join(wm_sum_by_event,sim_extents_by_site) %>%
   transform(days = as.double(days))
 
-
+# save seasonal diet proportions for later download
+write.csv(diet_prop_seasons,"other/outputs/observed_diet_proportions.csv",row.names = F)
 
 # extend diet props down length of season
 # diet proportions are static throughout season for now, can consider other approaches later
@@ -805,8 +804,6 @@ rm(z,z1,filtered_temperature_data)
 
 ```
 
-<br>
-
 ```{r, echo = F}
 
 # choose data for subset of simulations selected in script "fish_growth_size.Rmd"
@@ -831,10 +828,6 @@ sim_diet_days <- inner_join(z,sim_size_inputs_list,by="sim") %>%
 
 ```
 
-<br>
-
-
-
 ```{r , echo= F}
 n_sims <- sim_diet_days %>%
   select(sim_name) %>% 
@@ -842,15 +835,17 @@ n_sims <- sim_diet_days %>%
   nrow()
 
 # write and make available for download all unique simulations
-write.csv(unique(sim_diet_days$sim_name),"other/outputs/all_simulations.csv",row.names = F)
+write.csv(sim_extents_by_site,"other/outputs/all_simulations.csv",row.names = F)
 
-embed_file("other/outputs/all_simulations.csv",text = "Download list of all unique fish growth simulations.")
+embed_file("other/outputs/all_simulations.csv",text = "Download list of all unique fish growth simulations")
+
+embed_file("other/outputs/observed_diet_proportions.csv",text = "Download list of all observed diet proportions")
 
 ```
 
 <br>
 
-How many unique simulations are included? There `r n_sims` unique simulations based on fish age, species, and river.
+How many unique simulations are included? There `r n_sims` unique simulations based on fish age, species, river, year and season.
 
 <br>
 
@@ -860,11 +855,9 @@ How many unique simulations are included? There `r n_sims` unique simulations ba
 
 #### Diet proportion and water temperature csv file export prep
 
-Outcome of this step: export csv files of diet proportions and water temperature at scale of year/river/spp/age by day w/ water temp, each stored in project directory folder named after the simulation.
+At this step, we will export csv files of diet proportions and water temperature unique to each iteration of year/season/river/species/age by day, each stored in the project directory folder named after the simulation. Each simulation will have a named folder containing the files "Diet_prop.csv" and "Temperature.csv." Other input files are generated in subsequent steps.
 
-Each simulation will have a named folder containing the files "Diet_prop.csv" and "Temperature.csv." Other input files are generated in subsequent steps.
-
-[Access final bioenergetics simulation input files here.](https://github.com/benjamin-meyer-ak/kenai_juv_salmon_growth_analyses/tree/main/other/outputs/simulations)
+[Access bioenergetics simulation input files for download here:](https://github.com/benjamin-meyer-ak/kenai_juv_salmon_growth_analyses/tree/main/other/outputs/simulations)
 
 <details>
 
@@ -873,7 +866,6 @@ Each simulation will have a named folder containing the files "Diet_prop.csv" an
 *Show/Hide Code used to prepare diet proportion and water temperature input files*
 
 </summary>
-
 
 ```{r}
 # a.) export water temperature csv files
@@ -932,16 +924,18 @@ dietprops_list_chnk <- split.data.frame(dietprops_chnk, dietprops_chnk$sim_name)
 dietprops_list_coho <- lapply(dietprops_list_coho, function(x) x[!(names(x) %in% c("sim_name"))])
 dietprops_list_chnk <- lapply(dietprops_list_chnk, function(x) x[!(names(x) %in% c("sim_name"))])
 
+# choose 2015 - 2016 simulations inputs location
+sim_dir <- "other/FB4.1_2015_2016/inputs/"
 
 # eliminate overall existing directory and contents if applicable
-unlink("other/outputs/simulations", recursive = T)
+unlink(sim_dir, recursive = T)
 
 # create overall directory destination for input files
-dir.create("other/outputs/simulations")
+dir.create(sim_dir)
 
-# name directory paths
-chnk_dir <- "other/outputs/simulations/chnk/"
-coho_dir <- "other/outputs/simulations/coho/"
+# name subdirectory paths
+chnk_dir <- paste0(sim_dir,"chnk/")
+coho_dir <- paste0(sim_dir,"coho/")
 
 # eliminate existing sub-directory and contents if applicable
 unlink(chnk_dir, recursive = T)
@@ -1150,7 +1144,8 @@ Indigestible_Prey <- data.frame(day,diet1,diet2,diet3,diet4,diet5,
                                 diet6,diet7,diet8,diet9,diet10)
 
 # create folder for static inputs
-static_inputs_dir <- "other/outputs/simulations/static_inputs_master/"
+static_inputs_dir <- paste0(sim_dir,"Main_Inputs","/")
+unlink(static_inputs_dir, recursive = T)
 dir.create(static_inputs_dir)
 
 # write file
@@ -1331,7 +1326,15 @@ Map(file.copy,
 
 <br>
 
-Prepare "Initial Settings" file for Fishbioenergetics run, start/end weights for multiple simulations. File prep for format in FB 4.1.1 version 5/15/2018. Fit simulations to final weight.
+Next, we will prepare the "Initial Settings" file for the Fishbioenergetics multi-simulation run, with unique start/end weights for multiple simulations. We will fit simulations to final weight.
+
+<details>
+
+<summary>
+
+*Show/Hide Code used to prepare the Initial Settings file*
+
+</summary>
 
 ```{r}
 
@@ -1378,13 +1381,15 @@ file.remove(input_csv_dir)
 # write new csv file
 write.csv(sim_size_inputs_FB4.1, input_csv_dir, row.names = T)
 
-
 ```
 
 </details>
 
-Final outcome: a csv for simulation size inputs is stored at
-"other/outputs/simulations/", and a folder directory with 5 csv file for each simulation is stored at "other/outputs/simulations/sim_size_inputs_FB4.1.csv".
+<br>
+
+We now have a csv for simulation size inputs stored in the project GitHub repository at "other/outputs/simulations/sim_size_inputs_FB4.1.csv", and a folder directory containing 5 csv files for each individual simulation is stored at "other/outputs/simulations/".
+
+[Access these simulation input files here.](https://github.com/benjamin-meyer-ak/kenai_juv_salmon_growth_analyses/tree/main/other/FB4.1_2015_2016)
 
 ```{r, echo = F}
 
@@ -1398,10 +1403,7 @@ Final outcome: a csv for simulation size inputs is stored at
 
 ```
 
-
-
-
-```{r, eval = F}
+```{r, eval = F, echo = F}
 
 # format for making code foldable
 
