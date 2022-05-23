@@ -410,6 +410,11 @@ fish_ages <- fish_ages %>%
  # age 2 fish: this cohort is sparse and likely departing for the ocean.
  #filter(age != 2) 
 
+
+# prep fish ages dataframe for later results table generation at end of this code chunk
+fish_ages1 <- fish_ages
+
+# reduce dataframe width
 fish_ages %<>%
   select(sample.id,Date,age,wt_g,len_mm)
 
@@ -421,11 +426,44 @@ fish_ages %<>%
 diet <- left_join(diet, fish_ages, by = c("sample.id"))  %>%
   select(-date)
 
+
+
 ```
+
+```{r}
+# Generate table of fish size distribution by site
+
+size_dist <- fish_ages1 %>%
+  select(river,Hydrologic.Segment,spp,wt_g,len_mm,age) %>%
+  filter(!is.na(wt_g),
+         !is.na(len_mm)) %>%
+  rename(reach = Hydrologic.Segment) %>%
+  group_by(reach,river,spp,age) %>%
+  summarise(mean_wt_g = round(mean(wt_g),1),
+            stdev_wt_g = round(sd(wt_g),1),
+            mean_len_mm = round(mean(len_mm),1),
+            stdev_len_mm = round(sd(len_mm),1),
+            `Mean Weight (g)` = paste0(mean_wt_g,"±",stdev_wt_g),
+            `Mean Fork Length (mm)` = paste0(mean_len_mm,"±",stdev_len_mm),
+            n = n()) %>%
+  select(-mean_wt_g,-mean_len_mm,-stdev_len_mm,-stdev_wt_g)
+
+# use anti_join approach to remove all age 2 coho and age 1 chinook
+anti_size_dist <- size_dist %>%
+  filter(spp == "Coho" & age == 2 | spp == "Chinook" & age == 1)
+
+# remove select spp/age cohorts via anti_join
+z <- anti_join(size_dist,anti_size_dist) %>%
+  arrange(river,reach,spp,age)
+  
+```
+
 
 </details>
 
 <br>
+
+
 
 Next, before proceeding with preparing diet proportions, we have a bit more work to do finalizing fish size and age data. For example, a few fish have diet data but no age. We will remove these fish.
 
@@ -455,7 +493,7 @@ diet <- diet %>%
 
 </details>
 
-There are `r diet_no_age` fish with diet samples but no age manually assigned. These fish likely did not have a read-able scale. We will exclude these fish from analyses... for now, because we are running simulations seperately by age year/river/spp/age. Fish must have an age.
+There are `r diet_no_age` fish with diet samples but no age manually assigned. These fish We will exclude these fish from analyses... for now, because we are running simulations seperately by age year/river/spp/age. Fish must have an age.
 
 <br>
 
