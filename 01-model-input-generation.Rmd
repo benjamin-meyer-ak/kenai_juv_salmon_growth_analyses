@@ -443,18 +443,28 @@ size_dist <- fish_ages1 %>%
             stdev_wt_g = round(sd(wt_g),1),
             mean_len_mm = round(mean(len_mm),1),
             stdev_len_mm = round(sd(len_mm),1),
-            `Mean Weight (g)` = paste0(mean_wt_g,"±",stdev_wt_g),
-            `Mean Fork Length (mm)` = paste0(mean_len_mm,"±",stdev_len_mm),
+            mean_wt_g = paste0(mean_wt_g,"±",stdev_wt_g),
+            mean_len_mm = paste0(mean_len_mm,"±",stdev_len_mm),
             n = n()) %>%
-  select(-mean_wt_g,-mean_len_mm,-stdev_len_mm,-stdev_wt_g)
+  select(-stdev_len_mm,-stdev_wt_g)
 
 # use anti_join approach to remove all age 2 coho and age 1 chinook
 anti_size_dist <- size_dist %>%
   filter(spp == "Coho" & age == 2 | spp == "Chinook" & age == 1)
 
 # remove select spp/age cohorts via anti_join
-z <- anti_join(size_dist,anti_size_dist) %>%
+size_dist <- anti_join(size_dist,anti_size_dist) %>%
   arrange(river,reach,spp,age)
+
+# rename columns
+size_dist %<>%
+  rename(Reach = reach,
+         Watershed = river,
+         Species = spp,
+         Age = age,
+         `Mean Weight (g)` = mean_wt_g,
+         `Mean Fork Length (mm)` = mean_len_mm,
+         N = n)
   
 ```
 
@@ -462,6 +472,14 @@ z <- anti_join(size_dist,anti_size_dist) %>%
 </details>
 
 <br>
+
+
+```{r, echo = F}
+# Overall summary of fish size, weight, and length values (mean ± SD).
+dir <- "other/outputs/fish_size_distribution.csv"
+write.csv(size_dist,dir, row.names = F)
+embed_file(dir,text = "Download table of observed fish weight/length distributions")
+```
 
 
 
