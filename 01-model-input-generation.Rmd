@@ -411,8 +411,9 @@ fish_ages <- fish_ages %>%
  #filter(age != 2) 
 
 
-# prep fish ages dataframe for later results table generation at end of this code chunk
+# prep fish ages dataframe for later results table generation at end of this code chunk. Also save external csv for use in other script(s)
 fish_ages1 <- fish_ages
+write.csv(fish_ages,"other/outputs/all_fish_age_size.csv",row.names = F)
 
 # reduce dataframe width
 fish_ages %<>%
@@ -1393,6 +1394,9 @@ Next, we will prepare the "Initial Settings" file for the Fishbioenergetics mult
 </summary>
 
 ```{r}
+# Clear environment
+rm(list=ls())
+
 
 sim_size_inputs_FB4.1 <- read_excel("other/inputs/diet_size_other/sim_size_inputs_v2.xlsx",sheet = "lw_data") %>%
   # create a "species column"
@@ -1446,6 +1450,103 @@ write.csv(sim_size_inputs_FB4.1, input_csv_dir, row.names = T)
 We now have a csv for simulation size inputs stored in the project GitHub repository at "other/outputs/simulations/sim_size_inputs_FB4.1.csv", and a folder directory containing 5 csv files for each individual simulation is stored at "other/outputs/simulations/".
 
 [Access these simulation input files here.](https://github.com/benjamin-meyer-ak/kenai_juv_salmon_growth_analyses/tree/main/other/FB4.1_2015_2016)
+
+<br>
+
+Update `r Sys.Date()`: we are proceeding with using FB4 1.1.3 software, which uses the "Design File" structure to initiate multiple simulation runs. We will restructure our "Initial Settings" file to match the Design File structure.
+
+
+
+<details>
+
+<summary>
+
+*Show/Hide Code used to prepare the Design file*
+
+</summary>
+
+```{r}
+
+# Clear environment
+rm(list=ls())
+
+# copy input files over to FB4 v1.1.3 folder
+### not sure how to do this, did it manually for now
+
+design_2015_2016 <- read_excel("other/inputs/diet_size_other/sim_size_inputs_v2.xlsx",sheet = "lw_data") %>%
+  # mutate column with species abbreviations
+  mutate(spp_v2 = case_when(
+      spp == "Coho" ~ "coho",
+      spp == "Chinook" ~ "chnk")) %>%
+  mutate(
+    NRun = row_number(),
+    Run_Name = sim,
+    Species_Num = case_when(
+      spp == "Coho" ~ "22",
+      spp == "Chinook" ~ "21"),
+    Species_txt = case_when(
+      spp == "Coho" ~ "Coho salmon (adult)",
+      spp == "Chinook" ~ "Chinook salmon (adult)"),
+    Initial_W = wt_start,
+    fit.to = "Weight",
+    fit.to.value = wt_end,
+    First_day = 1,
+    Last_day = sim.end.doy - sim.start.doy,
+    N_indiv = 1,
+    Oxycal = 13560,
+    calc.pop_mort = "FALSE",
+    calc.spawn = "FALSE",
+    calc.nut = "FALSE",
+    calc.contaminant = "FALSE",
+    Init_pred_conc = "NA",
+    contam_eq = "NA",
+    T_File = paste0(spp_v2,"/",Run_Name,"/","Temperature.csv"),
+    Diet_File = paste0(spp_v2,"/",Run_Name,"/","Diet_prop.csv"),
+    Prey_E_File = paste0(spp_v2,"/",Run_Name,"/","Prey_E.csv"),
+    Indigest_Prey_File = paste0(spp_v2,"/",Run_Name,"/","Indigestible_Prey.csv"),
+    Pred_E_File = paste0(spp_v2,"/",Run_Name,"/","Pred_E.csv"),
+    Mort_File = "NA",
+    Reprod_File = "NA",
+    Contam_Prey_C_File = "NA",
+    Contam_assim_File = "NA",
+    Contam_TE_File = "NA",
+    Phos_Ae_File = "NA",
+    Phos_Co_Pred_File = "NA",
+    Phos_Co_Prey_File = "NA",
+    Nit_Ae_File = "NA",
+    Nit_Co_Pred_File = "NA",
+    Nit_Co_Prey_File = "NA",
+    FB4_Log_File = "FB4_2015_2016_models.csv",
+    .keep = "unused")
+
+# select final column names for input file
+# get all column names design file example
+design_colnames <- read.csv("other/FB4_1.1.3_2015_2016.1/FB4_Design_Bluegill_1.csv") %>% colnames()
+
+# select from subset of column in aqwms template
+ design_2015_2016 %<>%
+  select(one_of(design_colnames))
+
+
+## save input csv to local directory
+# name directory location
+input_csv_dir <- "other/FB4_1.1.3_2015_2016.1/design_2015_2016.csv"
+
+# remove any previous output versions
+file.remove(input_csv_dir)
+
+# write new csv file
+write.csv(design_2015_2016, input_csv_dir, row.names = F)
+
+```
+
+</details>
+
+
+
+
+
+
 
 ```{r, echo = F}
 

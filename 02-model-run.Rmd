@@ -4,12 +4,13 @@
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache=TRUE, collapse=TRUE)
 ```
 
-```{r initialize script, echo = F}
+```{r, echo = F}
 # Clear environment
 rm(list=ls())
 
 #require packages
 library(tidyverse)
+library(lubridate)
 
 
 
@@ -28,23 +29,25 @@ bm_theme_1 <- theme(plot.title = element_text(size= 26, face = "bold"),        #
 
 ## Introduction
 
-In the previous chapter, we generated the input data structures needed to run bioenergetics simulations on each of our fish cohorts from observed field data. In this chapter, we will discuss executing these model runs using the RShiny software Fishbioenergetics 4.0.
+In the previous chapter, we generated the input data structures needed to run bioenergetics simulations on each of our fish cohorts from observed 2015-2016 field data. In this chapter, we will discuss executing these model runs using the RShiny software Fishbioenergetics 4.0.
 
 ### Original model runs
 
-In Fall 2018 we used the model inputs based on field observations to run simulations in a modified version of Fishbioenergetics (FB4) v1.03 ([www.fishbioenergetics.org](http://fishbioenergetics.org/)). We used a modified version of the software because at the time, the available version did not fully suit our needs. The FB4 Shiny app was designed to run only one simulation at a time, requiring manual inputs to the user interface each time model inputs changed. Given that our two-step modeling process required \>100 unique model runs, manually executing these was not a viable approach. Thus, a software developer was contracted to assist in reconfiguring the Shiny app.
+In Fall 2018 we used the model inputs based on field observations to run simulations in a modified version of Fishbioenergetics (FB4) v1.03 ([www.fishbioenergetics.org](http://fishbioenergetics.org/)). We used a modified version of the software because at the time, the standard available version did not  suit our needs. The FB4 Shiny app was able to run only one simulation at a time, requiring manual inputs to the user interface each time model inputs changed. Given that our two-step modeling process required \>100 unique model runs, manually executing these was not a viable approach. Thus, a software developer was contracted to assist in reconfiguring the Shiny app.
 
-The modified version of FB4 we generated is available online at <https://bemeyer.shinyapps.io/FishBioenergetics/>. As of 5/27/2022 the app is not currently functioning except for the default "test simulation." It is unclear what is generating the error. More detail on this problem and its coming resolution is described as a GitHub Issue (see link, "[Unable to run Shiny app after upgrade to R version 4.2.0](https://github.com/benjamin-meyer-ak/kenai_juv_salmon_growth_analyses/issues/1)"). 
+The modified version of FB4 we generated is available online at <https://bemeyer.shinyapps.io/FishBioenergetics/>. However as of 5/27/2022 the app is not currently functioning except for the default "test simulation." It is unclear what is generating the error. More detail on this problem and its coming resolution is described as a GitHub Issue (see link, "[Unable to run Shiny app after upgrade to R version 4.2.0](https://github.com/benjamin-meyer-ak/kenai_juv_salmon_growth_analyses/issues/1)"). 
 
 Since 2018, new releases of FB4 are designed to accommodate the modeling needs of this manuscript. However the data structure required for multiple model runs in FB4 v1.1.3 (most current version) is distinct from that which we used in 2018, and our data would require substantial revisions in order to interact with it.
 
 At present, the software developer has been contacted to see if they can assist with resolving the GitHub Issue described above, and they should be available in early June 2022. Simultaneously, we are assessing if it is feasible to revise our data structure (generated in the previous chapter) to interact with the FB4 version available from the original authors.
 
+Update 6/9/2022: We are now working to re-shape our data input structures so that they will cooperate with the most recent version of FB4, v1.1.3.
+
 <br>
 
 ### Original model results (2018)
 
-Here we will examine the model simulation results based on inputs from the 2015-2016. As of `r Sys.Date()` these model results ar based off the erroneous diet inputs that used dry mass for prey items rather than wet mass.
+Here we will examine the model simulation results based on inputs from the 2015-2016. As of `r Sys.Date()` these model results are based off the erroneous diet inputs that used dry mass for prey items rather than wet mass.
 
 ```{r, echo = F}
 
@@ -105,7 +108,7 @@ For unique iterations of year, season, site, fish species, and fish age we have 
 
 Question: do we have any 2015-2016 simulations wherein final size is smaller than start size?
 
-```{r}
+```{r, echo = F}
 z1 <- results %>%
   group_by(Simulation) %>%
   slice(min(SimDay)) %>%
@@ -130,6 +133,59 @@ rm(z1,z2)
 ```
 
 There are `r n_sims_shrink` seasonal simulations in which end size is less than start size.
+
+<br>
+
+How did observed growth look compared to simulated growth?
+
+```{r, echo = F, eval = F}
+
+# read in observed sizes
+fish_size_dir <- "other/outputs/all_fish_age_size.csv"
+obs_fish_size <- read.csv(fish_size_dir) %>%
+  clean_names() %>%
+  select(river,year,sample_event_num,spp,wt_g,len_mm,age,date,
+         hydrologic_segment,season,doy) %>%
+
+# summarise data to prep for plot
+  group_by(river,year,spp,age,
+         hydrologic_segment,doy) %>%
+  filter(!is.na(wt_g)) %>%
+  summarise(n = n(),
+            sd_wt_g = sd(wt_g),
+            avg_wt_g = mean(wt_g)) %>%
+    filter(n > 2) %>%
+
+  mutate(source = "field_data") %>%
+  transform(year = as.factor(year))
+
+# stack dataframe with simulated results
+# first, modify column format of simulation outputs
+sim_results <- results %>%
+  select(year,site,spp,age,wt_g_old_param,doy,scenario) %>%
+  separate(site, sep = " ", into = c("a1","b1","c1")) %>%
+  rename("hydrologic_segment" = "a1",
+         "source" = "scenario",
+         "avg_wt_g" = "wt_g_old_param") %>%
+  mutate(river = paste(b1,c1)) %>%
+  select(river,year,spp,age,hydrologic_segment,
+         doy,avg_wt_g,source) %>%
+  transform(age = as.integer(age))
+
+obs_sim_results <- bind_rows(obs_fish_size,sim_results)
+
+# plot
+obs_sim_results %>%
+  mutate(sim_name = paste0(hydrologic_segment,"_",river,"_age_",age,"_",spp),
+         cohort = paste0("age_",age,"_",spp),
+         site = paste(hydrologic_segment,river)) %>%
+  ggplot(aes(doy,avg_wt_g,shape = source)) +
+  geom_point() +
+  facet_grid(site~year)
+
+  pivot_wider(names_from = "source", values_from = "avg_wt_g") %>%
+  arrange(river,hydrologic_segment,year,spp,age,doy)
+```
 
 
 next: lets get an output df from the previous chapter and use that to join to compare measured size against modeled size
