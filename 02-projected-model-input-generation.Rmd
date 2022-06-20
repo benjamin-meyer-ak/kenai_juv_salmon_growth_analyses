@@ -1,0 +1,722 @@
+# Future Scenarios Bioenergetics Model Runs
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache=TRUE, collapse=TRUE)
+```
+
+```{r, echo = F}
+# Clear environment
+rm(list=ls())
+
+#require packages
+library(tidyverse)
+library(lubridate)
+
+# variant theme WITHOUT angled x-axis labels
+bm_theme_1 <- theme(plot.title = element_text(size= 26, face = "bold"),        # plot title
+                  axis.text.x = element_text(size=10),
+                  axis.text.y = element_text(size=10),                       # x axis text
+                  axis.title.x = element_text(size=16),                      # x axis title
+                  axis.title.y = element_text(size=16)) +                    # y axis title
+  theme(strip.text = element_text(face="bold", size=12),
+        strip.background = element_rect(fill="lightblue", 
+                                        colour="black",size=1)) 
+
+```
+
+
+## Introduction
+
+In the previous chapter, we generated the input data structures needed to run bioenergetics simulations on each of our fish cohorts from observed 2015-2016 field data. We also generqted model outputs using the 2015-2016 data.
+
+Here, we will use the 2015-2016 data, along with projected air temperature data, to generate and execute bioenergetics model runs for a suite of future climate and diet scenarios.
+
+### Projected Temperatures
+
+Projected air temperatures for 2010-2019, 2030-2039, and 2060-2069 from the RCP 6.0 and 8.5 climate scenarios were extracted from each field site, as monthly decadal means. Projected air temperatures were translated to projected water temperatures by applying linear air-water relationships for each site based on weekly averages from 2015-2016 field data.
+
+```{r, echo = F}
+embed_file("other/inputs/downloads/raster_extract_ml_v3.Rmd",text = "Download draft of methods used to generate projected water temperatures")
+
+```
+
+```{r, echo = F}
+embed_file("other/inputs/temperature/projected_temps.csv",text = "Download projected air and water temperatures")
+```
+
+
+### Diet scenarios 
+
+We used the results of bioenergetics simulations based on 2015-2016 field data to generate "high consumption" and "low consumption" diet scenarios. We created simulations of -20%, baseline, and +20% of the estimated proportion of maximum consumption (p-value).
+
+
+### Preparation of inputs for projected scenario simulations
+
+Here, we will re-run nearly the entire procedure described in the previous chapter, but with projected instead of observed temperatures, and consumption scenarios of +/-20% p-value. The design file will be prepared to fit to a p-value instead of a final weight.
+
+6/19/2022 ::: working here - we need to adapt this to match data inputs from chapter 1 where appropriate.
+
+<details>
+
+<summary>
+
+*Show/Hide Code used to generate projected growth simulations*
+
+</summary>
+
+
+<br>
+
+Choose destination for simulation input files created in this script
+```{r}
+# choose destination for sim input files to be created
+sim_filepath <- "kenai_juv_salmon_growth_analyses/other/FB4_1.1.3_projected"
+
+```
+
+
+a.) Temperature
+
+Import projected daily mean temperatures for each site/year from google sheet output of "air_water_temps.Rmd"
+
+```{r}
+
+# 6/19/2022 - from a coding standpoint, re-runnig all this oold code is an atrocious choice. Proceeding as such due to time constraints.
+
+
+# import daily mean site temperatures
+## we will use this structure to match to our projected temps, removing 2015-2016 temperatures
+daily_mean_temps <- read.csv("other/inputs/temperature/observed_water_temp/daily_temp_metrics.csv") %>%
+  select(Stream_Name,Site,year,Date,doy,daily_avg_temp) %>% 
+  rename(site = Site) %>%
+  transform(year = as.factor(year)) %>%
+  mutate(month = month(Date)) 
+
+# Projected temperatures are at scale of month/decade/site.  We need to get a projected temp associated w/ each SimDay in present-day sim structure.
+
+# read in projected water temperatures
+projected_temps <- read.csv("other/inputs/temperature/projected_temps.csv") %>%
+  # remove unneeded columns
+  select(-X,-proj_air_Temp_C,-sens_slope,-sens_int,-r_sq,-n_weeks) %>%
+  # fix scenario name column
+  transform(scenario = str_replace(scenario,"sres","")) %>%
+  # select
+  select(scenario,decade,month,Site,proj_h2o_Temp_C) %>%
+  rename(site = Site) %>%
+  # calculate decadal averages for each site/month
+  group_by(scenario,decade,site,month) %>%
+  summarise(proj_dec_h2o_Temp = mean(proj_h2o_Temp_C),
+            h2o_se = std.error(proj_h2o_Temp_C, na.rm = T)) %>%
+  mutate(scenario_period = paste0(scenario,"_",decade))
+
+
+# join projected temperatures to dataframe used for present-day temps
+daily_mean_temps <- left_join(daily_mean_temps,projected_temps,by = c("site","month")) %>%
+  # replace present-day temperatures with future projected temperatures
+  select(-daily_avg_temp) %>%
+  select(scenario_period,Stream_Name,site,year,Date,doy,proj_dec_h2o_Temp) %>%
+  rename(daily_avg_temp = proj_dec_h2o_Temp)
+
+# temperature dataframe now contains daily inputs from projected/downsacaled temperatures!
+
+# what is the final day with daily air temperature inputs common  to all sites among both years?
+z <- daily_mean_temps %>%
+  group_by(site,year) %>%
+  summarise(min_date = min(Date),
+            max_date = max(Date)) %>%
+  ungroup() %>%
+  summarise(max_mindate = max(min_date),
+            min_maxdate = min(max_date))
+
+# julian day with air tempeature inputs common to all sites among both years
+yday(z$max_mindate)
+yday(z$min_maxdate)
+
+```
+
+Day 232 (Aug 20th) is the latest date with air temperature inpust common to both years
+
+
+<br>
+
+
+```{r diet proportions}
+
+#########################
+#                       #
+# B.) Diet Input        #
+#                       #
+#########################
+
+# process 2015 & 2016 data simultaneously
+# arrange to identical dataframe structures then combine before proceeding
+
+# 1.) Import and arrange data
+
+# 2015 Diet Data: Import & Arrange
+
+#create objects from overall diet data google sheets
+SCTC2015 <- "other/inputs/diet_size_other/2015 EPSCoR SCTC.xlsx"
+SCTC2016 <- "other/inputs/diet_size_other/2016_EPSCoR_Aquatic_Ecology_Database.xlsx"
+
+# read in worksheets containing diet data
+diet15 <- read_excel(SCTC2015, sheet = "2015 Diet Contents Data") %>% 
+  select(Sample.ID,
+         Fish_Species,
+         Sample.Event,
+         sample.event.num,
+         River,
+         Reach,
+         Site,
+         Sample_Date,
+         Prey_Type_Used,
+         PreyCategory,
+         Quantity,
+         Total_Prey_Dry_Mass_mg) %>%
+  mutate(year = "2015") %>%
+  transform(sample.event.num = as.integer(sample.event.num),
+            Quantity = as.numeric(Quantity),
+            Total_Prey_Dry_Mass_mg = as.numeric(Total_Prey_Dry_Mass_mg))     # columns import as character for some reason unless specified! (weird but innocuous quirk)
+  
+
+diet16 <- read_excel(SCTC2016, sheet = "2016 Diet Contents Data") %>%
+  select(Sample.ID,
+         Fish_Species,
+         Sample.Event,
+         sample.event.num,
+         River,
+         Reach,
+         Site,
+         Sample_Date,
+         Prey_Type_Used,
+         PreyCategory,
+         Quantity,
+         Total_Prey_Dry_Mass_mg) %>%
+  mutate(year = "2016") %>%
+  transform(sample.event.num = as.integer(sample.event.num))
+  
+# combine 2015 and 2016 diet data
+diet <- bind_rows(diet15, diet16)
+
+# finalize structure of diet data
+diet <- diet %>%  
+  #rename needed columns  
+  rename(sample.id = Sample.ID,
+         spp = Fish_Species,
+         sample.event = Sample.Event,
+         event.num = sample.event.num,
+         river = River,
+         reach = Reach,
+         site = Site,
+         date = Sample_Date,
+         prey = Prey_Type_Used,
+         preycat = PreyCategory,
+         quantity = Quantity,
+         dm_mg = Total_Prey_Dry_Mass_mg) %>%
+  
+  #select desired columns
+  select(sample.id,
+         spp,
+         sample.event,
+         event.num,
+         river,
+         reach,
+         site,
+         date,
+         year,
+         prey,
+         preycat,
+         quantity,
+         dm_mg) %>%
+  
+  #filter out non-diet samples and blank data
+  filter(site!="DR1",
+         !is.na(spp),
+         !is.na(sample.event),
+         !is.na(prey),
+         !is.na(dm_mg),
+         !is.na(quantity),
+         !is.na(event.num)) %>%
+  
+  #transform columns to desired classes
+  transform(dm_mg = as.numeric(dm_mg),
+            sample.event = as.factor(sample.event),
+            event.num = as.factor(event.num),
+            date = mdy(date),
+            spp = as.factor(spp),
+            quantity = as.numeric(quantity),
+            preycat = as.factor(preycat))  %>%
+  mutate(season = fct_recode(event.num,         #code sampling events as seasons
+                             "Early Summer"= "1", 
+                             "Mid-Summer" = "2",
+                             "Late Summer" = "3",
+                             "Fall" = "4")) 
+
+# save to local directory
+write.csv(diet,"other/outputs/diet_v1.csv",row.names = F)
+
+rm(diet15,diet16)
+```
+
+</details>
+
+<br>
+
+At this stage of analysis all prey items have an estimated dry mass value, which we acquired by measuring each item's length and applying the formula W = aL\^b, where "a" and "b" are parameters derived from the literature. These calculations of estimated dry mass values are available for download below:
+
+```{r, echo = F}
+embed_file("other/outputs/diet/diet_v1.csv",text = "Download Original Version of Diet Dry Mass Inputs (v1.0)")
+```
+
+<br>
+
+However, to use these prey item mass values as inputs in our bioenergetics models, **we need them in wet weight rather than dry mass**. The original manuscript submitted to TAFS erroneously used dry weights.
+
+To perform this needed transformation from dry mass to wet mass of prey items, we will apply wet/dry ratio values from the manuscript McCarthy 2009, along with four other literature sources. The downloadable table below summarises these wet/dry mass conversion and energy density values.
+
+<br>
+
+```{r, echo = F}
+tbl <- read_excel("other/outputs/diet/mass_conversion/prey_types_manual_edit.xlsx",sheet = "data_validation") %>%
+  filter(!is.na(prey_type))
+```
+
+```{r, echo = F}
+embed_file("other/outputs/diet/mass_conversion/prey_types_manual_edit.xlsx",sheet = "data_validation",text = "Download dry/wet mass conversion values and energy densities of prey item categories.")
+```
+
+<br>
+
+<details>
+
+<summary>
+
+*Show/Hide Code used prepare revised fish diet data inputs from 2015-2016 observations (e.g. diet data being converted to wet mass inputs)*
+
+</summary>
+
+```{r}
+
+# General approach:
+# We will generate and export a table of unique prey types (n = 127), then for each type manually assign one of the twelve prey type categories from McCarthy et al 2009 (+ several other lit sources)
+# generate csv of unique prey types
+unique_prey <- data.frame(unique(diet$prey)) %>%
+  clean_names()
+write.csv(unique_prey,"other/outputs/diet/mass_conversion/prey_types.csv",row.names = F)
+
+# using the "prey_types.csv" file generated above, we will manually generate an excel file pairing each prey item with a category that has a known dry mass conversion value. 
+
+# We will then join the dry mass conversion values back to the full diet data table
+
+# read in dry mass conversion values
+dm_convert_prey_types <- read_excel("other/outputs/diet/mass_conversion/prey_types_manual_edit.xlsx", sheet = "prey_types", skip = 1) %>%
+  select(-notes)
+
+dm_convert_vals <- read_excel("other/outputs/diet/mass_conversion/prey_types_manual_edit.xlsx", sheet = "data_validation") %>%
+  filter(!is.na(prey_type))
+
+dm_convert_vals <- left_join(dm_convert_prey_types,dm_convert_vals,by = "prey_type") %>%
+  filter(!is.na(wet_dry_ratio)) %>%
+  select(-notes) %>%
+  rename(prey = unique_diet_prey)
+
+# join dry mass conversion values (by prey type) to overall diet data set
+diet <- left_join(diet,dm_convert_vals,by = "prey") %>%
+  filter(!is.na(wet_dry_ratio)) 
+
+# create new column of wet mass for individual prey items
+diet %<>% mutate(wm_mg = dm_mg / wet_dry_ratio)
+
+# summarise wet mass by diet category
+#diet %<>%
+ # select(-preycat) %>%
+  #group_by(river,spp,###AGE diet,PreyCategory_ED,energy_density_jg) %>%
+  #summarise(sum_wm_mg = sum(wm_mg))
+
+# convert wet masses to diet category proportions
+# and create column for summed wet mass of all prey categories
+#wm_sum_tot <- diet %>%
+ # ungroup() %>%
+#  summarise(tot_sum_wm_mg = sum(sum_wm_mg)) %>%
+ # as.numeric()
+
+#z <- diet %>%
+#  mutate(tot_sum_wm_mg = wm_sum_tot) %>%
+#  mutate(diet_wm_prop = sum_wm_mg / tot_sum_wm_mg) %>%
+#  select(PreyCategory_ED,diet_wm_prop) %>%
+#  pivot_wider()
+
+# only categories not matching are non-diet items (empty, destroyed, bait, etc)
+
+# next : check out energy density tabel from v1 to see less granular version of preycat
+
+
+## at this step, we need to convert prey dry mass in to wet mass and use that for the input
+
+# what we originally did: prey length --> dm
+# what we need to do: prey length --> dm --> wm
+
+## reviewer 2: "convert each of the major prey categories into wet mass proportions (i.e., divide by proportion dry weight)". proportion of what?
+
+### plan: continue prepping input files, return to here when dm --> wm conversion process clearer
+
+# create prey categorization scheme specific to bioenergetics modeling purposes
+# -import from google sheet "EPSCoR_SCTC_Prey_Energy_Densities" and mutate new column to diet data
+# -this sheet also contains energy density assignments, which must be manually input in "fishbioenergetics.r"
+# at a later step.
+
+
+
+# remove temporary objects
+#rm(diet15,diet16,ED)
+```
+
+</details>
+
+<br>
+
+At this stage, we now are using estimated wet weights for each diet item from each gastric lavage sample.
+
+<br>
+
+### Fish size and age
+
+We will import fish size and age, then for those fish from which we collected gastric lavage samples, associate each fish with its own wet mass diet data.
+
+<details>
+
+<summary>
+
+*Show/Hide Code used prepare fish age and size data inputs from 2015-2016 observations*
+
+</summary>
+
+```{r ,import all fish size and age data}
+
+# NOTE ON AGE STRUCTURE 3/28/18
+# This script originally imported google sheet titled "all_fish_ages.csv", which contained results output from the "fish_ages_all.R" script.  The "fish_ages_all.R" script used methods described in Ch. 5 of Ogle 2016 ("Introductory fisheries analyses with R") to age all captured fish from a subset of fish scale samples.  Resultant csv file was copied to the google sheet referenced here.
+
+# Further consideration has determined that using age-length keys for this project may not best serve its interests.  In the column "Age_manual2" imported in this chunk, age thresholds were identified visually as described in "fish_age_structure.R".  
+
+# ID googlesheet with fish age data (3/28/18: no longer in use)
+#fish_ages <- gs_title("all_fish_ages.csv") 
+#Sys.sleep(6)
+
+# read in desired worksheet 2015
+fish_ages15 <- read_excel(SCTC2015, sheet = "C 2015 Diet & LW Data") %>%
+  select(river,sample.id,sample.event,spp,Weight_g,Length_mm,Age_manual2,sample.event.num,`Date...41`,`Site ID`,reach_name) %>%
+  mutate(season = fct_recode(as.factor(sample.event.num), #code sampling events as seasons
+                             "Early Summer"="1", 
+                             "Mid-Summer" = "2",
+                             "Late Summer" ="3")) %>%
+  rename(wt_g = Weight_g,
+         len_mm = Length_mm,
+         age = Age_manual2,
+         Hydrologic.Segment = reach_name) %>%
+  transform(`Date...41` = anydate(`Date...41`)) %>%
+  rename(Date = `Date...41`) %>%
+  # filter out all species except Chinook and Coho
+  filter(spp %in% c("Coho", "Chinook")) %>% 
+  transform(wt_g = as.double(wt_g))
+
+
+# read in desired worksheet 2016
+fish_ages16 <- read_excel(SCTC2016, sheet = "C 2016 Diet & LW Data") %>%
+  select(river,sample.id,sample.event,spp,Weight_g,Length_mm,Age_manual2,sample.event.num,Date,`Site ID`,reach_name) %>%
+  mutate(season = fct_recode(as.factor(sample.event.num),         #code sampling events as seasons
+                             "Early Summer"="1", 
+                             "Mid-Summer" = "2",
+                             "Late Summer" ="3",
+                             "Fall" ="4")) %>%
+  rename(wt_g = Weight_g,
+         len_mm = Length_mm,
+         age = Age_manual2,
+         Hydrologic.Segment = reach_name) %>%
+  transform(Date = anydate(Date),
+            wt_g = as.numeric(wt_g)) %>%
+  filter(spp %in% c("Coho", "Chinook")) # filter out all species except Chinook and Coho
+
+
+#join 2015 and 2016 data
+fish_ages <- bind_rows(fish_ages15,fish_ages16)
+
+rm(fish_ages15,fish_ages16)
+
+#prep dataframe containing age data
+fish_ages <- fish_ages %>% 
+  separate(sample.event, c("reach","year","sample.event.num"), sep = "-", remove = F) %>%
+  unite(river_spp, river, spp, remove = F, sep = " ") %>%
+  # manually order appearance of seasons and rivers for plots
+  transform(year = as.factor(year),
+            river = factor(river, levels=c("Beaver Creek",
+                                              'Russian River',
+                                              'Ptarmigan Creek',
+                                              'Kenai River')),
+            season = factor(season, levels = c("Early Summer",
+                                     "Mid-Summer",
+                                     "Late Summer",
+                                     "Fall")), 
+            river_spp = as.factor(river_spp)) %>%
+  mutate(river_spp = paste(river,"\n",spp)) %>%
+  mutate(doy = yday(Date)) %>%
+  filter(!is.na(age))
+ # age 2 fish: this cohort is sparse and likely departing for the ocean.
+ #filter(age != 2) 
+
+
+# prep fish ages dataframe for later results table generation at end of this code chunk. Also save external csv for use in other script(s)
+fish_ages1 <- fish_ages
+write.csv(fish_ages,"other/outputs/all_fish_age_size.csv",row.names = F)
+
+# reduce dataframe width
+fish_ages %<>%
+  select(sample.id,Date,age,wt_g,len_mm)
+
+#eliminate duplicate rows
+## this code was not hashtagged in the original analysis ...
+#fish_ages <- unique(fish_ages)
+
+# join fish ages date with diet data      
+diet <- left_join(diet, fish_ages, by = c("sample.id"))  %>%
+  select(-date)
+
+
+
+```
+
+```{r}
+# Generate table of fish size distribution by site
+
+size_dist <- fish_ages1 %>%
+  select(river,Hydrologic.Segment,spp,wt_g,len_mm,age) %>%
+  filter(!is.na(wt_g),
+         !is.na(len_mm)) %>%
+  rename(reach = Hydrologic.Segment) %>%
+  group_by(reach,river,spp,age) %>%
+  summarise(mean_wt_g = round(mean(wt_g),1),
+            stdev_wt_g = round(sd(wt_g),1),
+            mean_len_mm = round(mean(len_mm),1),
+            stdev_len_mm = round(sd(len_mm),1),
+            mean_wt_g = paste0(mean_wt_g,"±",stdev_wt_g),
+            mean_len_mm = paste0(mean_len_mm,"±",stdev_len_mm),
+            n = n()) %>%
+  select(-stdev_len_mm,-stdev_wt_g)
+
+# use anti_join approach to remove all age 2 coho and age 1 chinook
+anti_size_dist <- size_dist %>%
+  filter(spp == "Coho" & age == 2 | spp == "Chinook" & age == 1)
+
+# remove select spp/age cohorts via anti_join
+size_dist <- anti_join(size_dist,anti_size_dist) %>%
+  arrange(river,reach,spp,age)
+
+# rename columns
+size_dist %<>%
+  rename(Reach = reach,
+         Watershed = river,
+         Species = spp,
+         Age = age,
+         `Mean Weight (g)` = mean_wt_g,
+         `Mean Fork Length (mm)` = mean_len_mm,
+         N = n)
+  
+```
+
+</details>
+
+<br>
+
+```{r, echo = F}
+# Overall summary of fish size, weight, and length values (mean ± SD).
+dir <- "other/outputs/fish_size_distribution.csv"
+write.csv(size_dist,dir, row.names = F)
+embed_file(dir,text = "Download table of observed fish weight/length distributions")
+```
+
+Next, before proceeding with preparing diet proportions, we have a bit more work to do finalizing fish size and age data. For example, a few fish have diet data but no age. We will remove these fish.
+
+##### How many fish have diet samples, but no age designation?
+
+<details>
+
+<summary>
+
+*Show/Hide Code*
+
+</summary>
+
+```{r remove un-aged fish with diet samples}
+
+# How many fish have diet samples, but no age designation?
+diet_no_age <- diet %>%
+  filter(is.na(age)) %>%
+  distinct(sample.id)
+diet_no_age <- nrow(diet_no_age)
+
+#exclude these individuals
+diet <- diet %>%
+  filter(!is.na(age))
+
+```
+
+</details>
+
+There are `r diet_no_age` fish with diet samples but no age manually assigned. These fish We will exclude these fish from analyses... for now, because we are running simulations seperately by age year/river/spp/age. Fish must have an age.
+
+<br>
+
+### Define scale of diet and growth input pooling/segregation
+
+We will group fish growth simulation inputs at the space/time scale of:
+
+-   Individual River (pool data among sites within each river)
+
+-   Species (segregate Chinook vs coho)
+
+-   Fish age (age 0 vs 1)
+
+-   Year (2015 or 2016)
+
+Diet data, however is pooled among years (2015 and 2016) due to the heterogenous nature of this type of data.
+
+For example, an individual cohort of fish could be "2015 Beaver Creek Age 1 Coho." Diet data for this simulation is averaged from between 2015 and 2016.
+
+<details>
+
+<summary>
+
+*Show/Hide Code*
+
+</summary>
+
+```{r}
+
+#create sum of pooled prey DM for each prey category by fish species and sample event 
+wm_sum_by_event <- diet %>%
+  
+  # choose level of diet input segregation here
+  group_by(
+    #year,
+    #Hydrologic.Segment,
+    #season,
+    river,
+    spp,
+    PreyCategory_ED,
+    age) %>%
+  summarise(sum(wm_mg)) %>%
+  rename(wm_sum =`sum(wm_mg)`) %>%
+  spread(PreyCategory_ED,wm_sum) %>%
+  rowwise() %>%
+  # create column for summed dry mass of all prey categories
+  mutate(wm_tot = sum(InvertTerrestrial,
+                      InvertAquatic_AqOrigin,
+                      InvertTerrestrial_AqOrigin,
+                      FishEggs,    
+                      SalmonEggs, 
+                      na.rm = TRUE)) %>%
+  mutate(FishEggs = FishEggs/wm_tot,
+         # change prey quantities to relative proportions by category
+         InvertAquatic_AqOrigin = InvertAquatic_AqOrigin/wm_tot,  
+         InvertTerrestrial = InvertTerrestrial/wm_tot,
+         InvertTerrestrial_AqOrigin = InvertTerrestrial_AqOrigin/wm_tot,
+         SalmonEggs = SalmonEggs/wm_tot) %>%
+  rename(Stream_Name = river) %>%
+  select(-wm_tot) %>%
+  # show only 3 decimal places
+  mutate(across(where(is.numeric), round, 3))
+
+```
+
+</details>
+
+<br>
+
+```{r, echo = F}
+write.csv(wm_sum_by_event,"other/outputs/diet/wet_mass_diet_proportions.csv",row.names = F)
+
+embed_file("other/outputs/diet/wet_mass_diet_proportions.csv",text = "Download wet mass diet proportions by prey category for each fish cohort.")
+```
+
+<br>
+
+##### Define temporal extents of proposed simulations
+
+We set the time period of each simulation as the period of day leading up from the prior field sampling event. For example, suppose that one field sampling event at Lower Beaver Creek occurred on June 1, 2015 and the next one on July 1, 2015. In this case the simulations for "Early Summer Lower Beaver Creek" runs for 30 days and uses diet inputs based on field data from June 1, 2015. Overall, we constrained the time period of our summer growth simulations to the period of days for which field data was available form both 2015 and 2016.
+
+<details>
+
+<summary>
+
+*Show/Hide Code used to determine temporal length of fish growth simulations*
+
+</summary>
+
+```{r, }
+# Define temporal extents of proposed simulations
+
+# NOTE 1/22/18: this code also exists as a script at "/Users/bmeyer/Google Drive/Thesis/R Analysis/Thesis Analyses R Project/Overall_scripts_2015_2016/sampling_periods.R".  Attempted to just source("\path") this script in to the markdown document but, 'source' function prevents knitting through markdown for some reason.  
+
+############
+#
+# 2015
+#
+###########
+
+#read in specific worksheet containing fishing data
+effort2015 <- read_excel(SCTC2015, sheet ="B Fishing Data",skip=2) %>%
+  #rename needed columns  
+  rename(site.id=Site_ID,
+         sample.event=Sample_Event) %>%
+  
+  #select desired columns
+  select(site.id,Reach,River,sample.event,sample.event.num,deploy_dt,collect_dt) %>%
+  
+  #filter out blanks
+  filter(!is.na(sample.event)) %>%
+  
+  # transform columns to desired classes
+  transform(site.id=as.factor(site.id),
+            sample.event=as.factor(sample.event),
+            sample.event.num=as.factor(sample.event.num)) 
+
+
+###################
+#
+# 2016
+#
+###################
+
+#read in specific worksheet containing fishing data
+effort2016 <- read_excel(SCTC2016, sheet = "B Fishing Data",skip=2) %>%
+  
+  #rename needed columns  
+  rename(site.id=Site_ID,
+         sample.event=Sample_Event) %>%
+  
+  #select desired columns
+  select(site.id,Reach,River,sample.event,sample.event.num,deploy_dt,collect_dt) %>%
+  
+  #filter our blanks
+  filter(!is.na(sample.event)) %>%
+  
+  # transform columns to desired classes
+  transform(site.id=as.factor(site.id),
+            sample.event=as.factor(sample.event),
+            sample.event.num=as.factor(sample.event.num)) 
+
+
+# bind 2015 & 2016 data; format datetimes
+effort <- bind_rows(effort2015,effort2016) %>%
+  transform(collect_dt = anytime(collect_dt),
+            deploy_dt = anytime(deploy_dt)) %>%
+  mutate(year = year(collect_dt)) %>%
+  mutate(site = paste(Reach,River)) %>%
+  filter(site != "Upper Ptarmigan Creek")
+
+rm(effort2015,effort2016)
+```
+
+
+
+
+

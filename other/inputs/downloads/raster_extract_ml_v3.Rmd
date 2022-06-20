@@ -1,0 +1,459 @@
+---
+title: "raster_extract_ml_v3"
+author: "bemeyer@alaska.edu"
+date: "7/5/2019"
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This script is courtesy of Micheal Lindgren with SNAP and a similar version can be found at  https://github.com/EarthScientist/etc/blob/master/extract_profile_snap_deltadownscaled_rasters.R
+
+This script can accept a csv file of decimal degree coordinates and extract raster values from multiple .tif files that match those coordinates.  The values are collated and exported in to a csv file to a local directory.
+
+Data downloaded from http://data.snap.uaf.edu/data/Base/AK_771m/projected/AR4_CMIP3_models/Projected_Monthy_and_Derived_Temperature_Products_771m_CMIP3_AR4/ on 7/5/2019
+
+
+NOTE: 12/29/19 - added section of script to import RCP scenario data.  RCP 8.5 appears to be very similar to the A2 / A1B scenarios (see Fig. 7 here: https://www.researchgate.net/publication/310329375_An_exploration_of_building_energy_performance_and_financial_value_with_demonstration_on_UK_offices/figures?lo=1).  Need to validate this postulation for likely criticism.
+
+<br>
+
+Load packages
+```{r}
+
+# clear environment
+rm(list=ls())
+
+# packages
+require(raster)
+require(rgdal)
+require(tidyverse)
+require(sp)
+select <- dplyr::select
+
+# set a working dir
+#setwd("./working")
+
+# Set a folder location to where the raster files are stored on your system. In this case: projected air temperatures 
+
+# A1B scenario raster files
+input_path_a1b <- "/Users/bmeyer/Google Drive/Thesis/R Analysis/air_water_temp_analysis/SNAP_downloads/a1b_decadal_monthly_mean"
+
+# A2 scenario raster files
+input_path_a2 <- "/Users/bmeyer/Google Drive/Thesis/R Analysis/air_water_temp_analysis/SNAP_downloads/a2_decadal_monthly_mean"
+
+
+# point to the point shapefile you want to use.
+# [note]: you may have to reproject these points to the same reference system as the SNAP data (EPSG:3338)
+# pointSPDF <- readOGR("./shapefile/points.shp")
+
+## try with a CSV and make an SPDF from it
+csv <- read.csv("/Users/bmeyer/Google Drive/Thesis/R Analysis/air_water_temp_analysis/SNAP_downloads/kenai_places.csv", sep=';' ) %>%
+  filter(!is.na(latitude),
+         !is.na(longitude)) # exclude sites with any missing coordinates
+pointSPDF <- SpatialPointsDataFrame(coords=SpatialPoints(csv[c(2,3)]), data=csv[1] )
+projection(pointSPDF) <- CRS("+init=epsg:4326") # set the projection
+
+# stuff which will be iterators through the years/months
+years <- c("2010_2019","2030_2039","2060_2069") # this should be changed to mimick the begin/end years of your data series
+months <- c("05","06","07","08","09")
+
+```
+
+Confusing side note: tried to change csv import file such that sep = "," rather than sep= ";" and modified file imported to match.  Something about this caused the entire extraction <- extract(s, pointSPDF) command to throw errors.  Returned to original format using ";".
+
+<br>
+
+
+
+
+
+Extract site-specific mean monthly air temperature values for A1B scenario 2030-2039, 2060-2069
+```{r}
+# naming stuff to get everything in the list chronologically
+variable <- "tas"
+metric <- "decadal_mean_monthly_mean_c"
+model <- "5modelAvg_sres"
+scenario <- "a1b"
+
+# list the raster files chronologically. 
+list.1km <- character()
+for(y in years){
+	for(m in months){
+		name_convention <- paste(
+		  input_path_a1b,"/",
+		  variable,"_",
+		  metric,"_",
+		  model,
+		  scenario,"_",
+		  m,"_",
+		  y,
+		  ".tif", sep="")
+		list.1km <- append(list.1km, name_convention)
+	}
+}
+
+
+# read the files we just listed as a raster stack
+s <- stack(list.1km)
+
+# extract the points from the stack. (it reprojects on the fly)
+extraction <- raster::extract(s, pointSPDF)
+
+# then transpose it so the point locs are in the cols, and the samples are in the rows
+extraction <- t(extraction)
+
+# convert to data frame
+extraction <- as.data.frame(extraction)
+
+# prep dataframe for export
+
+## rename V# columns as place names from csv coordinates file
+site_names <- as.vector(csv$place)
+colnames(extraction) <- site_names
+
+## create year and month columns, convert data frame to "long" form
+a1b_extraction <- extraction %>%
+  rownames_to_column("raster_file") %>%
+  separate(raster_file,sep="_",remove=F,extra="warn",
+           into=c("a","b","c","d","e","f","g","scenario","month","year")) %>%
+  dplyr::select(-c("a","b","c","d","e","f","g")) %>%     # letter columns are extraneous (model code naming system)
+  gather("Site","Temp_C",site_names)
+
+# will need to rename years as intervals rather thna single years
+
+```
+
+<br>
+
+Repeat extraction for A2 climate scenario (rapid increase)
+
+<br>
+
+```{r}
+# designate new scenario
+scenario <- "a2"
+
+# list the raster files chronologically. 
+list.1km <- character()
+for(y in years){
+	for(m in months){
+		name_convention <- paste(
+		  input_path_a2,"/",variable,"_",metric,"_",model,scenario,"_",m,"_",y,".tif", sep="")
+		list.1km <- append(list.1km, name_convention)
+	}
+}
+
+# read the files we just listed as a raster stack
+s <- stack(list.1km)
+
+# extract the points from the stack. (it reprojects on the fly)
+extraction <- raster::extract(s, pointSPDF)
+
+# then transpose it so the point locs are in the cols, and the samples are in the rows
+extraction <- t(extraction)
+
+# convert to data frame
+extraction <- as.data.frame(extraction)
+
+# prep dataframe for export
+
+## rename V# columns as place names from csv coordinates file
+site_names <- as.vector(csv$place)
+colnames(extraction) <- site_names
+
+## create year and month columns, convert data frame to "long" form
+a2_extraction <- extraction %>%
+  rownames_to_column("raster_file") %>%
+  separate(raster_file,sep="_",remove=F,extra="warn",
+           into=c("a","b","c","d","e","f","g","scenario","month","year")) %>%
+  dplyr::select(-c("a","b","c","d","e","f","g")) %>%     # letter columns are extraneous (model code naming system)
+  gather("Site","Temp_C",site_names)
+
+```
+
+<br>
+
+Join dataframes of a1b and a2 scenarios
+
+<br>
+
+```{r}
+# join dataframes of a1b and a2 scenarios
+projected_air_temps <- bind_rows(a1b_extraction,a2_extraction)
+
+```
+
+<br>
+
+Quick plot to visualize projected air temperature results
+```{r}
+# plot a1b and a2 scenario values
+
+# prep values for plot
+airtemps_plot_vals <- projected_air_temps %>%
+  transform(year = as.numeric(year)) %>%
+  mutate(decade = case_when(year == 2010 ~ "2010_2019",
+                            year == 2030 ~ "2030_2039",
+                            year == 2060 ~ "2060_2069")) %>%
+  # need to alter this line of code if we end up using different decadal structure
+  separate(col = Site, into = c("Reach","b","c"), sep = " ",remove = F) %>%
+  mutate(River = paste(b,c)) %>%
+  select(-b,-c,-year) 
+
+# A1B scenario
+airtemps_plot_vals %>%
+  filter(scenario == "sresa1b") %>%
+  ggplot(aes(month,Temp_C, fill = decade)) +
+  geom_bar(stat = "identity",position = "dodge") +
+  facet_grid(River ~ Reach) +
+  theme_bw() +
+  ggtitle("Projected Air Temperatures, A1B Scenario (Mid-Range)")
+
+# A2 scenario (rapid rise)
+airtemps_plot_vals %>%
+  filter(scenario == "sresa2") %>%
+  ggplot(aes(month,Temp_C, fill = decade)) +
+  geom_bar(stat = "identity",position = "dodge") +
+  facet_grid(River ~ Reach) +
+  theme_bw() +
+  ggtitle("Projected Air Temperatures, A2 Scenario (Rapid Rise)")
+
+  
+```
+
+
+<br>
+
+Export extracted raster values to local directory
+```{r}
+# from here you should be able to dump these to CSV or work with the values in subsequent R functions.
+write.csv(airtemps_plot_vals, file="/Users/bmeyer/Google Drive/Thesis/R Analysis/air_water_temp_analysis/SNAP_downloads/projected_air_temps.csv")
+
+```
+
+<br>
+
+This file is further used in "air_water_temps.Rmd" to acquire projected water temps.
+
+
+<br>
+
+
+
+
+
+
+
+12/29/19
+
+Repeat above process to extract RCP 8.5 and 6.0 scenario data, compare to A2/A1B scenarios
+
+```{r}
+
+# old script:
+
+# RCP8.5 scenario raster files
+input_path_rcp8.5 <- "/Users/bmeyer/Google Drive/Thesis/R Analysis/air_water_temp_analysis/SNAP_downloads_v2/decadal_mean_8.5"
+
+# RCP 6.0 scenario raster files
+input_path_rcp6.0 <- "/Users/bmeyer/Google Drive/Thesis/R Analysis/air_water_temp_analysis/SNAP_downloads_v2/decadal_mean_6.0"
+
+# point to the point shapefile you want to use.
+# [note]: you may have to reproject these points to the same reference system as the SNAP data (EPSG:3338)
+# pointSPDF <- readOGR("./shapefile/points.shp")
+
+## try with a CSV and make an SPDF from it
+csv <- read.csv("/Users/bmeyer/Google Drive/Thesis/R Analysis/air_water_temp_analysis/SNAP_downloads/kenai_places.csv", sep=';' ) %>%
+  filter(!is.na(latitude),
+         !is.na(longitude)) # exclude sites with any missing coordinates
+pointSPDF <- SpatialPointsDataFrame(coords=SpatialPoints(csv[c(2,3)]), data=csv[1] )
+projection(pointSPDF) <- CRS("+init=epsg:4326") # set the projection
+
+# stuff which will be iterators through the years/months
+years <- c("2010_2019","2030_2039","2060_2069") # this should be changed to mimick the begin/end years of your data series
+months <- c("05","06","07","08","09")
+
+```
+
+<br>
+
+Extract site-specific mean monthly air temperature values for RCP6.0 scenario 2030-2039, 2060-2069
+```{r}
+
+# naming stuff to get everything in the list chronologically
+variable <- "tas"
+metric <- "decadal_mean_monthly_mean_c"
+model <- "5modelAvg_rcp"
+scenario <- "60"
+
+# list the raster files chronologically. 
+list.1km <- character()
+for(y in years){
+	for(m in months){
+		name_convention <- paste(
+		  input_path_rcp6.0,"/",
+		  variable,"_",
+		  metric,"_",
+		  model,
+		  scenario,"_",
+		  m,"_",
+		  y,
+		  ".tif", sep="")
+		list.1km <- append(list.1km, name_convention)
+	}
+}
+
+
+# read the files we just listed as a raster stack
+s <- stack(list.1km)
+
+# extract the points from the stack. (it reprojects on the fly)
+extraction <- raster::extract(s, pointSPDF)
+
+# then transpose it so the point locs are in the cols, and the samples are in the rows
+extraction <- t(extraction)
+
+# convert to data frame
+extraction <- as.data.frame(extraction)
+
+# prep dataframe for export
+
+## rename V# columns as place names from csv coordinates file
+site_names <- as.vector(csv$place)
+colnames(extraction) <- site_names
+
+## create year and month columns, convert data frame to "long" form
+rcp60_extraction <- extraction %>%
+  rownames_to_column("raster_file") %>%
+  separate(raster_file,sep="_",remove=F,extra="warn",
+           into=c("a","b","c","d","e","f","g","scenario","month","year")) %>%
+  dplyr::select(-c("a","b","c","d","e","f","g")) %>%     # letter columns are extraneous (model code naming system)
+  gather("Site","Temp_C",site_names)
+
+# will need to rename years as intervals rather thna single years
+
+```
+
+<br>
+
+Repeat above process for RCP8.5 scenario
+
+Extract site-specific mean monthly air temperature values for RCP8.5 scenario 2030-2039, 2060-2069
+
+```{r}
+
+# naming stuff to get everything in the list chronologically
+variable <- "tas"
+metric <- "decadal_mean_monthly_mean_c"
+model <- "5modelAvg_rcp"
+scenario <- "85"
+
+# list the raster files chronologically. 
+list.1km <- character()
+for(y in years){
+	for(m in months){
+		name_convention <- paste(
+		  input_path_rcp8.5,"/",
+		  variable,"_",
+		  metric,"_",
+		  model,
+		  scenario,"_",
+		  m,"_",
+		  y,
+		  ".tif", sep="")
+		list.1km <- append(list.1km, name_convention)
+	}
+}
+
+
+# read the files we just listed as a raster stack
+s <- stack(list.1km)
+
+# extract the points from the stack. (it reprojects on the fly)
+extraction <- raster::extract(s, pointSPDF)
+
+# then transpose it so the point locs are in the cols, and the samples are in the rows
+extraction <- t(extraction)
+
+# convert to data frame
+extraction <- as.data.frame(extraction)
+
+# prep dataframe for export
+
+## rename V# columns as place names from csv coordinates file
+site_names <- as.vector(csv$place)
+colnames(extraction) <- site_names
+
+## create year and month columns, convert data frame to "long" form
+rcp85_extraction <- extraction %>%
+  rownames_to_column("raster_file") %>%
+  separate(raster_file,sep="_",remove=F,extra="warn",
+           into=c("a","b","c","d","e","f","g","scenario","month","year")) %>%
+  dplyr::select(-c("a","b","c","d","e","f","g")) %>%     # letter columns are extraneous (model code naming system)
+  gather("Site","Temp_C",site_names)
+
+```
+
+
+1.) Visualize air temperatures
+2.) Test for significant difference(s) between A1B/A2 vs RCP6.0 / RCP8.5 scaenarios
+
+```{r}
+z <- bind_rows(rcp60_extraction,rcp85_extraction,projected_air_temps) %>%
+  separate(Site,sep = " ", into = c("Reach","Stream_Name","c")) 
+
+# RCP8.5 vs A2 scenarios
+
+# 2010 - 2019
+z %>%
+  filter(year == "2010") %>%
+  ggplot(aes(as.numeric(month), as.numeric(Temp_C), color = scenario)) +
+  #geom_line() +
+  geom_line() +
+  facet_grid(Stream_Name ~ Reach) +
+  theme_bw() +
+  ggtitle("Scenarios 2010 - 2019") +
+  ylim(6,18)
+
+# 2030 - 2039
+z %>%
+  filter(year == "2030") %>%
+  ggplot(aes(as.numeric(month), as.numeric(Temp_C), color = scenario)) +
+  geom_line() +
+  facet_grid(Stream_Name ~ Reach) +
+  theme_bw() +
+  ggtitle("Scenarios 2030 - 2039") +
+  ylim(6,18)
+
+# 2060 - 2069
+z %>%
+  filter(year == "2060") %>%
+  ggplot(aes(as.numeric(month), as.numeric(Temp_C), color = scenario)) +
+  geom_line() +
+  facet_grid(Stream_Name ~ Reach) +
+  theme_bw() +
+  ggtitle("Scenarios 2060 - 2069") +
+  ylim(6,18)
+
+
+```
+
+<br>
+
+Export NEW extracted raster values to local directory
+```{r}
+# from here you should be able to dump these to CSV or work with the values in subsequent R functions.
+
+z <- bind_rows(rcp60_extraction,rcp85_extraction)
+
+write.csv(z, file="/Users/bmeyer/Google Drive/Thesis/R Analysis/air_water_temp_analysis/SNAP_downloads/projected_air_temps_v2.csv")
+
+```
+
+12/29/19 - RCP scenarios are notable higher than A2 / A1B scenarios.  Need to re-do simulations, see Evernote description
