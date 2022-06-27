@@ -512,6 +512,17 @@ There are `r diet_no_age` fish with diet samples but no age manually assigned. T
 
 <br>
 
+```{r}
+# download wet mass of each prey item assigned to each fish
+dir <- "other/outputs/fish_prey_wet_mass.csv"
+write.csv(diet,dir, row.names = F)
+embed_file(dir,text = "Download full table of prey wet mass from each fish")
+```
+
+
+
+
+
 ### Define scale of diet and growth input pooling/segregation
 
 We will group fish growth simulation inputs at the space/time scale of:
@@ -742,6 +753,8 @@ sim_extents_by_site <- bind_rows(t_end15_1,t_end15,t_end16_1,t_end16,mpc_2016_3)
 
 # remove temporary objects
 rm(t_end15,t_end15_1,t_end16,t_end16_1,mpc_2016_3)
+
+
 
 
 # match temporal extent of simulated diet proportion data to simulation date if it exists. 
@@ -1561,7 +1574,7 @@ design_2015_2016 <- sim_size_inputs_FB4.1 %>%
 # get all column names design file example
 design_colnames <- read.csv("other/FB4_1.1.3_2015_2016.1/FB4_Design_Bluegill_1.csv") %>% colnames()
 
-# select from subset of column in aqwms template
+# select from subset of column in example input template
  design_2015_2016 %<>%
   select(one_of(design_colnames))
 
@@ -1586,6 +1599,14 @@ Note: we achieved success with running the 2015-2016 simulations using the desig
 
 ```{r, echo = F}
 embed_file("other/FB4_1.1.3_2015_2016.1/FB4_2015_2016_models.csv",text = "Download Model Outputs from 2015-2016 data using Fishbioenergetics v1.1.3")
+```
+
+
+
+```{r, echo = F}
+# generate csv of wet mass of each prey item assigned to each fish for use in later scripts
+dir <- "other/outputs/fish_prey_wet_mass.csv"
+write.csv(diet,dir, row.names = F)
 ```
 
 

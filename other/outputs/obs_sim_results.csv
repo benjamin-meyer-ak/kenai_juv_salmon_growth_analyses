@@ -1,0 +1,59 @@
+"Watershed","Reach","Age","Species","Year","Season","Start Day","End Day","Initial Weight (g)","End Weight (g)","P-value"
+"Beaver Creek","Lower","0","Chinook","2016","Mid-Summer",173,201,1.4516947,1.941,0.351685
+"Beaver Creek","Lower","0","Chinook","2016","Late Summer",201,228,1.9412411,1.893,0.224487
+"Beaver Creek","Lower","0","Coho","2016","Mid-Summer",173,201,1.850646,1.682,0.220337
+"Beaver Creek","Lower","0","Coho","2015","Mid-Summer",180,218,0.8069425,1.14,0.330688
+"Beaver Creek","Lower","0","Coho","2016","Late Summer",201,228,1.6818867,2.109,0.365417
+"Beaver Creek","Lower","1","Coho","2016","Early Summer",145,173,4.0212603,5.797,0.42807
+"Beaver Creek","Lower","1","Coho","2015","Early Summer",155,180,3.8584886,4.242,0.296127
+"Beaver Creek","Lower","1","Coho","2016","Mid-Summer",173,201,5.7968356,8.42,0.490097
+"Beaver Creek","Lower","1","Coho","2015","Mid-Summer",180,218,4.2417509,6.321,0.408325
+"Beaver Creek","Lower","1","Coho","2016","Late Summer",201,228,8.4202421,9.036,0.319382
+"Beaver Creek","Middle","0","Chinook","2016","Mid-Summer",172,202,1.649657,2.412,0.378326
+"Beaver Creek","Middle","0","Chinook","2016","Late Summer",202,229,2.4118221,2.684,0.281036
+"Beaver Creek","Middle","1","Coho","2016","Early Summer",146,172,4.9312492,5.964,0.34375
+"Beaver Creek","Middle","1","Coho","2015","Early Summer",158,194,5.2129817,5.673,0.278519
+"Beaver Creek","Middle","1","Coho","2016","Mid-Summer",172,202,5.9638912,7.107,0.34903
+"Beaver Creek","Middle","1","Coho","2015","Mid-Summer",194,222,5.6730644,6.145,0.299561
+"Beaver Creek","Middle","1","Coho","2016","Late Summer",202,229,7.1073291,9.465,0.441162
+"Beaver Creek","Upper","0","Chinook","2016","Late Summer",204,230,3.0134187,3.414,0.306641
+"Beaver Creek","Upper","1","Coho","2016","Early Summer",147,174,6.6310386,7.871,0.348572
+"Beaver Creek","Upper","1","Coho","2016","Mid-Summer",174,204,7.8706978,8.67,0.322144
+"Beaver Creek","Upper","1","Coho","2016","Late Summer",204,230,8.6698776,9.905,0.35849
+"Kenai River","Lower","0","Chinook","2016","Early Summer",151,180,1.1817263,2.152,0.48053
+"Kenai River","Lower","0","Chinook","2015","Early Summer",173,204,1.3709931,1.661,0.283203
+"Kenai River","Lower","0","Chinook","2016","Mid-Summer",180,214,2.1517724,2.181,0.253998
+"Kenai River","Lower","0","Chinook","2016","Late Summer",214,244,2.181339,3.311,0.424072
+"Kenai River","Lower","0","Coho","2015","Mid-Summer",204,225,1.1686376,1.35,0.181244
+"Kenai River","Lower","0","Coho","2016","Late Summer",214,244,1.4599825,1.463,0.125244
+"Kenai River","Middle","0","Chinook","2015","Mid-Summer",205,229,2.0957217,2.733,0.380981
+"Kenai River","Middle","0","Chinook","2016","Late Summer",215,248,2.4218063,2.436,0.23941
+"Kenai River","Middle","0","Coho","2015","Mid-Summer",205,229,1.0364518,1.258,0.171875
+"Kenai River","Middle","0","Coho","2016","Late Summer",215,248,1.2035601,1.331,0.145294
+"Ptarmigan Creek","Lower","0","Chinook","2016","Mid-Summer",183,223,3.1991386,4.534,0.368164
+"Ptarmigan Creek","Lower","0","Coho","2016","Late Summer",223,261,3.0674263,3.124,0.129883
+"Ptarmigan Creek","Lower","1","Coho","2016","Early Summer",157,183,3.9226176,5.532,0.39267
+"Ptarmigan Creek","Lower","1","Coho","2015","Early Summer",174,211,4.2220785,5.042,0.278397
+"Ptarmigan Creek","Lower","1","Coho","2016","Mid-Summer",183,223,5.5323586,7.749,0.352226
+"Ptarmigan Creek","Lower","1","Coho","2015","Mid-Summer",211,237,5.0419971,6.193,0.349335
+"Ptarmigan Creek","Middle","1","Coho","2015","Early Summer",175,197,7.6373639,5.563,0.011749
+"Ptarmigan Creek","Middle","1","Coho","2016","Mid-Summer",184,224,8.0080209,9.355,0.296356
+"Ptarmigan Creek","Middle","1","Coho","2015","Mid-Summer",197,238,5.5635839,7.416,0.399918
+"Russian River","Lower","0","Chinook","2016","Early Summer",152,200,1.3307592,3.217,0.312546
+"Russian River","Lower","0","Coho","2016","Mid-Summer",200,222,1.7677993,2.072,0.267883
+"Russian River","Lower","0","Coho","2016","Late Summer",222,246,2.0717025,1.797,0.12262
+"Russian River","Lower","1","Coho","2016","Early Summer",152,200,3.6564489,5.803,0.370995
+"Russian River","Middle","0","Coho","2015","Early Summer",170,196,1.1239285,1.439,0.31427
+"Russian River","Middle","0","Coho","2016","Mid-Summer",182,219,1.3751969,2.855,0.460632
+"Russian River","Middle","0","Coho","2015","Mid-Summer",196,224,1.4390184,1.95,0.367188
+"Russian River","Middle","0","Coho","2016","Late Summer",219,247,2.8550191,2.628,0.201965
+"Russian River","Middle","1","Coho","2016","Early Summer",153,182,4.6537489,6.813,0.453751
+"Russian River","Middle","1","Coho","2015","Early Summer",170,196,4.9591211,8.456,0.62751
+"Russian River","Middle","1","Coho","2016","Mid-Summer",182,219,6.8129218,9.381,0.469536
+"Russian River","Middle","1","Coho","2015","Mid-Summer",196,224,8.455798,10.46,0.481636
+"Russian River","Upper","0","Coho","2015","Early Summer",167,202,0.9862471,1.612,0.347412
+"Russian River","Upper","0","Coho","2016","Mid-Summer",190,217,1.5774301,2.153,0.353607
+"Russian River","Upper","0","Coho","2015","Mid-Summer",202,232,1.611731,1.892,0.320221
+"Russian River","Upper","0","Coho","2016","Late Summer",217,255,2.152696,2.531,0.252792
+"Russian River","Upper","1","Coho","2015","Early Summer",167,202,3.6828119,7.429,0.581573
+"Russian River","Upper","1","Coho","2016","Mid-Summer",190,217,9.7194748,8.288,0.211792

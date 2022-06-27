@@ -1,0 +1,2721 @@
+# Bioenergetics Results Analysis
+
+This document is initiated on 12/3/18.  It intends explore the following questions:
+
+* degree of agreement in results for between old and new parameters
+* degree of agreement in results for empirical vs modeled size & growth rate
+* degree of change in growth & size from current conditions under various temperature & consumption scenarios
+* effect sizes of various predictors of growth/size
+
+This document intends to incorporate any useful code from older documents "bioenerg_results_analsysis_v2.Rmd" and "bioenerg&growth_results_analsysis_v3.1.Rmd". 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache=TRUE, collapse=TRUE)
+```
+
+R Session Info
+```{r session info, echo = TRUE, collapse = TRUE}
+sessionInfo()
+```
+
+<br>
+
+Load pkgs
+```{r initialize script, include=FALSE}
+
+# clear environment
+rm(list=ls())
+
+#require packages
+library(googlesheets4)
+library(tidyverse)
+library(forcats)
+library(lubridate)
+library(DT)
+library(dplyr)
+library(broom)
+library(tidyr)
+library(ggrepel)
+library(ggpmisc)
+library(janitor)
+library(stringr)
+library(stringi)
+library(FSA)
+library(cowplot)
+library(nnet)
+library(knitr)
+library(anytime)
+library(ggridges)
+library(Matrix)
+library(nloptr)
+library(lme4)
+library(plotrix)
+library(ggpubr)
+#library(rsay)
+library(reshape2)
+suppressMessages(library(dplyr))
+
+# detach("package:MASS", unload=TRUE) #pkg masks some dplyr functions
+
+select <- dplyr::select
+
+```
+
+<br>
+
+Plotting themes
+```{r plotting theme, echo = TRUE, include = FALSE}
+
+# custom plotting themes
+
+# create an overall plotting theme
+bm_theme <- theme(plot.title = element_text(size= 26, face = "bold"),        # plot title
+                  axis.text.x = element_text(size=10),
+                  axis.text.y = element_text(size=10),                       # x axis text
+                  axis.title.x = element_text(size=16),                      # x axis title
+                  axis.title.y = element_text(size=16)) +                    # y axis title
+  theme(strip.text = element_text(face="bold", size=12),
+        strip.background = element_rect(fill="lightblue", 
+                                        colour="black",size=1)) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) 
+
+# variant theme WITHOUT angled x-axis labels
+bm_theme_1 <- theme(plot.title = element_text(size= 26, face = "bold"),        # plot title
+                  axis.text.x = element_text(size=10),
+                  axis.text.y = element_text(size=10),                       # x axis text
+                  axis.title.x = element_text(size=16),                      # x axis title
+                  axis.title.y = element_text(size=16)) +                    # y axis title
+  theme(strip.text = element_text(face="bold", size=12),
+        strip.background = element_rect(fill="lightblue", 
+                                        colour="black",size=1)) 
+
+# new plotting theme
+bm_theme_2 <- theme(plot.title = element_text(size= 26, face = "bold"),        # plot title
+                  axis.text.x = element_text(size=14, face = "bold"),
+                  axis.text.y = element_text(size=12, face = "bold"),                       # x axis text
+                  axis.title.x = element_text(size=20, face = "bold"),                      # x axis title
+                  axis.title.y = element_text(size=20, face = "bold")) +                    # y axis title
+  theme(strip.text = element_text(face="bold", size=19),
+        strip.background = element_rect(fill = "white",colour="black",size=1)) #+
+  #theme(axis.text.x = element_text(angle = 35, hjust = 1)) 
+
+
+# new plotting theme, smaller y facet labels, angled x axis tic labels
+bm_theme_3 <- theme(plot.title = element_text(size= 26, face = "bold"),        # plot title
+                  axis.text.x = element_text(size=14, face = "bold"),
+                  axis.text.y = element_text(size=12, face = "bold"),               # x axis text
+                  axis.title.x = element_text(size=18, face = "bold"),               # x axis title
+                  axis.title.y = element_text(size=20, face = "bold")) +              # y axis title
+  theme(strip.text = element_text(face="bold", size=10),
+        strip.background = element_rect(fill="white", 
+                                        colour="black",size=1)) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) 
+
+bm_theme_4 <- theme(plot.title = element_text(size= 26, face = "bold"),        # plot title
+                  axis.text.x = element_text(size=16, face = "bold"),
+                  axis.text.y = element_text(size=16, face = "bold"),                 # x axis text
+                  axis.title.x = element_text(size=20, face = "bold"),               # x axis title
+                  axis.title.y = element_text(size=20, face = "bold")) +             # y axis title
+  theme(strip.text = element_text(face="bold", size=24),
+        strip.background = element_rect(colour="black",size=1)) 
+
+# Correct Facet Labels
+#age
+age_facets <- c(
+  `0` = "Age 0",
+  `1` = "Age 1",
+  `2` = "Age 2"
+  )
+# rivers
+river_facets <- c(
+  `Beaver Creek` = "Beaver Creek",
+  `Russian River` = "Russian River",
+  `Ptarmigan Creek` = "Ptarmigan Creek",
+  `Kenai River` = "Kenai River"
+  )
+
+# create generic names for watersheds
+stream_facets <- c(
+  "Beaver Creek" = "Lowland", 
+    "Russian River" = "Montane",
+    "Ptarmigan Creek" = "Glacial", 
+    "Kenai River" = "Main Stem")
+
+```
+
+<br>
+
+Prep formula labels for plotting
+```{r}
+# prep formula labels
+
+# formula structure
+formula <- y ~ x
+
+# formula and r2 labels
+formula_labels <- stat_regline_equation(aes(label = paste("atop(",..eq.label.., ",", ..adj.rr.label.., ")", sep = "")),
+              formula = formula, 
+               rr.digits = 2, 
+               coef.digits = 2, 
+               parse = TRUE,
+               size = 3,
+               geom = "label", 
+               alpha = 0.8)
+
+```
+
+
+When did sampling occur?  What are the season lengths? How many fish were caught? See figures/tables in "fish_growth_size_v4.Rmd" [not included in this bookdown documents in 2022].
+
+<br>
+
+
+
+A.) Import Bioenergetics simulation results that used 2015-2016 empirical data inputs
+
+<br>
+
+Import results from 2015-2016 bioenergtics simulations (v4.1) (new and old parameters)
+```{r, echo = F}
+
+# choose columns to retain
+cols_retain <- c("run_name","first_day","last_day","species_txt","year","season","site","spp","age","initial_w","final_weight_g","fit.to","fit.to.value","p_value","total_consumption_g","cum_cons_pop_g")
+
+## old parameters full results
+dir_results <- "other/FB4_1.1.3_2015_2016.1/FB4_2015_2016_models_old_parameters.csv"
+
+# OLD (Stewart & Ibarra)
+# read in bionegetics results from old parameters
+old_param_results <- read.csv(dir_results) %>%
+  clean_names() %>%
+  # create factors of interest from simulation name
+  separate(col = run_name, into = c("year","season","site","spp","agex","age"), 
+           sep = "\\_", remove = F) %>%
+  # retain relevant columns
+  select(one_of(cols_retain)) %>%
+  mutate(parameters = "stewart_ibarra")
+
+# NEW (Plumb & Moffitt)
+# import simulated mass-specific growth values from new-parameters results
+new_param_result <- "other/FB4_1.1.3_2015_2016.1/FB4_2015_2016_models_new_parameters.csv"
+
+# NEW (Plumb & Moffit)
+# read in bionegetics results from old parameters
+new_param_results <- read.csv(new_param_result) %>%
+  clean_names() %>%
+  # create factors of interest from simulation name
+  separate(col = run_name, into = c("year","season","site","spp","agex","age"), 
+           sep = "\\_", remove = F) %>%
+  # retain relevant columns
+  select(one_of(cols_retain)) %>%
+  mutate(parameters = "plumb_moffit") 
+
+# join results from new and old parameters into same dataframe
+results <- bind_rows(old_param_results,new_param_results) 
+  
+# join julian day temporal extents to generic SimDay info
+## read in observed diets output matching table, retain relevant temporal extent info
+sim_julian_days <- read.csv("other/outputs/observed_diet_proportions.csv") %>%
+  select(spp,age,site,year,season,sim.start,sim.end) %>%
+    transform(sim.start = yday(sim.start),
+              sim.end = yday(sim.end)) %>%
+  mutate(run_name = paste0(year,"_",season,"_",site,"_",spp,"_Age_",age)) %>%
+  select(sim.start,sim.end, run_name)
+
+
+## join 2015-2016 sim results back to julian days
+results <- left_join(results,sim_julian_days, by="run_name") %>%
+  # clarify these are from simulations from field observations
+  mutate(scenario = "observed",
+         consumption_scenario = "observed")
+
+```
+
+<br>
+
+Double-check: do we have any 2015-2016 simulations wherein final size is smaller than start size?
+```{r, echo = F}
+
+z1 <- results %>%
+  group_by(run_name) %>%
+  mutate(weight_diff_g = as.numeric(final_weight_g) - as.numeric(initial_w)) %>%
+  filter(weight_diff_g < 0) %>%
+  nrow() %>%
+  as.character()
+
+```
+
+<br>
+
+There are `r z1` seasonal simulations in which end size is less than start size. Includes simulations with unique parameters for old (stewart & ibarra) and new (plumb & moffit).
+
+
+<br>
+
+Note 6/5/19
+
+For the simulations using projected temperatures, we used initial weights from the earliest start date as starting weight values, and fit the simulations to the Cmax values output from simulations with 2015-2016 observed food & temperature inputs.
+
+We used the Cmax values from the simulations run using the Stewart and Ibarra parameters; rationale: high temps dictating need for P & M parameters very rarely occurred...
+
+
+B.) Import Bioenergetics results using projected/downscaled temperature inputs and food consumption scenarios
+
+```{r}
+
+cols_retain <- c("run_name","first_day","last_day","species_txt","year","season","site","spp","age","initial_w","fit.to","fit.to.value","p_value","final_weight_g","total_consumption_g","cum_cons_pop_g","scenario","consumption_scenario","parameters")
+
+## old parameters full results
+dir_results <- "other/FB4_1.1.3_projected.1/FB4_projected_models_old_parameters.csv"
+
+# OLD (Stewart & Ibarra)
+# read in bionegetics results from old parameters
+old_param_results_projected <- read.csv(dir_results) %>%
+  clean_names() %>%
+  mutate(parameters = "stewart_ibarra")
+
+# NEW (Plumb & Moffitt)
+new_param_result_projected <- "other/FB4_1.1.3_projected.1/FB4_projected_models_new_parameters.csv"
+# read in bionegetics results from old parameters
+new_param_results_projected <- read.csv(new_param_result_projected) %>%
+  clean_names() %>%
+  mutate(parameters = "plumb_moffit")
+
+
+# join results from new and old parameters into same dataframe
+results_projected <- bind_rows(old_param_results_projected,new_param_results_projected) %>%
+  # create factors of interest from simulation name
+  separate(col = run_name, into = c("consumption_scenario","foo","scenario","year1","year2","site","spp","agex","age"), 
+           sep = "\\_", remove = F) %>%
+  mutate(year = paste0(year1,"_",year2)) %>%
+  # retain relevant columns
+  select(one_of(cols_retain))
+
+
+# join julian day temporal extents to generic SimDay info
+## read in observed diets output matching table, retain relevant temporal extent info
+sim_julian_days_projected <- read.csv("other/outputs/observed_diet_proportions.csv") %>%
+  transform(sim.start = yday(sim.start),
+              sim.end = yday(sim.end)) %>%
+  # get avg start day between 2015 and 2016
+  group_by(spp,age,site) %>%
+  summarise(avg_start_day = as.integer(mean(sim.start))) %>%
+  # prep for join
+  transform(age = as.character(age))
+
+
+## join mean sim start julian day back to projected results
+results_projected <- left_join(results_projected,sim_julian_days_projected) %>%
+  rename(sim.start = avg_start_day) %>%
+  mutate(sim.end = sim.start + last_day,
+         season = "all_seasons") 
+
+```
+
+<br>
+
+join results from simulations with empirical inputs to simulations with projected inputs 
+```{r, echo = F}
+# join
+dat <- bind_rows(results, results_projected)
+
+# generate column w/ stream name
+dat %<>%
+  separate(site,into = c("reach","river1","river2"), sep = " ",remove = F) %>%
+  mutate(stream_name = paste(river1,river2)) %>%
+  select(-river1,-river2)
+```
+
+<br>
+
+Table S3
+```{r}
+# generate table S3: start/end days & weights + pval for each sim
+obs_sim_results <- dat %>%
+  filter(parameters == "stewart_ibarra",
+         year %in% c("2015","2016")) %>%
+  select(stream_name,reach,age,spp,year,season,sim.start,sim.end,initial_w,final_weight_g,p_value) %>%
+  arrange(stream_name,reach,spp,age,sim.start) %>%
+  rename(Watershed = stream_name,
+         Reach = reach,
+         Age = age,
+         Species = spp,
+         Year = year,
+         Season = season,
+         `Start Day` = sim.start,
+         `End Day` = sim.end,
+         `Initial Weight (g)` = initial_w,
+         `End Weight (g)` = final_weight_g,
+         `P-value` = p_value)
+
+write.csv(obs_sim_results,"other/outputs/obs_sim_results.csv",row.names = F)
+
+```
+
+<br>
+
+Table S5
+```{r}
+pct_chg_tbl <- dat %>%
+  filter(scenario != "observed",
+         parameters == "stewart_ibarra") %>%
+  mutate(population = paste("Age",age,spp)) %>%
+  select(stream_name,reach,population,year,scenario,consumption_scenario,final_weight_g) %>%
+  pivot_wider(names_from = "year", values_from = "final_weight_g") %>%
+  unchop(everything()) %>%
+  pivot_longer(cols = c("2030_2039","2060_2069"), names_to = "year", values_to = "final_mass_g") %>%
+  
+  # calc change in final size among scenarios
+  mutate(pct_chg_mass = ((final_mass_g - `2010_2019`) / `2010_2019`)) %>%
+
+  
+  # fix naming for sim periods, consumption, climate scenarios
+  mutate(year = case_when(
+    year == "2030_2039" ~ "2030-2039",
+    year == "2060_2069" ~ "2060-2069"),
+    consumption_scenario = case_when(
+    consumption_scenario == "mean" ~ "Mean",
+    consumption_scenario == "20minus" ~ "-20%",
+    consumption_scenario == "20plus" ~ "+20%"),
+    scenario = case_when(
+      scenario == "rcp60" ~ "RCP 6.0",
+      scenario == "rcp85" ~ "RCP 8.5"
+    )) %>%
+  
+  # rename cols
+  rename(Watershed = stream_name,
+         Reach = reach,
+         Population = population,
+         `Simulation Period` = year,
+         `Climate Scenario` = scenario,
+         `Food Consumption Scenario` = consumption_scenario,
+         `Percent Change in Mass` = pct_chg_mass) %>%
+  select(-`2010_2019`,-final_mass_g) %>%
+  relocate(Watershed,Reach,Population,
+           `Simulation Period`,`Climate Scenario`,`Food Consumption Scenario`,
+           `Percent Change in Mass`) %>%
+  arrange(Watershed,Reach,Population,
+           `Simulation Period`,`Climate Scenario`,`Food Consumption Scenario`) 
+
+# adorn w/ % signs the table for export
+pct_chg_tbl_adorn <- pct_chg_tbl%>%
+    adorn_pct_formatting(cols = `Percent Change in Mass`, digits = 2)
+
+# export table
+write.csv(pct_chg_tbl_adorn,"other/outputs/pct_chg_tbl.csv",row.names = F)
+
+```
+
+<br>
+
+Table 4
+```{r}
+pct_chg_summ_tbl <- pct_chg_tbl %>%
+  group_by(Watershed,`Simulation Period`) %>%
+  summarise(n = n(),
+            mean = round(mean(`Percent Change in Mass`*100), digits = 2),
+            stdev = sd(`Percent Change in Mass`),
+            Max = max(`Percent Change in Mass`),
+            Min = min(`Percent Change in Mass`)) %>%
+  adorn_pct_formatting(cols = c("stdev","Min","Max"), digits = 2) %>%
+  mutate(`Mean ± SD` = paste(mean,"±",stdev)) %>%
+  select(-mean,-stdev) %>%
+  ungroup() %>%
+  select(Watershed,`Simulation Period`,n,`Mean ± SD`,Max,Min)
+
+# export
+write.csv(pct_chg_summ_tbl,"other/outputs/pct_chg_summ_tbl.csv",row.names = F)
+```
+
+
+
+Notes on choice of parameter values
+
+From Davis et al. 2018:
+
+"We used Stewart and Ibarra’s (1991) parameter values, which were adapted for Chinook Salmon from a Coho Salmon bioenergetics model. Although these parameters were originally calibrated for adult fish, they have accurately predicted juvenile Chinook Salmon growth in laboratory and environmental settings (Brodeur et al. 1992; Madenjian et al. 2004). Recent studies have found that Stewart and Ibarra’s (1991) parameters overestimate the metabolic consequences of higher temperatures on subyearling Chinook Salmon, so we used modified temperature-dependent consumption parameters (Plumb and Moffitt 2015) when simulation temperatures were > 18 ̊C to minimize parameter error (Table S.2)"
+
+<br>
+
+The above "dat" df contains projected results from simulations using both "new parameters" and "old parameters" and p-values output from the 2015-2016 simulations.  Following the  Davis. et al example, we could generate results columns (weight and msg) in which results use Old parameters for T < 18C, and New parameters for T > 18C.  
+
+NOTE: (just one day each in 2015 and 2016, MRR site) of our daily mean temperatures form 2015-2016 are greater than 18C, same for 2030 and 2060 decade monthly avg temperatures.  While MWAT and MWMT values from empirical observations indicate temperatures greater than 18C, for purposes of inputs modeling future scenarios, use of seperate "new" parameters is is not indicated.
+
+(Also: some 2015-2016 instantaneous values are >18 C.)
+
+NOTE: 6/5/19 - since we are fitting simulations to Cmax values for projected temperatures, application of the new vs old parameters would involve use of output from two different simulations.  The data would be discontinuous.  The conditional use can/could still apply to the 2015/2016 data, but there are no SimDays where mean temps are >18C !  So, no point to this exercise below for now.
+
+
+7/11/19 -- what about in future scenarios? do we have mean >18 days???
+
+No.  See "air_water_temps.Rmd" appx line 1530.   No need for conditional use of two sets of parameters.
+
+
+<br>
+
+```{r}
+# mutate results columns that use old parameters for T<=18C, new parameters for T>=18C
+#dat <- dat %>%
+  # mass-specific growth
+ # mutate(msg.fnl = ifelse(Temperature.C >= 18, 
+  #                        msg_new_param, 
+   #                       msg_old_param),
+  # weight
+    #     wt_g.fnl = ifelse(Temperature.C >= 18,
+     #                      wt_g_new_param,
+      #                     wt_g_old_param)) 
+
+  
+# specific growth rate and fish weight values now incorporate both Stewart and Ibarra as well as Plumb and Moffit parameters, depending on temperature
+#dat %>%
+ # filter(year %in% c("2015","2016")) %>%
+  #ggplot(aes(Temperature.C,msg.fnl,color = as.factor(age))) +
+  #geom_jitter(width = 0.05) 
+
+# range of mass-specific growth rate values
+#(range(results$Specific.Growth.Rate.g.g.d.fnl))
+```
+
+
+<br>
+
+
+```{r, echo = F}
+
+#Visualize results from new vs old parameters for 2015-2016 data.
+
+# Plot shape of results from new vs. old parameters using results from 2015-2016 data
+
+
+# mass-specific growth parameters comparison
+#dat %>%
+#  filter(year %in% c("2015","2016")) %>%
+#  ggplot(aes(site,p_value)) +
+#  geom_point() +
+#  facet_grid(.~parameters)
+#  geom_smooth(method = "lm") +
+#  formula_labels +
+#  ggtitle("Old vs. New Parameters\nMass-Specific Growth")
+
+# plot mass-specific growth vs temperature
+#dat %>%
+#  filter(year %in% c("2015","2016")) %>%
+#  select(Temperature.C,msg_old_param,msg_new_param) %>%
+#  gather(response,value,msg_old_param,msg_new_param) %>%
+#  ggplot(aes(Temperature.C,value)) +
+#  geom_point() +
+#  facet_grid(.~response)
+
+# weight parameters comparison
+#dat %>%
+#  filter(year %in% c("2015","2016")) %>%
+#  ggplot(aes(wt_g_old_param,wt_g_new_param,color = Temperature.C)) +
+#  geom_point() +
+#  geom_smooth(method = "lm") +
+#  formula_labels +
+#  ggtitle("Old vs. New Parameters\nWeight")
+
+
+# remove extraneous columns
+#dat <- dat %>% select(-wt_g_new_param,-msg_new_param)
+
+# remove unneeded dataframes
+#rm(sim_dates,new_param_results,old_param_results)
+
+```
+
+<br>
+
+***
+***
+
+What was the Cmax value associated with each simulation?  (Output from 2015-2016 data)
+```{r}
+
+z <- dat %>%
+  select(p_value,parameters,scenario,consumption_scenario,
+         year,season,site,spp,age) %>%
+  pivot_wider(names_from = "parameters", values_from = "p_value") %>%
+  unchop(everything())
+
+# plot old vs new paramter Cmax values
+#cmax %>%
+#  ggplot(aes(old_param_pval,new_param_pval)) +
+#  geom_point() +
+#  geom_smooth(method = "lm") +
+#  xlim(0,1) +
+#  ylim(0,1) +
+#  formula_labels +
+#  ggtitle("Cmax values\n Old vs New Bioenergetics Parameters") 
+
+
+# join mean temperature from each simulation ("season") to Cmax values
+#season_mean_h2o <- gs_read(gs_title("sim_extents_by_site")) %>% 
+#  select(season,year,Site,season_avg_temp,season_se_temp,season_max_temp,maxseason7roll,maxseason3roll) 
+
+# prep dataframe for plot
+cmax_temp <- left_join(cmax, season_mean_h2o, by = c("year","season","Site")) %>%
+  separate(Site, sep = " ", into = c("Reach","river1","river2"), remove = F) %>%
+  mutate(Stream_Name = paste(river1, river2)) %>%
+  select(-river1,-river2) %>%
+  transform(year = as.factor(year)) %>%
+  rename(site = Site) %>%
+  # remove column with "new" parameters p-vals
+  select(-new_param_pval,-Reach) %>%
+  # create population name
+  separate(Simulation,remove = F, sep = "_", into = c("a","b","c","d","e","f")) %>%
+  mutate(population = paste(site,e,f,d)) %>%
+    select(-one_of(c("a","b","c","d","e","f")))
+
+# create column of cmax values in overall data frame
+dat <- left_join(dat,cmax_temp,by = c("Simulation","season","site","year"))
+
+
+
+### plotting
+
+
+# gather temp stat values
+cmax_temp <- cmax_temp %>%
+  gather(temp_stat,temp_stat_value,season_avg_temp,
+                                   season_max_temp,
+                                   maxseason7roll,
+                                   maxseason3roll) 
+
+# prep df of points to highlight
+lab_df <- cmax_temp %>%
+  filter(population %in% "Middle Kenai River Age 0 Chinook")
+
+# plot cmax values vs. season mean temp
+cmax_temp %>%
+  ggplot(aes(temp_stat_value,old_param_pval)) +
+  geom_point(aes(color = ifelse(cmax_temp$population == "Middle Kenai River Age 0 Chinook","red","black"))) +
+  #geom_point(lab_df,aes(temp_stat_value,old_param_pval), colour="red", size=5)
+  geom_smooth(method = "lm") + 
+  formula_labels +
+  facet_grid(.~temp_stat) +
+  #formula_labels +
+  xlim(10,16) +
+  labs(color = "test")
+
+# note: if we need a column witht eh pvals used to fit the simulatins with projected temperatures, we can acquire that from results in the local directory at this point
+
+cmax_temp %>%
+  distinct(Simulation,old_param_pval) %>%
+  summarise(max_P = max(old_param_pval),
+            min_P = min(old_param_pval),
+            mean_P = mean(old_param_pval),
+            sd_P = sd(old_param_pval))
+
+```
+
+<br>
+
+Plot mean seasonal temps vs mean seasonal growth rate(s)
+```{r}
+
+ p <- dat %>%
+  filter(scenario == "observed") %>%
+  group_by(Simulation,Stream_Name,population) %>%
+  summarise(mean_gr = mean(msg_old_param),
+            se_gr = std.error(msg_old_param),
+            mean_temp = mean(Temperature.C),
+            se_temp = mean(Temperature.C)) %>%
+  ggplot(aes(mean_temp,mean_gr, color = Stream_Name)) +
+  geom_point() 
+
+p
+
+p + facet_grid(.~ Stream_Name)
+
+```
+
+<br>
+Create supplemental information  table for manuscript of empirical simulation inputs & consumption estimates
+
+
+
+
+<br>
+
+How well do our empirical size/growth values predict modeled values?
+
+* a.) seasonal growth rates
+* b.) size at day
+* c.) size at last common day to all sites/years
+
+<br>
+
+a.) seasonal growth rates modeled vs empirical
+```{r}
+
+# import empirical growth rates
+empirical_growth <- gs_read(gs_title("kenai_growth_rates")) %>% 
+  rename(msg_empirical = value) %>%
+   mutate(season = fct_recode(as.factor(season),         #code sampling events as seasons
+                             "Early Summer"="1", 
+                             "Mid-Summer" = "2",
+                             "Late Summer" ="3",
+                             "Fall" = "4")) %>%
+  mutate(Simulation = paste0(year,"_",season,"_",site,"_",spp,"_","Age","_",age)) %>%
+  transform(year = as.factor(year)) %>%
+  select(Simulation,msg_empirical)
+
+
+# join to overall dat table
+dat <- left_join(dat,empirical_growth) %>%
+  rename(msg_bioenerg = msg_old_param,
+         wt_g_bioenerg = wt_g_old_param) 
+
+# plot empirical vs modeled growth rates
+ p <- dat %>%
+  ggplot(aes(msg_empirical,msg_bioenerg)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  formula_labels +
+  labs(x = expression("Empirical Daily Growth Rate (g·g"^{-1}*"·d"^{-1}*")")) +
+  labs(y = expression("Modeled Daily Growth Rate (g·g"^{-1}*"·d"^{-1}*")")) 
+ 
+ # plots
+ p
+ p + facet_grid(.~age)
+ p + facet_wrap(.~site)
+
+```
+
+<br>
+
+
+b.) empirical size at day vs modeled size at capture day
+```{r}
+
+# compare mean size at doy of sample event to simulated size at same doy in simulation
+
+# include this data for plotting / visualization purposes
+
+# create column of empirical start/end weights for each simulation
+
+## read in observed start sizes for each sim
+wts <- gs_read(gs_title("fish_size_data")) %>%
+  group_by(season,river_reach,age,spp,year) %>%
+  summarise(avg_wt_g = mean(backcal.wts),
+            se_wt_g = std.error(backcal.wts),
+            doy = min(doy)) %>%
+  rename(site = river_reach) %>%
+  transform(age = as.character(age),
+            year = as.character(year)) 
+
+# coho
+wts %>%
+  filter(spp == "Coho") %>%
+  ggplot() +
+  geom_point(aes(doy,avg_wt_g)) +
+  geom_line(aes(doy,avg_wt_g, color = age)) +
+  # code not functioning!
+ # geom_errorbar(aes(ymin = avg_wt_g - se_wt_g, 
+  #                  ymax = avg_wt_g + se_wt_g), colour="black", width=3, size=1.1) +
+  facet_grid(site~year) +
+  ggtitle("Mean Coho Weight by Season")
+
+# chinook
+wts %>%
+  filter(spp == "Chinook") %>%
+  ggplot() +
+  geom_point(aes(doy,avg_wt_g)) +
+  geom_line(aes(doy,avg_wt_g, color = age))+
+  facet_grid(site~year) +
+  ggtitle("Mean Chinook Weight by Season")
+
+# join individual fish weight data to overall dataframe
+## prep df of observed fish weight
+obs_wts <- gs_read(gs_title("fish_size_data")) %>%
+  rename(site = river_reach) %>%
+  select(site,year,spp,age,Date,doy,wt_g,backcal.wts) %>%
+  transform(age = as.character(age),
+            year = as.character(year))
+
+## prep df of bioenerg results weights
+bioenerg_pres <- dat %>%
+  filter(scenario == "observed")
+ 
+## join observed weights to simulated weights
+xdat <- left_join(bioenerg_pres, obs_wts, by = c("site","age","spp","year","doy"))
+
+### plot observed vs simulated weight
+xdat %>%
+  ggplot(aes(wt_g,wt_g_bioenerg)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  formula_labels +
+  ggtitle("Observed vs. Simulated Weights")
+
+### plot observed vs simulated weight
+xdat %>%
+  ggplot(aes(log(wt_g),log(wt_g_bioenerg))) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  formula_labels +
+  ggtitle("Log-Transformed Observed vs. Simulated Weights")
+```
+
+<br>
+
+c.) size at common final day (e.g. "growth potential"?), empirical vs modeled 
+
+```{r}
+# in fish_growth_size_v4.Rmd we calculated that final date of year with size data available to all sites/years is 218 (August 6th) (day is calculated in the script "fish_growth_size_v4.Rmd")
+
+# so on this day, we have actual observations from just one site.  This was the earliest final visit in the study.  At the rest of the sites we have a weight value from a linear interpolation of the last two annually sequential site visits
+
+
+# import interpolated values from last date common to all sites (gs_sheet output from fish_growth_size_v4.Rmd)
+# doy common to all sites/years == 218
+
+empirical_218 <- gs_read(gs_title("fish_weight_doy_218")) %>%
+  transform(year = as.character(year)) %>%
+  rename(site = river_reach,
+         Stream_Name = river) %>%
+  transform(age = as.character(age))
+
+# reduce overall dataframe of modeled size values to those from the 2015-2016 timeframe scenarios
+dat_218 <- dat %>%
+  filter(year %in% c("2015","2016"))
+
+# match empirical size at doy 218 with modeled size at doy 218
+size_218 <- left_join(dat_218,empirical_218,by = c("site","spp","age","doy","Stream_Name")) 
+
+# plot interpolated weights at doy = 218 vs bioenergteics model result doy = 218 
+size_218 %>%
+  ggplot(aes(inter_backcal.wt,wt_g_bioenerg)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_grid(spp ~ age, scales = "free") +
+  formula_labels +
+  ggtitle("Interpolated vs. Simulated Size on August 6th")
+
+size_218 %>%
+  ggplot(aes(inter_backcal.wt,wt_g_bioenerg)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_grid(.~ age, scales = "free") +
+  formula_labels +
+  ggtitle("Interpolated vs. Simulated Size on August 6th")
+
+size_218 %>%
+  ggplot(aes(inter_backcal.wt,wt_g_bioenerg)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  formula_labels +
+  stat_fit_glance(method = 'lm',
+                       label.x = "right",
+                       label.y = "bottom",
+                       method.args = list(formula = formula),
+                       geom = 'text',
+                       aes(label = paste("P-value = ", signif(..p.value.., digits = 4), 
+                                         sep = ""))) +
+  
+  ggtitle("Interpolated vs. Simulated Size on August 6th")
+
+```
+
+Good agreement between empirical (interpolated) values for size at doy = 218 for age 0 fish, poorer agreement for age 1 fish.
+
+
+<br>
+
+```{r}
+
+z <- dat %>%
+  filter(scenario == "observed") %>%
+  group_by(year,spp,age,site,season,old_param_pval,msg_empirical,Stream_Name) %>%
+  summarise(start_wt = min(wt_g_bioenerg),
+            end_wt = max(wt_g_bioenerg),
+            start_day = min(doy),
+            end_day = max(doy)) %>%
+  ungroup() %>%
+  select(Stream_Name,site,spp,age,year,season,start_day,end_day,start_wt,end_wt,old_param_pval) %>%
+  # sort seasons sequentially
+  mutate(event.num = fct_recode(season,
+                                "1" = "Early Summer",
+                                "2" = "Mid-Summer",
+                                "3" = "Late Summer")) %>%
+  arrange(Stream_Name,site,spp,age,year,event.num) %>%
+  # create reach column
+  separate(site, sep = " ", into = c("Reach"))
+
+# copy results directly to MS word table
+
+```
+
+
+
+<br>
+
+How does growth rate compare under observed  and +/ scenarios
+```{r}
+# re create stream_name
+dat <- dat %>% 
+  separate(site,into = c("a","b","c"), remove = F) %>%
+  mutate(Stream_Name = paste(b,c)) %>%
+  select(-a,-b,-c)
+
+# rename consumption scenario facets
+cons_scen <- c("20minus" = "-20% Pobs",
+               "mean" = "Pobs",
+               "20plus" = "+20% Pobs")
+
+# manual order of facets
+dat$cmax_stat <- factor(dat$cmax_stat, levels = c("output","10plus","10minus","min","max","20minus","mean","20plus"))
+
+dat$Stream_Name <- factor(dat$Stream_Name, levels = c("Beaver Creek","Russian River","Ptarmigan Creek","Kenai River"))
+
+
+# plot
+ (z <- dat %>%
+  filter(cmax_stat %in% c("20minus","mean","20plus")) %>%
+  mutate(population = paste("Age",age,spp)) %>%
+  gather(growth_rate_type,growth_rate,msg_bioenerg,msg_empirical) %>%
+   filter(!is.na(growth_rate)) %>%
+  group_by(population,Stream_Name,cmax_stat) %>%
+   summarise(mean_gr = mean(growth_rate),
+             se_gr = std.error(growth_rate)) %>%
+  ggplot(aes(population,mean_gr)) +
+  geom_col() +
+  #geom_errorbar(aes(ymin = mean_gr - se_gr, ymax = mean_gr + se_gr),  colour="black", width=.2, size=.8) +
+  facet_grid(cmax_stat ~ Stream_Name, labeller = labeller(Stream_Name = stream_facets, cmax_stat = cons_scen)) +
+  theme_classic() +
+  bm_theme_4 +
+  theme(strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(angle = 90, size = 14)) +
+     xlab("") +
+     ylab("Growth Rate")
+     )
+
+```
+
+Column values are means from all sites within a drainage.  Error bars not showndue to small size.  Bars absent in cases where fish catch data was insufficient (e.g. Age 1 Coho Main Stem).
+
+
+
+
+Should we transform the response variable(s)?
+
+Visualize results vs time (weight & msg)
+
+
+a.) weight
+
+```{r}
+## visualize basic models
+### Should we log-transform the response variables(s): of our bioenergetics output to understand space/time trends?
+# a.) weight_g
+
+# a.) Weight
+# first: visualize.
+# all together
+dat %>%
+ggplot(aes(doy,wt_g_bioenerg)) +
+  geom_jitter(width = 1)+
+  geom_smooth(method = "lm") +
+  ggtitle("All Fish") +
+  formula_labels
+
+# segeregate ages
+dat %>%
+ggplot(aes(doy,wt_g_bioenerg)) +
+  facet_grid(~age) +
+  geom_jitter(width = 1)+
+  ggtitle("All Age 0 and Age 1 Fish") +
+  formula_labels
+
+# segregate by spp and age
+ p <- dat %>%
+ggplot(aes(doy,wt_g_bioenerg, color = site)) +
+  facet_grid(age~spp, scales = "free") +
+  geom_jitter(width = 1) +
+   ylim(0,25)
+ 
+# all fish 2015-2016 data; empirical inputs
+p %+% subset(dat,scenario %in% "observed") +
+  ggtitle("Modeled fish size\n2015-2016 inputs")
+
+# all fish, low-end temperature & -20% Cmax rate, 2010-2019
+p %+% subset(dat,cmax_stat %in% "20minus" & scenario %in% "rcp60" & year %in% "2010_2019") +
+  ggtitle("Modeled fish size\nMid-Range Climate and -20% Consumption\n2010 - 2019")
+
+# all fish, high end temperature & +20% Cmax rate
+p %+% subset(dat,cmax_stat %in% "20plus" & scenario %in% "rcp85" & year %in% "2060_2069") +
+  ggtitle("Modeled fish size\nRapid Change Climate and +20% Consumption\n2060 - 2069")
+
+
+# just age 0 chinook
+p %+% subset(dat,cmax_stat %in% "20plus" & scenario %in% "rcp85" & year %in% "2060_2069" & spp %in% "Chinook") +
+  ggtitle("Modeled Chinook size\nRapid Change Climate + +20% Consumption\n2060 - 2069")
+
+```
+
+<br>
+
+<br>
+
+Visualize differences among scenarios for just one population/site
+```{r}
+# rcp60
+dat %>%
+  mutate(Temp_Cons = paste0(scenario,"_",cmax_stat)) %>%
+  filter(site == "Lower Beaver Creek",
+         age == 1,
+         spp == "Coho",
+         scenario == "rcp60") %>%
+  ggplot(aes(doy,wt_g_bioenerg,color = year, shape = Temp_Cons)) +
+  geom_point(size = 1) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+  ggtitle("Lower Beaver Creek Age 1 Coho\nRCP 6.0 Scenario") +
+  theme_bw() +
+  xlim(145,255) +
+  ylim(3.9,14)
+
+# rcp8.5
+dat %>%
+  mutate(Temp_Cons = paste0(scenario,"_",cmax_stat)) %>%
+  filter(site == "Lower Beaver Creek",
+         age == 1,
+         spp == "Coho",
+         scenario == "rcp85") %>%
+  ggplot(aes(doy,wt_g_bioenerg,color = year, shape = Temp_Cons)) +
+  geom_point(size = 1.5) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+  ggtitle("Lower Beaver Creek Age 1 Coho\nRCP 8.5 Scenario") +
+  theme_bw() +
+  xlim(145,255) +
+  ylim(3.9,14)
+
+```
+
+<br>
+
+Create a figure of just one site/population
+```{r}
+# manual order of facets
+dat$cmax_stat = factor(dat$cmax_stat, levels = c("output","20minus","mean","20plus"))
+
+# facet titles
+temp_scen <- c("rcp60" = "Mid-Range\nEmissions (RCP 6.0)",
+              "rcp85"  = "Rapid Increase\nEmissions (RCP 8.5)")
+
+cons_scen <- c("20minus" = "Low\nFeeding Rate (-20%)",
+               "mean" = "Mean Feeding Rate",
+               "20plus" = "High\n Feeding Rate (+20%)")
+
+# example of just one
+dat %>%
+  mutate(Temp_Cons = paste0(scenario,"_",cmax_stat)) %>%
+  filter(site == "Lower Beaver Creek",
+         age == 1,
+         spp == "Coho",
+         Temp_Cons == c("rcp85_20plus","rcp60_20plus",
+                        "rcp85_20minus","rcp60_20minus",
+                        "rcp85_mean","rcp60_mean")) %>%
+  ggplot(aes(doy,wt_g_bioenerg,shape = year, color = year)) +
+  geom_point(size = 1.5) +
+  facet_grid(cmax_stat ~ scenario, scales = "free_y", 
+             labeller = labeller(scenario = temp_scen, 
+                                 cmax_stat = cons_scen)) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+      theme_bw() +
+  ggtitle("Lower Beaver Creek Age 1 Coho Simulation Results") +
+  xlim(145,255) +
+  xlab("Julian Day") +
+  ylab("Fish Weight (g)") +
+  labs(shape = "Decade") +
+  # facet labels
+  theme(strip.text.y = element_text(angle = 0, size = 12),
+        strip.text.x = element_text(size = 12),
+        panel.spacing = unit(1.1, "lines")) +
+  guides(col = FALSE)  
+
+
+ggsave("/Users/bmeyer/Google Drive/UAF Semesters/Thesis/Current Draft/Chapter 1/submissions/new submission/Figure images/example_model_results.png")
+
+# weight/growth is decreased for the 2060_2060 scenario.  why?  temperature threshold not being surpassed... what is cmax value and temp threshold for this sim? happens in all consumption scenarios.  wtf.
+
+
+```
+
+<br>
+
+Show figure using just final day of data
+```{r}
+# create function to exclude multiple criteria from same column, opposite of "%in%"
+'%notin%' <- Negate('%in%')
+
+# choose consumption scenarios to exclude
+cmax_stat_exclude <- c("output","10plus","10minus","min","max")
+
+# add "population" column
+dat <- dat %>%
+  mutate(population = paste(site,"Age",age,spp)) %>%
+  # remove non-used consumption scenarios
+  filter(cmax_stat %notin% cmax_stat_exclude)
+
+# climate scenario facet labels
+scen_facets <- c("rcp60" = "RCP 6.0","rcp85" = "RCP 8.5")
+
+#feeding scenario
+# scenario facet labels
+feeding_facets <- c("20minus" = "-20%\nFeeding Rate","20plus" = "+20%\nFeeding Rate", mean = "Mean\nFeeding Rate")
+
+# y axis facet labels
+pop_facets <- c("Lower Beaver Creek Age 1 Coho" = "Lower Beaver Creek\nAge 1 Coho",
+                "Middle Kenai River Age 0 Chinook" = "Middle Kenai River\nAge 0 Chinook")
+
+
+# where is mean consumption?!
+
+# plot
+dat %>%
+  filter(doy == 232) %>%
+  filter(population %in% c("Lower Beaver Creek Age 1 Coho",
+                           "Middle Kenai River Age 0 Chinook")) %>%
+  ggplot(aes(cmax_stat,wt_g_bioenerg,shape = year, group = year)) +
+  geom_point(size = 3.5, position = position_dodge(width = 0.8)) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+  scale_shape_discrete(breaks=c("2015_2016", "2010_2019", "2030_2039","2060_2069"),
+                         labels=c("2015-2016", "2010-2019", "2030-2039", "2060-2069")) +
+  scale_x_discrete(breaks=c("20minus", "mean", "20plus"),
+                      labels=c("-20%", "Mean", "+20%")) + 
+  ggtitle("") +
+  theme_bw() +
+  bm_theme_4 +
+  #ylim(3.9,14) +
+  xlab("Consumption") +
+  ylab("Fish Weight (g) on Sept. 4") +
+  facet_grid(population ~ scenario, labeller = labeller(scenario = scen_facets, population = pop_facets),
+             scales = "free") +
+  labs(shape = "Decade") +
+  # facet labels
+  theme(strip.text.x = element_text(size = 14),
+        strip.text.y = element_text(size = 14),
+        legend.title = element_text(size = 16, face = "bold"),
+        legend.text = element_text(size = 14),
+        panel.spacing = unit(1.1, "lines")) 
+
+# save to local disk
+ggsave("/Users/bmeyer/Google Drive/Thesis/Current Draft/Chapter 2/Chapter 2 Figures/growthfig.png", width = 10, height = 6)
+
+```
+
+
+<br>
+
+above plot v2
+```{r}
+# plot
+dat %>%
+  filter(doy == 232,
+         spp == "Chinook") %>%
+  ggplot(aes(year,wt_g_bioenerg, color = scenario)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+  scale_x_discrete(breaks=c("2015_2016", "2010_2019", "2030_2039","2060_2069"),
+                         labels=c("2015-2016", "2010-2019", "2030-2039", "2060-2069")) +
+ scale_fill_manual(values=c("rcp60","rcp85"), 
+                       labels=c("RCP 6.0", "RCP 8.5")) +
+  facet_grid(.~ cmax_stat, labeller = labeller(cmax_stat = feeding_facets)) +
+  ggtitle("") +
+  theme_bw() +
+  bm_theme_4 +
+  xlab("") +
+  ylab("Simulated Chinook Weight (g)\non Sept. 4") +
+  labs(color = "Climate\nScenario") +
+  # facet labels
+  theme(strip.text.x = element_text(size = 18),
+        axis.text.x = element_text(angle = 35,hjust = 1),
+        strip.text.y = element_text(size = 14),
+        legend.title = element_text(size = 16, face = "bold"),
+        legend.text = element_text(size = 14),
+        strip.background = element_rect(fill = "white"),
+        panel.spacing = unit(1.1, "lines")) 
+
+# save to local disk
+ggsave("/Users/bmeyer/Google Drive/Thesis/Current Draft/Chapter 1/Chapter 1 Figures/growthfig_v2.png", width = 10, height = 6)
+```
+
+<br>
+
+```{r}
+
+# plot
+p_dat <- dat %>%
+  filter(doy == 232) %>%
+  filter(population %in% c("Lower Beaver Creek Age 0 Chinook",
+                           "Middle Kenai River Age 0 Chinook"),
+         scenario != "rcp85") 
+
+(p <- p_dat %>%
+  ggplot(aes(year,wt_g_bioenerg, color = population)) +
+  geom_point(size = 6) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+  scale_x_discrete(breaks=c("2015_2016", "2010_2019", "2030_2039","2060_2069"),
+                         labels=c("2015-2016", "2010-2019", "2030-2039", "2060-2069")) +
+  scale_color_discrete(breaks = c("Lower Beaver Creek Age 0 Chinook",
+                           "Middle Kenai River Age 0 Chinook"),
+                     labels = c("Lower\nBeaver Creek","Middle\nKenai River")) +
+  ggtitle("") +
+  theme_bw() +
+  bm_theme +
+  xlab("") +
+  ylab("Simulated Fish Weight (g)\non Sept. 4") +
+  labs(shape = "Decade",
+       color = "Sub-Population") +
+  # facet labels
+  theme(axis.text.x = element_text(size = 16, face = "bold"),
+        axis.text.y = element_text(size = 16, face = "bold"),
+        legend.title = element_text(size = 16, face = "bold"),
+        legend.text = element_text(size = 14),
+        strip.text = element_text(size = 16, face = "bold"),
+        strip.background = element_rect(fill = "white"),
+        panel.spacing = unit(1.1, "lines")) +
+  facet_grid(. ~ cmax_stat, labeller = labeller(cmax_stat = feeding_facets)) +
+  ylim(0,6) +
+  ggtitle("Age 0 Chinook"))
+
+ggsave("/Users/bmeyer/Google Drive/Thesis/Current Draft/Chapter 1/Chapter 1 Figures/growthfig_v1.1.png", width = 10, height = 6)
+
+p %+% subset(p_dat, population %in% "Lower Beaver Creek Age 0 Chinook") 
+
+ggsave("/Users/bmeyer/Google Drive/Thesis/Current Draft/Chapter 1/Chapter 1 Figures/growthfig_v1.1a.png", width = 10, height = 6)
+
+# fix y axis
+
+```
+
+
+<br>
+
+Create plot of final sizes across all sites, superimpose mean summer temps
+```{r}
+# import water temps
+temps_mod <- read.csv("/Users/bmeyer/Google Drive/UAF Semesters/Thesis/R Analysis/air_water_temp_analysis/temps_mod.csv")
+
+# temp values
+temps_mod %>%
+  group_by(Site) %>%
+  summarise(mean = mean(water_temp_C),
+            stdev = sd(water_temp_C)) %>%
+  arrange(mean)
+
+# plot temps
+temps_mod %>%
+  group_by(Site) %>%
+  ggplot(aes(x = reorder(Site, water_temp_C, mean),water_temp_C)) +
+  geom_boxplot() +
+  bm_theme
+
+dat %>%
+  filter(doy == 232,
+         scenario != "rcp85",
+         year == "2060_2069",
+         age == "0",
+         cmax_stat == "mean") %>%
+  ggplot(aes(x = reorder(site,Temperature.C),wt_g_bioenerg, color = spp)) +
+  geom_point(size = 4, position = position_dodge(width = 1))  +
+  geom_smooth(method = "lm") + 
+  bm_theme
+
+dat %>%
+  filter(doy == 232,
+         scenario != "rcp85",
+
+         age == "0",
+         cmax_stat == "mean") %>%
+  ggplot(aes(Temperature.C,wt_g_bioenerg, color = spp)) +
+  geom_point(size = 4, position = position_dodge(width = 1))  +
+  geom_smooth(method = "lm") + 
+  bm_theme_1
+
+
+
+```
+
+
+Alternate vers of plot w/ just one climate scenario shown
+
+1/1/19 -- consider another population for this fig where growth is increasing... ?
+```{r}
+
+# plot
+dat %>%
+  filter(doy == 232) %>%
+  filter(population %in% c("Lower Beaver Creek Age 1 Coho",
+                           "Lower Kenai River Age 0 Chinook")) %>%
+  filter(scenario == "rcp85") %>%
+  ggplot(aes(cmax_stat,wt_g_bioenerg,shape = year, group = year)) +
+  geom_point(size = 3.5, position = position_dodge(width = 0.8)) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+  scale_shape_discrete(breaks=c("2015_2016", "2010_2019", "2030_2039","2060_2069"),
+                         labels=c("2015-2016", "2010-2019", "2030-2039", "2060-2069")) +
+  scale_x_discrete(breaks=c("20minus", "mean", "20plus"),
+                      labels=c("-20%", "Mean", "+20%")) + 
+  ggtitle("") +
+  theme_bw() +
+  bm_theme_4 +
+  #ylim(3.9,14) +
+  xlab("Consumption") +
+  ylab("Fish Weight (g) on Sept. 4") +
+  facet_grid(population ~ scenario, labeller = labeller(scenario = scen_facets
+                                                        
+                                                        , population = pop_facets
+                                                        ),
+             scales = "free") +
+  labs(shape = "Decade") +
+  # facet labels
+  theme(strip.text.x = element_text(size = 14),
+        strip.text.y = element_text(size = 14),
+        legend.title = element_text(size = 16, face = "bold"),
+        legend.text = element_text(size = 14),
+        panel.spacing = unit(1.1, "lines")) 
+
+# save to local disk
+ggsave("/Users/bmeyer/Google Drive/Thesis/Current Draft/Chapter 1/Chapter 1 Figures/growthfig_v2.png", width = 7, height = 7)
+
+
+```
+
+
+
+<br>
+
+Note: the relative effect of temperature scenario is much smaller than the relative effect of consumption scenario.  How do we describe this numerically?  Ideas:
+
+* For each consumption scenario, size at final day varied by an average of XX g +/-  among the three time periods.  In contrast, the mean size at final day varies by a total of XX g +/-.
+
+* See "create_biol_input_v3.Rmd for rational on choice of day 232 for final day (final day in common to all sites & years w/ daily air temperature inputs)
+```{r}
+# mean % variability in final size among decades within each consumption/temperature scenario
+(z <- dat %>%
+  filter(doy == 232) %>%
+  select(year,site,spp,age,scenario,cmax_stat,wt_g_bioenerg) %>%
+  group_by(age,spp,site, cmax_stat,scenario) %>%
+  summarise(maxsize = max(wt_g_bioenerg),
+            minsize = min(wt_g_bioenerg)) %>%
+  mutate(diff = maxsize - minsize,
+         pct_var = (diff/minsize)*100) %>%
+  ungroup() %>%
+  summarise(max_pct = max(pct_var),
+            min_pct = min(pct_var),
+            mean_pct = mean(pct_var),
+            stdev = sd(pct_var)))
+```
+
+
+```{r}
+  
+## varying consumption by +20% results in variability of XX% in final size
+(z1 <- dat %>%
+  filter(doy == 232) %>%
+  filter(cmax_stat != "20minus") %>%
+  select(year,site,spp,age,scenario,cmax_stat,wt_g_bioenerg) %>%
+  group_by(age,spp,site, scenario) %>%
+  summarise(maxsize = max(wt_g_bioenerg),
+            minsize = min(wt_g_bioenerg)) %>%
+  mutate(diff = maxsize - minsize,
+         pct_var = (diff/minsize)*100) %>%
+  ungroup() %>%
+  summarise(max_pct = max(pct_var),
+            min_pct = min(pct_var),
+            mean_pct = mean(pct_var),
+            stdev = sd(pct_var)))
+
+```
+
+
+```{r}
+
+## varying consumption by -20% results in variability of XX% in final size
+(z2 <- dat %>%
+  filter(doy == 232) %>%
+  filter(cmax_stat != "20plus") %>%
+  select(year,site,spp,age,scenario,cmax_stat,wt_g_bioenerg) %>%
+  group_by(age,spp,site, scenario) %>%
+  summarise(maxsize = max(wt_g_bioenerg),
+            minsize = min(wt_g_bioenerg)) %>%
+  mutate(diff = maxsize - minsize,
+         pct_var = (diff/minsize)*100) %>%
+  ungroup() %>%
+  summarise(max_pct = max(pct_var),
+            min_pct = min(pct_var),
+            mean_pct = mean(pct_var),
+            stdev = sd(pct_var)))
+
+```
+
+
+```{r}
+
+## by age, spp, site --  what happens with +20%
+(z3 <- dat %>%
+  filter(doy == 232) %>%
+  filter(cmax_stat != "20minus") %>%
+  separate(site, sep = " ", into = c("a","b","c"), remove = F) %>%
+  mutate(river = paste(b,c)) %>%
+  select(year,site,river,spp,age,scenario,cmax_stat,wt_g_bioenerg,Temperature.C) %>%
+  group_by(age,spp,site,scenario) %>%
+  summarise(maxsize = max(wt_g_bioenerg),
+            minsize = min(wt_g_bioenerg),
+            meantemp = mean(Temperature.C)) %>%
+  mutate(diff = maxsize - minsize,
+         pct_var = (diff/minsize)*100) %>%
+  summarise(max_pct = max(pct_var),
+            min_pct = min(pct_var),
+            mean_pct = mean(pct_var),
+            stdev = sd(pct_var)))
+
+```
+
+
+
+```{r}
+
+## by scenario, river, age, spp -- what happens with +20%
+(z4 <- dat %>%
+  filter(doy == 232) %>%
+  filter(cmax_stat != "20minus") %>%
+  separate(site, sep = " ", into = c("a","b","c"), remove = F) %>%
+  mutate(river = paste(b,c)) %>%
+  select(year,river,spp,age,scenario,cmax_stat,wt_g_bioenerg) %>%
+  group_by(river,age,spp,scenario) %>%
+  summarise(maxsize = max(wt_g_bioenerg),
+            minsize = min(wt_g_bioenerg)) %>%
+  mutate(diff = maxsize - minsize,
+         pct_var = (diff/minsize)*100) %>%
+  summarise(max_pct = max(pct_var),
+            min_pct = min(pct_var),
+            mean_pct = mean(pct_var),
+            stdev = sd(pct_var)))
+```
+
+
+
+Among all climate scenarios and populations, from 2060-2069 final sizes were an average of `r z$mean_pct` (8/1/9:: 6.2% +/- 4.89) larger when consumption was held constant.   However, a 20% increase in consumption resulted in a `r z1$mean_pct` (8/1/19:: 51.3% +/- 10.60) mean increase in final size... (variation by age/spp/site)
+
+A 20% decrease in consumption resulted in a `r z1$mean_pct` (8/1/19:: 59.8%) mean decrease in final size... (variation by age/spp/site)
+
+
+
+<br>
+
+
+
+
+
+What is the latest date common to all simulations with projected temps?
+```{r}
+# calculate latest day common to all scenarios using projected/downscaled inputs
+fnl.day <- dat %>%
+  filter(scenario == c("rcp60","rcp85")) %>%
+  group_by(site,spp,age,Stream_Name) %>%
+  summarise(mindate = max(doy)) %>%
+  ungroup() %>%
+  summarise(common_date = min(mindate))
+fnl.day <- as.vector(as.numeric(fnl.day))
+
+# reduce dataframe to weight at day common to all simulations
+ dat_fnl.day <- dat %>%
+  filter(doy == fnl.day) %>%
+   select(year,site,spp,age,scenario,cmax_stat,wt_g_bioenerg) %>%
+   mutate(year_scen_cmax = paste0(year,"_",scenario,"_",cmax_stat))
+ 
+# doy = 232, last day common to all simulations is Aug 20th
+ 
+ # curious - first day common to all?
+ (fst.day <- dat %>%
+  filter(scenario == c("rcp60","rcp85")) %>%
+  group_by(site,spp,age,Stream_Name) %>%
+  summarise(maxdate = min(doy)) %>%
+  ungroup() %>%
+  summarise(common_date = min(maxdate)))
+
+```
+
+<br>
+
+
+
+Calculate the percent change in size at final day relative to 2015-2016 sim based on different food and temp scenarios;
+
+* a.) for simulations fit to mean/min/max consumption values for each spp/age/site
+* b.) for simulations fit to the mean and +/- 10% and 20% consumption for each spp/age/site
+
+<br>
+
+
+a.) Calculate % change in size at final day relative to 2010-2019 scenario for min/mean/max consumption scenarios [code dropped 10/12/19]
+
+<br>
+
+b.) Calculate % change in size at final day relative to 2010-2019 scenario for % change in consumption scenarios
+```{r}
+
+# how best to do this?  possibly a good use for a tibble here...?
+# 12 calculated columns
+
+pct2 <- dat_fnl.day %>%
+  select(-scenario,-cmax_stat,-year) %>%
+  spread(year_scen_cmax,wt_g_bioenerg,drop = TRUE) %>%
+  separate(site,sep = " ", into = c("reach","river1","river2"), remove = F) %>%
+  mutate(river = paste(river1,river2),
+         population = paste("Age",age,spp)) %>%
+  select(-river1,-river2) %>%
+  # calculate % change columns
+  mutate(
+    # -20% consumption levels, rcp60 scenario
+    `pct_2030_rcp60_20minus` = ((`2030_2039_rcp60_20minus` - `2010_2019_rcp60_20minus`)  / `2010_2019_rcp60_20minus`) * 100,
+    `pct_2060_rcp60_20minus` = ((`2060_2069_rcp60_20minus` - `2010_2019_rcp60_20minus`)  / `2010_2019_rcp60_20minus`) * 100,
+    
+     # -20% consumption levels, rcp85 scenario    
+    `pct_2030_rcp85_20minus` = ((`2030_2039_rcp85_20minus` - `2010_2019_rcp85_20minus`)  / `2010_2019_rcp85_20minus`) * 100,
+    `pct_2060_rcp85_20minus` = ((`2060_2069_rcp85_20minus` - `2010_2019_rcp85_20minus`)  / `2010_2019_rcp85_20minus`) * 100,
+    
+    # mean consumption levels, rcp60 scenario
+    `pct_2030_rcp60_mean` = ((`2030_2039_rcp60_mean` - `2010_2019_rcp60_mean`)  / `2010_2019_rcp60_mean`) * 100,
+    `pct_2060_rcp60_mean` = ((`2060_2069_rcp60_mean` - `2010_2019_rcp60_mean`)  / `2010_2019_rcp60_mean`) * 100,
+    
+    # mean consumption levels, rcp85 scenario
+     `pct_2030_rcp85_mean` = ((`2030_2039_rcp85_mean` - `2010_2019_rcp85_mean`)  / `2010_2019_rcp85_mean`) * 100,
+    `pct_2060_rcp85_mean` = ((`2060_2069_rcp85_mean` - `2010_2019_rcp85_mean`)  / `2010_2019_rcp85_mean`) * 100,
+    
+    # +20% consumption levels, rcp60 scenario
+    `pct_2030_rcp60_20plus` = ((`2030_2039_rcp60_20plus` - `2010_2019_rcp60_20plus`)  / `2010_2019_rcp60_20plus`) * 100,
+    `pct_2060_rcp60_20plus` = ((`2060_2069_rcp60_20plus` - `2010_2019_rcp60_20plus`)  / `2010_2019_rcp60_20plus`) * 100,
+    
+     # +20% consumption levels, rcp85 scenario    
+    `pct_2030_rcp85_20plus` = ((`2030_2039_rcp85_20plus` - `2010_2019_rcp85_20plus`)  / `2010_2019_rcp85_20plus`) * 100,
+    `pct_2060_rcp85_20plus` = ((`2060_2069_rcp85_20plus` - `2010_2019_rcp85_20plus`)  / `2010_2019_rcp85_20plus`) * 100
+    ) %>%
+  select(river,reach,site,spp,age,population,
+         # calculated columns
+         ## rcp60 scenario
+         `pct_2030_rcp60_20minus`,
+         `pct_2060_rcp60_20minus`,
+         `pct_2030_rcp60_mean`,
+         `pct_2060_rcp60_mean`,
+         `pct_2030_rcp60_20plus`,
+         `pct_2060_rcp60_20plus`,
+         ## rcp85 scenario
+         `pct_2030_rcp85_20minus`,
+         `pct_2060_rcp85_20minus`,
+         `pct_2030_rcp85_mean`,
+         `pct_2060_rcp85_mean`,
+         `pct_2030_rcp85_20plus`,
+         `pct_2060_rcp85_20plus`
+         )
+
+# delete old spreadsheet if existant
+ #gs_delete(gs_title("pct_chg_dat2"))
+
+# export this table to google sheets or excel to experiment with viz
+ # gs_new(title = "pct_chg_dat2", input = pct2)
+
+```
+
+<br>
+
+
+<br>
+
+Repeat process for the 20% +/- consumption scenarios
+
+<br>
+
+```{r}
+
+#  +/- 20% consumption scenarios
+
+# get % change values in long format
+pct_long2 <- pct2 %>%
+  gather(sim, pct_chg,
+        ## rcp60 scenario
+         `pct_2030_rcp60_20minus`,
+         `pct_2060_rcp60_20minus`,
+         `pct_2030_rcp60_mean`,
+         `pct_2060_rcp60_mean`,
+         `pct_2030_rcp60_20plus`,
+         `pct_2060_rcp60_20plus`,
+         ## rcp85 scenario
+         `pct_2030_rcp85_20minus`,
+         `pct_2060_rcp85_20minus`,
+         `pct_2030_rcp85_20plus`,
+         `pct_2060_rcp85_20plus`,
+         `pct_2030_rcp85_mean`,
+         `pct_2060_rcp85_mean`
+          ) %>%
+  separate(sim,sep = "_",remove = F,into = c("foo","year","temp_scen","cons_scen"))  %>%
+  filter(pct_chg != "NA")
+
+# export long format for manuscript supp materials (12/5/20)
+## prep
+z <- pct_long2 %>%
+  select(site, population,year,temp_scen,cons_scen,pct_chg)
+
+## export
+write.csv(z,"/Users/bmeyer/Google Drive/UAF Semesters/Thesis/R Analysis/Bioenergetics/pct_chg_results_v3.csv", row.names = F)
+```
+
+<br>
+
+Prepare table summary w/o grouping factors of population, reach, or scenario
+```{r}
+# tbl 1
+(tbl1 <- pct_long2 %>% 
+  group_by(river,year) %>%
+  summarise(n = n(),
+            mean = mean(pct_chg),
+            se = std.error(pct_chg),
+            max = max(pct_chg),
+            min = min(pct_chg)) %>%
+  mutate(across(c("mean","max","min","se"), round, 2)))
+
+colnames(tbl1) <- c("Watershed","Year","n","Mean","Standard Error","Max","Min")
+
+write.csv(tbl1, "/Users/bmeyer/Google Drive/UAF Semesters/Thesis/Current Draft/Chapter 1/submissions/new submission/Tables/pct_ch_tbl.csv",row.names = F)
+
+
+
+# plot
+## reorder rivers
+pct_long2$river <- factor(pct_long2$river, levels = c("Beaver Creek",
+                                                      "Russian River",
+                                                      "Ptarmigan Creek",
+                                                      "Kenai River"))
+
+
+(bp <- pct_long2 %>%
+  group_by(river,year) %>%
+  ggplot(aes(river,pct_chg, color = year)) +
+  geom_boxplot(position = "dodge") +
+  xlab("") +
+  ylab("Simulated % Change in Mass on Sept 4") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1, scale = 1)) +
+  theme_bw() +
+  labs(color = "Year") +
+  geom_hline(yintercept = 0, color = "grey") +
+  theme(axis.text.y = element_text(size = 12,face = "bold"),
+        axis.text.x = element_text(size = 14, face = "bold"),
+        axis.title.y = element_text(size = 14, face = "bold"),
+        legend.title = element_text(size = 14,face = "bold"),
+        legend.text = element_text(size = 14)) +
+  scale_x_discrete(breaks = river_facets,
+                   labels = c("Lowland","Montane","Glacial","Mainstem")))
+
+ggsave("/Users/bmeyer/Google Drive/UAF Semesters/Thesis/Current Draft/Chapter 1/submissions/new submission/Figure images/pct_chg_boxplot.png", height = 5, width = 8)
+
+# 252 simulation results
+  
+
+  
+```
+
+
+
+
+
+here
+ print a summary table?! (group by factors, show mean +/- sd)
+
+
+
+```{r}
+# calculate degree of variation of response within temperature scenarios
+z1 <- pct_long2 %>%
+  group_by(cons_scen,temp_scen) %>%
+  summarise(abs_max_pct = max(pct_chg),
+            abs_min_pct = min(pct_chg),
+            mean_pct = mean(pct_chg),
+            se_pct = std.error(pct_chg)) %>%
+  arrange (temp_scen)
+
+# calculate degree of variation among food scenarios
+ z2 <- pct_long2 %>%
+  group_by(cons_scen) %>%
+  summarise(abs_max_pct = max(pct_chg),
+            abs_min_pct = min(pct_chg),
+            mean_pct = mean(pct_chg),
+            se_pct = std.error(pct_chg)) %>%
+  arrange(mean_pct)
+
+
+# for each scenario, examine the degree of response by watershed
+z3 <- pct_long2 %>%
+  group_by(cons_scen,river) %>%
+  summarise(abs_max_pct = max(pct_chg),
+            abs_min_pct = min(pct_chg),
+            mean_pct = mean(pct_chg),
+            se_pct = std.error(pct_chg)) %>%
+  arrange(mean_pct)
+
+# by temperature scenario and watershed
+z3.1 <- pct_long2 %>%
+  group_by(temp_scen,river) %>%
+  summarise(abs_max_pct = max(pct_chg),
+            abs_min_pct = min(pct_chg),
+            mean_pct = mean(pct_chg),
+            se_pct = std.error(pct_chg)) %>%
+  arrange(temp_scen)
+
+# for each time window, examine the degree of response by watershed
+z4 <- pct_long2 %>%
+  group_by(year,river) %>%
+  summarise(abs_max_pct = max(pct_chg),
+            abs_min_pct = min(pct_chg),
+            mean_pct = mean(pct_chg),
+            se_pct = std.error(pct_chg)) %>%
+  arrange(mean_pct,year)
+
+# for each population examine degree of response
+z5 <- pct_long2 %>%
+  group_by(population,river,temp_scen,cons_scen,year) %>%
+  summarise(abs_max_pct = max(pct_chg),
+            abs_min_pct = min(pct_chg),
+            mean_pct = mean(pct_chg),
+            se_pct = std.error(pct_chg)) %>%
+  arrange(mean_pct)
+
+# by overall watershed only
+z6 <- pct_long2 %>%
+  group_by(river) %>%
+  summarise(max_pct = max(pct_chg),
+            min_pct = min(pct_chg),
+            mean_pct = mean(pct_chg),
+            se_pct = std.error(pct_chg)) %>%
+  arrange(mean_pct)
+
+# overall everything
+z7 <- pct_long2 %>%
+  summarise(max_pct = max(pct_chg),
+            min_pct = min(pct_chg),
+            mean_pct = mean(pct_chg),
+            sd_pct = sd(pct_chg))
+
+
+# tables
+kable(z1, digits = 2, caption = "Test")
+kable(z2, digits = 2)
+kable(z3, digits = 2)
+kable(z4, digits = 2)
+kable(z5, digits = 2)
+kable(z6, digits = 2)
+kable(z7, digits = 2)
+```
+
+<br>
+
+Alternative plot of pct_chg results (12/6/20)
+```{r}
+library(leaflet)
+library(leaflet.extras)
+library(readxl)
+library(maps)
+
+install.packages("remotes")
+remotes::install_github("markwh/streamstats")
+
+ws1 <- delineateWatershed(xlocation = -72.9249, ylocation = 42.3170, crs = 4326,
+includeparameters = "true")
+
+# prep data to plot
+## read in coords
+coords <- read_excel("/Users/bmeyer/Downloads/2016_Aquatic_Ecology_Databse/2016_EPSCoR_Aquatic_Ecology_Database.xlsx", sheet = "B Fishing Site Info") %>%
+  filter(!is.na(Latitude),
+         Latitude != "**") %>%
+  mutate(site = paste(`Hydrologic Segment`,`Stream Name`)) %>%
+  select(site,Latitude,Longitude) %>%
+  transform(Latitude = as.numeric(Latitude),
+            Longitude = as.numeric(Longitude)) %>%
+  mutate(site = gsub(" ","_",site))
+
+## join coords to data
+mapdat <- z %>%
+  mutate(site = gsub(" ","_",site)) %>%
+  left_join(coords,by = "site")
+
+
+# Create a color palette with handmade bins.
+mybins <- seq(-25, 5, by=5)
+mypalette <- colorBin(palette="RdYlGn", domain=mapdat$pct_chg, na.color="transparent", bins=mybins)
+
+# Prepare the text for the tooltip:
+mytext <- paste(
+   "Site: ", mapdat$site, "<br/>", 
+   "Population: ", mapdat$population, "<br/>", 
+   "Scenario Year: ", mapdat$year, "<br>",
+   "Temperature Scenario: ", mapdat$temp_scen,"<br>",
+   "Feeding Rate Scenario: ", mapdat$cons_scen, "<br>",
+   sep="") %>%
+  lapply(htmltools::HTML)
+
+# Final Map
+# mean of all scenarios and all pops
+mapdat %>%
+  group_by(site,year,Latitude,Longitude) %>%
+  summarise(pct_chg = mean(pct_chg)) %>%
+  filter(year == 2060) %>%
+leaflet() %>% 
+  addTiles()  %>% 
+  setView( lat=60.3, lng=-149.9 , zoom=8.4) %>%
+  addProviderTiles("Esri.WorldShadedRelief") %>%
+  
+  # add site markers
+  addLabelOnlyMarkers(~Longitude, ~Latitude,
+    label = ~site,
+    labelOptions = labelOptions(noHide = T)) %>%
+  
+
+  addCircleMarkers(~Longitude, ~Latitude, 
+    fillColor = ~mypalette(pct_chg), fillOpacity = 0.7, color="white", radius=8, stroke=FALSE,
+    label = mytext,
+    labelOptions = labelOptions( style = list("font-weight" = "normal", padding = "3px 8px"), textsize = "13px", direction = "auto")
+  ) %>%
+  addLegend( pal=mypalette, values=~pct_chg, opacity=0.9, title = "pct_chg", position = "bottomright") %>%
+  addScaleBar(position = "bottomleft", scaleBarOptions(imperial = F))
+
+
+
+
+
+
+
+```
+
+
+
+
+Plot % change values
+```{r}
+
+# figures?
+
+# temp & food scenario comparison
+z1 %>%
+  ggplot(aes(cons_scen,mean_pct, fill = temp_scen)) +
+  geom_col(position = position_dodge()) +
+  geom_errorbar(aes(ymin = mean_pct - se_pct, ymax = mean_pct + se_pct),  colour="black", width=.2, size=.8, position=position_dodge(.9)) +
+  scale_x_discrete(limits=c("20minus","20plus")) +
+  xlab("Consumption Scenario") +
+  ylab("Mean % Change in Final Weight\n from 2010-2019 Scenario")
+
+# watershed comparison by consumption scenario
+
+# reorder columns
+z3$cons_scen <- factor(z3$cons_scen, levels = c("20minus","mean","20plus"))
+
+z3 %>%
+  ggplot(aes(river,mean_pct, fill = cons_scen)) +
+  geom_col(position = position_dodge()) +
+  geom_errorbar(aes(ymin = mean_pct - se_pct, ymax = mean_pct + se_pct),  colour="black", width=.2, size=.8, position=position_dodge(.9)) +
+  scale_x_discrete(limits=c("Beaver Creek","Russian River","Ptarmigan Creek","Kenai River")) +
+  ylab("Mean % Change in Final Weight\n from 2010-2019 Scenario")
+
+# watershed comparison by temperature scenario
+z3.1 %>%
+  ggplot(aes(river,mean_pct, fill = temp_scen)) +
+  geom_col(position = position_dodge()) +
+  geom_errorbar(aes(ymin = mean_pct - se_pct, ymax = mean_pct + se_pct),  colour="black", width=.2, size=.8, position=position_dodge(.9)) +
+  scale_x_discrete(limits=c("Beaver Creek","Russian River","Ptarmigan Creek","Kenai River")) +
+  ylab("Mean % Change in Final Weight\n from 2010-2019 Scenario")
+
+# by population among watersheds
+
+## year facets
+year_facets <- c("2030" = "2030-2039",
+                 "2060" = "2060-2069")
+
+# order bars
+z5$cons_scen <- factor(z5$cons_scen, levels = c("20minus","mean","20plus"))
+
+# plot
+(p1 <- z5 %>%
+  filter(temp_scen == "rcp85") %>%
+  ggplot(aes(river,mean_pct,fill = cons_scen)) +
+  geom_col(position = position_dodge()) +
+  geom_errorbar(aes(ymin = mean_pct - se_pct, ymax = mean_pct + se_pct),  colour="black", width=.2, size=.8, position=position_dodge(.9)) +
+  facet_grid(population ~ year, labeller = labeller(temp_scen = temp_scen, year = year_facets)) +
+  scale_x_discrete(limits=c("Beaver Creek","Russian River","Ptarmigan Creek","Kenai River"),
+                   labels=c("Lowland", "Montane", "Glacial","Main Stem")) +
+  scale_fill_discrete(breaks=c("20minus","mean","20plus"),
+                         labels=c("-20% Observed P","Mean P","+20% Observed P")) +
+  #scale_fill_grey() +
+  ylab("Mean % Change\nin Final Weight") +
+  labs(fill = "Consumption\nScenario") +
+  xlab("")+
+  theme_bw() +
+  theme(strip.text.x = element_text(size = 14),
+        strip.text.y = element_text(angle = 0, size = 14),
+        legend.title = element_text(size=14, face="bold"),
+        legend.text = element_text(size=12, face="bold")) +
+  bm_theme_3) 
+
+ggsave("/Users/bmeyer/Google Drive/Thesis/Current Draft/Chapter 1/Chapter 1 Figures/pct_chg_size_sub2.jpg",
+       width = 9, height = 5)
+
+```
+
+<br>
+
+3/5/20: reproduce last above figure suitable for B&W printing
+```{r}
+p1 + scale_fill_grey()
+
+ggsave("/Users/bmeyer/Google Drive/Thesis/Current Draft/Chapter 1/Chapter 1 Figures/pct_chg_size_bw.jpg",
+       width = 9, height = 5)
+```
+
+
+<br>
+
+Do we have significant difference(s) in the results between the two climate scenarios?
+```{r}
+
+# is data normally distributed?
+hist(log(pct_long2$pct_chg))
+ggqqplot(pct_long2$pct_chg)
+ggqqplot(log(pct_long2$pct_chg))
+shapiro.test(log(pct_long2$pct_chg))
+shapiro.test(pct_long2$pct_chg)
+
+# data not fully normal even when log transformed, but normality is improved after transformation
+
+# use mann-whitney or wilcoxon rank-sum test to check for diff in means between two temp scenarios
+wilcox.test(log(pct_chg) ~ temp_scen, data=pct_long2)
+
+# p < 0.05 for mann-whitney-wilcoxon test, an p = 0.05 we can assume that results of % chnage between the two climate scenarios are non-identical.
+
+
+```
+
+If so, maybe still just show results for one scenario, describe in caption that the two are visually very similar
+
+
+1/1/20 ::: Description text here is for OLD scenarios :::
+
+For all temperature scenarios, species, age cohorts, and drainages- change in consumption level generally resulted in a greater degree of response than change in temperature.
+
+Temperature scenarios
+
+A2 scenario range -3.18 to -1.92%, A1B scenario range -5.69% to 3.67%
+
+
+Consumption scenario
+
+* Fish with higher consumption rates in general saw a smaller degree of change in size at final day relative to the 2010-2019 simulations.
+
+Overall, fish in the -20% consumption scenarios saw a a decrease of -4.44% in response while those in the +20% response saw a decrease of -2.80%.
+
+
+Tributary
+
+* Fish in the lowland watershed saw on average a greater magnitude of response relative to the the glacial watershed, with fish in the the montane watershed exhibiting an intermediate response.  In the most extreme example scenario (rapid-change temperature and -20% consumption scenario), fish in the lowland watershed saw an average of -5.22% +/-0.49 in size at final day while those in the glacial watershed saw an average of -1.65% +/- 0.24.
+
+
+Year
+
+* The two simulated time periods differed in magnitude of response.  2060-2069 scenarios in general saw a greater magnitude of response (-3.79% +/- 0.3) than those in the 2030-2039 scenarios (-1.82% +0.2).  For
+
+Population (age/spp)
+
+* Response varied by population (age and species of fish), with age 0 Coho....
+
+<br>
+
+Create divergent dot plot(s) of % chng data
+```{r}
+# prep dfs
+pct_long3 <- pct_long2 %>%
+  select(-foo) %>%
+  mutate(sim1 = paste0(temp_scen,"_",cons_scen))
+
+pct_long4 <- pct_long3 %>%
+  filter(temp_scen == "rcp85") %>%
+  select(-temp_scen,-sim1,-sim) %>%
+  spread(cons_scen,pct_chg) 
+
+# reorder factor(s)
+pct_long3$site <- factor(pct_long3$site, levels = c("Lower Beaver Creek",
+                                      "Middle Beaver Creek",
+                                      "Upper Beaver Creek",
+                                      "Lower Russian River",
+                                      "Middle Russian River",
+                                      "Upper Russian River",
+                                      "Lower Ptarmigan Creek",
+                                      "Middle Ptarmigan Creek",
+                                      "Lower Kenai River",
+                                      "Middle Kenai River"))
+
+pct_long4$river <- factor(pct_long4$river, levels = c("Beaver Creek",
+                                                     "Russian River",
+                                                     "Ptarmigan Creek",
+                                                     "Kenai River"))
+
+
+# divergent dot plot % change from 2010-2019
+# option 1
+pct_long3 %>%
+  filter(temp_scen == "rcp85") %>%
+  ggplot(aes(x = reach, y = pct_chg, color = year, group = year)) +
+  geom_point(stat = 'identity', aes(shape = sim1), size = 3, position = position_dodge(width = 0.6)) +
+  coord_flip() +
+  facet_grid(river ~ population, scales = "free_y") +
+  geom_hline(yintercept = 0, lty = "dashed") +
+  bm_theme_2 +
+  theme_bw()
+
+# option 2
+pct_long3 %>%
+  filter(temp_scen == "rcp85") %>%
+  ggplot(aes(x = site, y = pct_chg, group = year)) +
+  geom_point(stat = 'identity', aes(shape = cons_scen), size = 1, position = position_dodge(width = 0.6)) +
+  #geom_linerange(aes(ymin = )) +
+  coord_flip() +
+  facet_grid(year ~ population, scales = "free_y", labeller = labeller(temp_scen = temp_scen)) +
+  geom_hline(yintercept = 0, lty = "dashed") +
+  labs(color = "Time Period", shape = "Consumption\nScenario") +
+  theme_bw() +
+  bm_theme_2 +
+  theme(panel.spacing = unit(1, "lines"),
+        strip.text.y = element_text(angle = 360)) +
+  xlab("") +
+  ylab("% Change in Final Weight Relative to 2010-2019") +
+  ggtitle("Mid-Range Climate Scenario (rcp85)")
+
+# option 3
+pct_long4 %>%
+  ggplot(aes(x = reach, y = `mean`, color = year)) +
+ # geom_point(stat = 'identity', aes(shape = sim1), size = 3, position = position_dodge(width = 0.7)) +
+  geom_linerange(stat = 'identity',aes(ymin = `20minus`, ymax = `20plus`),
+                 position = position_dodge(width = 0.9),
+                 size = 3.5) +
+  coord_flip() +
+  facet_grid(river ~ population, scales = "free_y", labeller = labeller(river = stream_facets)) +
+  labs(color = "Time Period") +
+  geom_hline(yintercept = 0, lty = "dashed") +
+      scale_color_grey() +
+  theme_bw() +
+  theme(panel.spacing = unit(1, "lines"),
+        strip.text.y = element_text(angle = 360)) +
+  bm_theme_2 +
+  xlab("") +
+  ylab("% Change in Final Weight Relative to 2010-2019") +
+  ggtitle("Mid-Range Climate Scenario (rcp85)")
+
+
+ggsave("/Users/bmeyer/Google Drive/Thesis/Current Draft/Chapter 2/Chapter 2 Figures/model_results_dotplot.png", width = 11.5)
+```
+
+
+
+
+
+<br>
+
+Does a relationship exist between %change in fish size and %chnage in water temp?
+```{r}
+# read in pct chg in water temp relative to 2010-2019
+z <- gs_read(gs_title("water_temp_tables"), ws = "pct_chg_h2o") %>%
+  rename(site = Site,
+         temp_scen = scenario,
+         pct_h2o = pct) %>%
+  mutate(temp_scen = str_replace(temp_scen, "sres", ""))
+  
+
+left_join(pct_long2,z,by = c("site","temp_scen")) %>%
+  ggplot(aes(pct_h2o,pct_chg)) +
+  geom_point() +
+  facet_grid(cons_scen ~ river) +
+  geom_smooth(method = "lm") +
+  formula_labels
+
+left_join(pct_long2,z,by = c("site","temp_scen")) %>%
+  filter(cons_scen == "mean") %>%
+  ggplot(aes(pct_h2o,pct_chg)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  formula_labels
+
+```
+Not really a relationship there; too simplistic.
+
+<br>
+
+Is there a relationship between site sensitivity values and % change in fish size?
+```{r}
+# import site-specific sensitivity values
+sens_vals <- gs_read(gs_title("sensitivity_values")) %>%
+  rename(site = Site,
+         reach = Hydrologic_Segment,
+         river = Stream_Name) %>%
+  select(-n_weeks,-sens_int)
+
+# plot
+left_join(pct_long3,sens_vals) %>%
+  ggplot(aes(sens_slope,abs(pct_chg), color = cons_scen)) +
+  geom_point() +
+  geom_smooth(method = lm, formula = y ~ splines::bs(x, 4), se = FALSE) +
+  formula_labels +
+  facet_grid(. ~ temp_scen)
+
+# plot 2
+left_join(pct_long3,sens_vals) %>%
+  ggplot(aes(sens_slope,abs(pct_chg))) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  formula_labels 
+
+
+```
+Unclear how relevant the aggregate relationship(s) between air-water sensitivity and % chg response to climate is
+
+<br>
+
+is there a relationship between accumulated degree days >15 and % overall change? (on a sim basis)
+- lm fit for each temp scenario
+- color scle of points for consumption levels
+
+```{r}
+ # special formula labels
+formula_labels1 <- stat_regline_equation(aes(label = paste("atop(",..eq.label.., ",", ..adj.rr.label.., ")", sep = "")),
+              formula = formula, 
+               rr.digits = 2, 
+               coef.digits = 2, 
+               parse = TRUE,
+               size = 3,
+               geom = "label", 
+               alpha = 0.8,
+               label.x.npc = "left",
+              label.y.npc = "bottom")
+
+
+# create function to exclude multiple criteria from same column, opposite of "%in%"
+'%notin%' <- Negate('%in%')
+present <- c("2015","2016")
+
+# create column of sum temps >15
+over15 <- dat %>%
+  filter(year %notin% present) %>%
+  mutate(temp_over15 = Temperature.C - 15) %>%
+  group_by(Simulation) %>%
+  summarise(sum_over15 = sum(temp_over15)) %>%
+  separate(Simulation, sep = "_", into = c("temp_scen","year1","year2","site","spp","foo","age","cons_scen"),remove = F) %>%
+    select(site,temp_scen,year1,sum_over15) %>%
+    rename(year = year1) %>%
+  distinct()
+
+# prep df of % change values just to join to over15 temps df
+z1 <- pct_long2 %>%
+  select(site, population, temp_scen, year, pct_chg) 
+
+
+# join dfs with % change in size results to accumulated >15 results
+over15 <- left_join(z1,over15, by = c("site","temp_scen","year")) %>%
+  separate(site, by = " ", into = c("reach","river1","river2"), remove = F) %>%
+  mutate(river = paste(river1,river2)) %>%
+  select(-river1,-river2)
+
+#
+over15$river <- factor(over15$river, levels = c("Beaver Creek", "Russian River", "Ptarmigan Creek", "Kenai River"))
+
+# relationship between sum of days >15 and pct_chg
+
+## by population
+over15 %>%
+  ggplot(aes(sum_over15,pct_chg, color = population)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  formula_labels
+
+## by population and site
+over15 %>%
+  ggplot(aes(sum_over15,pct_chg, color = population)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(.~ site) +
+  formula_labels1
+
+
+## by river
+over15 %>%
+  ggplot(aes(sum_over15,pct_chg, color = river)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_grid(river ~ population, scales = "free") +
+  formula_labels
+  
+
+## by site
+over15 %>%
+  ggplot(aes(sum_over15,pct_chg, color = site)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  formula_labels
+
+## by temperature scenario
+over15 %>%
+  ggplot(aes(sum_over15,pct_chg, color = temp_scen)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  formula_labels
+
+## overall
+over15 %>%
+  ggplot(aes(sum_over15,pct_chg)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  formula_labels
+
+
+```
+
+
+<br>
+
+Extract lm formula and r2 values for each of the over15 vs pct_chg mods by site
+```{r}
+# fit lm by site
+dfsite <- over15 %>% group_by(site,population) %>%
+  do(fitsite = lm(pct_chg ~ sum_over15, data = .))
+
+# get the coefficients by group in a tidy data_frame
+(dfsitecoef <- tidy(dfsite, fitsite) %>%
+    # retain just slope estimates
+    filter(term == "sum_over15") %>%
+    # retain columns with slope estiate and std error
+    select(site,estimate,std.error,p.value) %>%
+    # rename slope column
+    rename(slope_estimate = estimate))
+
+# get formula estimates by site
+ # get the predictions by group in a tidy data_frame
+#(dfsitepred <- augment(dfsite, fitsite))
+
+# get the summary statistics by group in a tidy data_frame
+(dfsitesumm <- glance(dfsite, fitsite) %>%
+    # retain r2 values
+    select(site,r.squared)
+    )
+
+# create dataframe with slope estimate, error, and r2 value for each relationship
+(z <- left_join(dfsitecoef,dfsitesumm) %>%
+    arrange(site,population,slope_estimate, r.squared))
+
+# write dataframe to existing google sheet
+#over15_results  <- gs_new(title = "over15_results", input = z,)
+over15_results <- gs_title("over15_results")
+
+over15_results <- over15_results %>% 
+  gs_ws_new(ws_title = "lm_results", input = z)
+
+```
+
+
+<br>
+
+Looks like we should at least plot/analyze as seperate age/spp.
+
+<br>
+
+
+### Create master input file(s) of Cmax values for use in projected/downscaled simulations
+
+* The Fishbioenergetics 4.1 app makes use of a master input file to set starting weights and fitting values for each simulation.  Here, we will create the size/Cmax values used for the projected/downscaled simulations.  
+
+<br>
+
+Information: what does the range and distribution of Cmax values look like throughout space + time?
+```{r}
+
+# table
+dat %>%
+  filter(!is.na(old_param_pval),
+         !is.na(Stream_Name)) %>%
+  group_by(Stream_Name,spp,age) %>%
+  summarise(min_pval = min(old_param_pval),
+            mean_pval = mean(old_param_pval),
+            max_pval = max(old_param_pval)) 
+
+# table 2; no grouping, overall
+dat %>%
+  filter(!is.na(old_param_pval),
+         !is.na(Stream_Name)) %>%
+  summarise(min_pval = min(old_param_pval),
+            mean_pval = mean(old_param_pval),
+            max_pval = max(old_param_pval))
+
+# boxplot
+dat %>%
+  filter(!is.na(old_param_pval)) %>%
+  ggplot(aes(Stream_Name,old_param_pval)) +
+  geom_boxplot() +
+  facet_grid(spp~age) +
+  theme_bw()
+
+# how much did pvalues vary on a year to year basis?!
+dat %>%
+  filter(!is.na(old_param_pval)) %>%
+  distinct(Stream_Name,year,spp,age,old_param_pval) %>%
+  ggplot(aes(Stream_Name,old_param_pval, fill = year)) +
+  geom_boxplot() +
+  geom_point(pch = 21, position = position_jitterdodge()) +
+  facet_grid(spp~age) +
+  theme_bw()
+
+```
+
+<br>
+
+What were some of effect sizes for the predictors of Cmax values?
+
+```{r}
+
+dat1 <- dat %>%
+  distinct(spp,age,year,Stream_Name,old_param_pval)
+
+lm1 <- lm(old_param_pval ~ Stream_Name + age + spp + year , data = dat1)
+summary(lm1)
+
+```
+
+<br>
+
+Note: the effect size of year is not consistent enough thoughout all age/spp/streams to justify using it as a factor for segregation.
+
+<br>
+
+
+<br>
+
+Versions of FB4.1 input files to create:
+
+a.) for each site/spp/age, use the mean/min/max from within a watershed.  plus a "salmon eggs" scenario; present or absent in the fall...?
+
+b.) for each site/spp/age, use the mean +/- 10% and 20% pval within a watershed.
+
+<br>
+
+a.) Table with mean, min, and max p-vals for each spp/age within a drainage.  Starting weights are from the earliest available julian day (2015 or 2016)
+
+```{r}
+# create starting weights for each sim
+# for projected simulations: use weight from whichever year earliest
+start_date <- dat %>%
+  filter(!is.na(doy),
+         year == c("2015","2016")) %>%
+  group_by(spp,age,site) %>%
+  slice(which.min(doy)) %>%
+  select(Stream_Name,spp,age,site,doy,wt_g_bioenerg)
+
+
+# calculate mean Cmax and starting weight value for each site
+## using cmax values form old parameters output (were used ~95% of the time for simulations)
+cmax_stats <- dat %>%
+  filter(!is.na(old_param_pval)) %>%
+  distinct(Simulation,Stream_Name,spp,age,old_param_pval) %>%
+  group_by(Stream_Name,spp,age) %>%
+  summarise(mean_cmax_old = mean(old_param_pval),
+            max_cmax_old = max(old_param_pval),
+            min_cmax_old = min(old_param_pval),
+            n = n())
+
+# join starting day and weight tables
+cmax_stats <- left_join(start_date,cmax_stats)
+
+# remove old sheet if exists
+#gs_delete(gs_title("cmax_stats"))
+
+# export summary cmax stat values
+#gs_new(title = "cmax_stats", input = cmax_stats)
+
+# what is the range of values for number of sims per site/spp/age?
+summary(cmax_stats$n)
+
+# output from this table is used to create initial starting values in "create_biol_input_v3.Rmd"
+
+# can later create a different input file here with the Cmax values +/- 10% instead of min.max
+
+```
+
+<br>
+
+b.) Table with mean and 10% +/- p-vals for each spp/age within a drainage.  Starting weights are from the earliest available julian day (2015 or 2016)
+
+```{r}
+# create starting weights for each sim
+# see "start_date" df previously created
+
+# calculate mean Cmax and starting weight value for each site
+## using cmax values form old parameters output
+cmax_stats_pct <- dat %>%
+  filter(!is.na(old_param_pval)) %>%
+  distinct(Simulation,Stream_Name,spp,age,old_param_pval) %>%
+  group_by(Stream_Name,spp,age) %>%
+  summarise(mean_cmax_old = mean(old_param_pval),
+            n = n()) %>%
+  mutate(
+    # 10% greater consumption
+    `10plus_cmax_old` = mean_cmax_old + (0.1*mean_cmax_old),
+    # 10% less consumption
+    `10minus_cmax_old` = mean_cmax_old - (0.1*mean_cmax_old),
+    # 20% greater consumption
+    `20plus_cmax_old` = mean_cmax_old + (0.2*mean_cmax_old),
+    # 20% less consumption
+    `20minus_cmax_old` = mean_cmax_old - (0.2*mean_cmax_old)
+    ) %>%
+  select(-mean_cmax_old)
+
+# join starting day and weight tables
+cmax_stats_pct <- left_join(start_date,cmax_stats_pct)
+
+# remove old sheet if exists
+#gs_delete(gs_title("cmax_stats_pct"))
+
+# export summary cmax stat values
+#gs_new(title = "cmax_stats_pct", input = cmax_stats_pct)
+
+# what is the range of values for number of sims per site/spp/age?
+summary(cmax_stats_pct$n)
+
+# output from this table is used to create initial starting values in "create_biol_input_v3.Rmd"
+
+```
+
+
+
+A consideration: do p-vals gradually decrease throughout the summer?  A larger fish (larger gut) has a smaller gut, proportionately....
+```{r}
+dat %>%
+  filter(scenario == "observed",
+         SimDay == 1) %>%
+  select(year,site,Stream_Name,spp,age,old_param_pval,doy) %>%
+  ggplot(aes(doy,old_param_pval)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  formula_labels
+
+```
+
+
+
+
+
+
+A consideration: minimize how many stats you do on bioenerg outcomes, they are already an "abstract" result...
+
+hypotheses and objectives in bullet form
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br>
+
+```{r}
+# what percentage of model results (by day of year) is based on two years of field data?
+pct_two <- dat %>%
+  ungroup() %>%
+  filter(scenario == "observed") %>%
+  select(n_years) %>%
+  summarise(one = sum(n_years == 1),
+            two = sum(n_years == 2)) %>%
+  gather(key = "years", value = "days_count")
+
+(421/805)*100
+
+```
+
+52.3% of simulation days at each site (segregated by spp/age) had two years of data, the remainder had data from one year.
+
+<br>
+ 
+ 
+
+how much mean weight by doy changed? (scenario, spp, age, site, etc)
+```{r}
+library(jtools)
+
+lm1 <- lmer(daily_pct_chg ~ (1|site) + spp + age + scenario + doy, data = wt_pct_chg)
+
+summary(lm1)
+plot_summs(lm1)
+tidy(lm1)
+
+```
+
+Questions: should the response variable be weight-standardized?
+
+
+<br>
+
+
+
+Example results from one site
+```{r}
+
+# The errorbars overlapped, so use position_dodge to move them horizontally
+pd <- position_dodge(0.5) # move them .05 to the left and right
+
+# interannual size comparison plots
+p_wts <- dat %>%
+  ggplot(aes(doy,mean_wt,color = as.factor(year))) +
+  #geom_errorbar(aes(ymin=backcal.wts_mean-backcal.wts_se, ymax=backcal.wts_mean+backcal.wts_se), colour="black", width=3, position=pd,size=1.1) +
+  #geom_line(position=pd, size = 1) +
+  geom_point(fill = "white",position=pd, size=3) +
+  theme_bw() +
+  bm_theme_2 +
+  theme(panel.spacing = unit(1.3, "lines")) +
+  scale_x_continuous(breaks = c(166,196,227),
+                     labels = c("June 15","July 15","August 15")) +
+  theme(legend.title=element_text(size=24),
+        legend.text = element_text(size = 16),
+        axis.text.x = element_text(angle = 35, hjust = 1)) +
+  guides(color = guide_legend(override.aes = list(size=8))) +
+  #facet_wrap(site~age, labeller=labeller(age = age_facets)) +
+  xlab("") +
+  ylab("Mean Weight (g)")
+
+
+#Age 1 Coho plots
+
+## observed temps
+p_wts %+% subset(dat, spp %in% c("Coho") & 
+                   age %in% c("1") & 
+                   site %in% c("Lower Beaver Creek") & 
+                   scenario %in% "observed" ) +
+  facet_grid(reach~river, scales = "free_y") +
+  ggtitle("Age 1 Coho Seasonal Weights\n Bioenergetics Results, Observed Temps")
+
+## downscaled temps
+p_wts %+% subset(dat, year %in% "2015_2016" & 
+                   spp %in% c("Coho") & 
+                   age %in% c("1") & 
+                   site %in% c("Lower Ptarmigan Creek")  ) +
+  facet_grid(.~ scenario, scales = "free_y") +
+  ggtitle("Age 1 Coho Seasonal Weights\n Bioenergetics Results, Downscaled Temps")
+
+z <- dat %>%
+  filter(year == "2015_2016",
+         spp == "Coho",
+         age == 1,
+         site == "Middle Ptarmigan Creek",
+         scenario == "observed")
+
+```
+
+<br>
+
+can we have empirical weight values incorporated in to the dat df by this point?
+
+Compare mean 2015-2016 size values to mean size values in 2030_39 and 2060_69
+
+```{r}
+# summary dataframe
+df1 <- dat %>%
+  group_by(site,reach,spp,age,season,scenario,river,doy) %>%
+  summarise(mean_wt_bioenerg_g = mean(wt_g_bioenerg)) 
+
+# plot object
+p_sims <- df1 %>%
+  ggplot(aes(doy,mean_wt_bioenerg_g,color = scenario)) +
+  geom_point(size = 0.5) +
+  facet_grid(river~reach)
+
+p_sims %+% subset(df1, spp %in% c("Coho") & 
+                   age %in% c("1") & 
+                   site %in% c("Lower Beaver Creek")) +
+  facet_grid(reach~river, scales = "free_y") +
+  ggtitle("Age 1 Coho Seasonal Weights\n Bioenergetics Results")
+
+
+# do a calculation: is there any difference in growth and size among scenarios/decades?!
+
+  
+```
+
+
+
+<br>
+
+b.) Mass-specific growth
+```{r}
+# a.) msg_bioenerg
+# Age 0 
+## untransformed
+basic.lm.0 <- lm(msg_bioenerg ~ doy, data = subset(dat, age == 0))
+glance(basic.lm.0)
+
+## log-transformed
+log.lm.0 <- lm(log(msg_bioenerg) ~ doy, data = subset(dat, age == 0))
+glance(log.lm.0)
+
+#############
+
+# Age 1 
+## untransformed
+basic.lm.1 <- lm(msg_bioenerg ~ doy, data = subset(dat, age == 1))
+glance(basic.lm.1) 
+
+## log-transformed
+log.lm.1 <- lm(log(msg_bioenerg) ~ doy, data = subset(dat, age == 1))
+glance(log.lm.1)
+
+#############
+
+```
+
+NOTE: do we want to retain the "shrinking" fish simulations?
+
+<br>
+<br>
+
+```{r}
+# try to create table/figure(s) with just the 2015/2016 simulation data first as "practice" before integrating scenario results.
+
+# set variable categories in dataframe plot object
+dat <- dat %>%
+  transform(year = as.character(year))
+
+# manually order sites and seasons for plot
+dat <- dat %>%
+  transform(site = factor(site, 
+                           levels = c("Lower Beaver Creek",
+                                      "Middle Beaver Creek",
+                                      "Upper Beaver Creek",
+                                      "Lower Russian River",
+                                      "Middle Russian River",
+                                      "Upper Russian River",
+                                      "Lower Ptarmigan Creek",
+                                      "Middle Ptarmigan Creek",
+                                      "Lower Kenai River",
+                                      "Middle Kenai River")),
+            season = factor(season,
+                            levels = c("Early Summer",
+                                       "Mid-Summer",
+                                       "Late Summer")))
+  
+# plot
+p <- dat %>%
+  filter(!is.na(msg_empirical)) %>%
+  ggplot(aes(season,msg_bioenerg,color = year)) +
+  geom_boxplot(position = position_dodge2(preserve = "single")) +
+  facet_grid(site~.) +
+  xlab("") +
+  labs(y = expression("Daily Growth Rate (g·g"^{-1}*"·d"^{-1}*")")) +
+  theme_bw() +
+  bm_theme_3 +
+  theme(strip.text.y = element_text(angle = 360)) 
+
+
+
+# chinook age 0 plot
+p %+% subset(dat, spp %in% c("Chinook")) +
+  ggtitle("Age 0 Chinook\nSeasonal Growth 2015-2016") 
+
+# Coho Age 0 plot
+p %+% subset(dat, spp %in% c("Coho") & age %in% 0) +
+  ggtitle("Age 0 Coho\nSeasonal Growth 2015-2016")
+
+# Coho Age 1 plot
+p %+% subset(dat, spp %in% c("Coho") & age %in% 1) +
+  ggtitle("Age 1 Coho Seasonal Growth 2015-2016")
+
+
+### to do
+
+# how to keep year position constant if both not present ?
+# stackoverflow seems to indicate I need to retain the blank x-axis category names and have a 0 value (e.g. for early summer lower kenai river age 1 coho)
+
+```
+
+<br>
+
+Try another plotting format
+```{r}
+# create generic names for watersheds
+stream_facets <- c(
+  "Beaver Creek" = "Lowland", 
+    "Russian River" = "Montane",
+    "Ptarmigan Creek" = "Glacial", 
+    "Kenai River" = "Main Stem")
+
+# prep dataframe for plot object
+dat1 <- dat %>%
+  group_by(site,spp,river,reach,year,season,age) %>%
+  summarise(mean_bioenerg_growth = mean(msg_bioenerg),
+            se_bioenerg_growth = std.error(msg_bioenerg)) 
+
+# manually order facets
+dat1 <- dat1 %>%
+  transform(river = factor(river, 
+                           levels = c("Beaver Creek",
+                                      "Russian River",
+                                      "Ptarmigan Creek",
+                                      "Kenai River")))
+  
+# plot format
+p1 <- dat1 %>%
+  ggplot(aes(season,mean_bioenerg_growth, fill = year)) +
+  geom_col(position = position_dodge2(preserve = "single", padding = 0, width = 3)) +
+ # geom_errorbar(aes(ymin = mean_bioenerg_growth - se_bioenerg_growth, 
+#                    ymax = mean_bioenerg_growth + se_bioenerg_growth), width=.1) +
+  facet_grid(river ~ reach, labeller = labeller(river = stream_facets)) +
+  theme_bw() +
+  labs(y = expression("Daily Growth Rate (g·g"^{-1}*"·d"^{-1}*")")) +
+  xlab("") +
+  theme(strip.text.y = element_text(angle = 360)) +
+  bm_theme_3
+
+# chinook age 0 plot
+p1 %+% subset(dat1, spp %in% c("Chinook")) +
+  ggtitle("Age 0 Chinook Growth") 
+
+# Coho Age 0 plot
+p1 %+% subset(dat1, spp %in% c("Coho") & age %in% 0) +
+  ggtitle("Age 0 Coho Growth")
+
+# Coho Age 1 plot
+p1 %+% subset(dat1, spp %in% c("Coho") & age %in% 1) +
+  ggtitle("Age 1 Coho Growth")
+
+
+# next plots: have 2039 + 2069 results jittered adjacent
+# manual order of these facets
+# reverse axis facets?
+```
+
+<br>
+
+What about weight at "final date" (date with data common to all sites/years (Aug 6th)) ? (Plot values)
+
+1.) Verify that Aug 6th is final date common to all sites/year
+2.) Plot weight at date common to all sites
+```{r}
+# 1.) acquire final date with fish weight data common to all sites/years
+fnl_date <- dat %>%
+  group_by(site,year) %>%
+  summarise(max_date = max(doy)) %>%
+    ungroup() %>%
+    summarise(fnl_date = min(max_date))
+(fnl_date <- as.numeric(fnl_date))
+
+```
+
+
+<br>

@@ -11,6 +11,10 @@ rm(list=ls())
 #require packages
 library(tidyverse)
 library(lubridate)
+library(xfun)
+library(plotrix)
+library(readxl)
+library(anytime)
 
 # variant theme WITHOUT angled x-axis labels
 bm_theme_1 <- theme(plot.title = element_text(size= 26, face = "bold"),        # plot title
@@ -21,6 +25,13 @@ bm_theme_1 <- theme(plot.title = element_text(size= 26, face = "bold"),        #
   theme(strip.text = element_text(face="bold", size=12),
         strip.background = element_rect(fill="lightblue", 
                                         colour="black",size=1)) 
+
+```
+
+Choose destination for simulation input files created in this script
+```{r}
+# choose destination for sim input files to be created
+sim_filepath <- paste0("other/FB4_1.1.3_projected.1/all_projected_sims")
 
 ```
 
@@ -75,17 +86,17 @@ sim_filepath <- "kenai_juv_salmon_growth_analyses/other/FB4_1.1.3_projected"
 ```
 
 
-a.) Temperature
+#### Temperature
 
 Import projected daily mean temperatures for each site/year from google sheet output of "air_water_temps.Rmd"
 
 ```{r}
 
-# 6/19/2022 - from a coding standpoint, re-runnig all this oold code is an atrocious choice. Proceeding as such due to time constraints.
+# 6/19/2022 - from a coding standpoint, re-running all this old code is an atrocious choice. Proceeding as such due to time constraints.
 
 
 # import daily mean site temperatures
-## we will use this structure to match to our projected temps, removing 2015-2016 temperatures
+## we will use this structure to match to our projected temps, removing 2015-2016 temperatures later
 daily_mean_temps <- read.csv("other/inputs/temperature/observed_water_temp/daily_temp_metrics.csv") %>%
   select(Stream_Name,Site,year,Date,doy,daily_avg_temp) %>% 
   rename(site = Site) %>%
@@ -134,434 +145,21 @@ yday(z$min_maxdate)
 
 ```
 
-Day 232 (Aug 20th) is the latest date with air temperature inpust common to both years
-
-
-<br>
-
-
-```{r diet proportions}
-
-#########################
-#                       #
-# B.) Diet Input        #
-#                       #
-#########################
-
-# process 2015 & 2016 data simultaneously
-# arrange to identical dataframe structures then combine before proceeding
-
-# 1.) Import and arrange data
-
-# 2015 Diet Data: Import & Arrange
-
-#create objects from overall diet data google sheets
-SCTC2015 <- "other/inputs/diet_size_other/2015 EPSCoR SCTC.xlsx"
-SCTC2016 <- "other/inputs/diet_size_other/2016_EPSCoR_Aquatic_Ecology_Database.xlsx"
-
-# read in worksheets containing diet data
-diet15 <- read_excel(SCTC2015, sheet = "2015 Diet Contents Data") %>% 
-  select(Sample.ID,
-         Fish_Species,
-         Sample.Event,
-         sample.event.num,
-         River,
-         Reach,
-         Site,
-         Sample_Date,
-         Prey_Type_Used,
-         PreyCategory,
-         Quantity,
-         Total_Prey_Dry_Mass_mg) %>%
-  mutate(year = "2015") %>%
-  transform(sample.event.num = as.integer(sample.event.num),
-            Quantity = as.numeric(Quantity),
-            Total_Prey_Dry_Mass_mg = as.numeric(Total_Prey_Dry_Mass_mg))     # columns import as character for some reason unless specified! (weird but innocuous quirk)
-  
-
-diet16 <- read_excel(SCTC2016, sheet = "2016 Diet Contents Data") %>%
-  select(Sample.ID,
-         Fish_Species,
-         Sample.Event,
-         sample.event.num,
-         River,
-         Reach,
-         Site,
-         Sample_Date,
-         Prey_Type_Used,
-         PreyCategory,
-         Quantity,
-         Total_Prey_Dry_Mass_mg) %>%
-  mutate(year = "2016") %>%
-  transform(sample.event.num = as.integer(sample.event.num))
-  
-# combine 2015 and 2016 diet data
-diet <- bind_rows(diet15, diet16)
-
-# finalize structure of diet data
-diet <- diet %>%  
-  #rename needed columns  
-  rename(sample.id = Sample.ID,
-         spp = Fish_Species,
-         sample.event = Sample.Event,
-         event.num = sample.event.num,
-         river = River,
-         reach = Reach,
-         site = Site,
-         date = Sample_Date,
-         prey = Prey_Type_Used,
-         preycat = PreyCategory,
-         quantity = Quantity,
-         dm_mg = Total_Prey_Dry_Mass_mg) %>%
-  
-  #select desired columns
-  select(sample.id,
-         spp,
-         sample.event,
-         event.num,
-         river,
-         reach,
-         site,
-         date,
-         year,
-         prey,
-         preycat,
-         quantity,
-         dm_mg) %>%
-  
-  #filter out non-diet samples and blank data
-  filter(site!="DR1",
-         !is.na(spp),
-         !is.na(sample.event),
-         !is.na(prey),
-         !is.na(dm_mg),
-         !is.na(quantity),
-         !is.na(event.num)) %>%
-  
-  #transform columns to desired classes
-  transform(dm_mg = as.numeric(dm_mg),
-            sample.event = as.factor(sample.event),
-            event.num = as.factor(event.num),
-            date = mdy(date),
-            spp = as.factor(spp),
-            quantity = as.numeric(quantity),
-            preycat = as.factor(preycat))  %>%
-  mutate(season = fct_recode(event.num,         #code sampling events as seasons
-                             "Early Summer"= "1", 
-                             "Mid-Summer" = "2",
-                             "Late Summer" = "3",
-                             "Fall" = "4")) 
-
-# save to local directory
-write.csv(diet,"other/outputs/diet_v1.csv",row.names = F)
-
-rm(diet15,diet16)
-```
-
-</details>
+Day 232 (Aug 20th) is the latest date with air temperature inputs common to both years
 
 <br>
 
-At this stage of analysis all prey items have an estimated dry mass value, which we acquired by measuring each item's length and applying the formula W = aL\^b, where "a" and "b" are parameters derived from the literature. These calculations of estimated dry mass values are available for download below:
+#### Diet Inputs
 
-```{r, echo = F}
-embed_file("other/outputs/diet/diet_v1.csv",text = "Download Original Version of Diet Dry Mass Inputs (v1.0)")
-```
+For scenarios involving future projections, we will use the same wet masses of prey items calculated in the previous chapter (2015-2016 growth simulations). 
 
-<br>
-
-However, to use these prey item mass values as inputs in our bioenergetics models, **we need them in wet weight rather than dry mass**. The original manuscript submitted to TAFS erroneously used dry weights.
-
-To perform this needed transformation from dry mass to wet mass of prey items, we will apply wet/dry ratio values from the manuscript McCarthy 2009, along with four other literature sources. The downloadable table below summarises these wet/dry mass conversion and energy density values.
-
-<br>
-
-```{r, echo = F}
-tbl <- read_excel("other/outputs/diet/mass_conversion/prey_types_manual_edit.xlsx",sheet = "data_validation") %>%
-  filter(!is.na(prey_type))
-```
-
-```{r, echo = F}
-embed_file("other/outputs/diet/mass_conversion/prey_types_manual_edit.xlsx",sheet = "data_validation",text = "Download dry/wet mass conversion values and energy densities of prey item categories.")
-```
-
-<br>
-
-<details>
-
-<summary>
-
-*Show/Hide Code used prepare revised fish diet data inputs from 2015-2016 observations (e.g. diet data being converted to wet mass inputs)*
-
-</summary>
 
 ```{r}
-
-# General approach:
-# We will generate and export a table of unique prey types (n = 127), then for each type manually assign one of the twelve prey type categories from McCarthy et al 2009 (+ several other lit sources)
-# generate csv of unique prey types
-unique_prey <- data.frame(unique(diet$prey)) %>%
-  clean_names()
-write.csv(unique_prey,"other/outputs/diet/mass_conversion/prey_types.csv",row.names = F)
-
-# using the "prey_types.csv" file generated above, we will manually generate an excel file pairing each prey item with a category that has a known dry mass conversion value. 
-
-# We will then join the dry mass conversion values back to the full diet data table
-
-# read in dry mass conversion values
-dm_convert_prey_types <- read_excel("other/outputs/diet/mass_conversion/prey_types_manual_edit.xlsx", sheet = "prey_types", skip = 1) %>%
-  select(-notes)
-
-dm_convert_vals <- read_excel("other/outputs/diet/mass_conversion/prey_types_manual_edit.xlsx", sheet = "data_validation") %>%
-  filter(!is.na(prey_type))
-
-dm_convert_vals <- left_join(dm_convert_prey_types,dm_convert_vals,by = "prey_type") %>%
-  filter(!is.na(wet_dry_ratio)) %>%
-  select(-notes) %>%
-  rename(prey = unique_diet_prey)
-
-# join dry mass conversion values (by prey type) to overall diet data set
-diet <- left_join(diet,dm_convert_vals,by = "prey") %>%
-  filter(!is.na(wet_dry_ratio)) 
-
-# create new column of wet mass for individual prey items
-diet %<>% mutate(wm_mg = dm_mg / wet_dry_ratio)
-
-# summarise wet mass by diet category
-#diet %<>%
- # select(-preycat) %>%
-  #group_by(river,spp,###AGE diet,PreyCategory_ED,energy_density_jg) %>%
-  #summarise(sum_wm_mg = sum(wm_mg))
-
-# convert wet masses to diet category proportions
-# and create column for summed wet mass of all prey categories
-#wm_sum_tot <- diet %>%
- # ungroup() %>%
-#  summarise(tot_sum_wm_mg = sum(sum_wm_mg)) %>%
- # as.numeric()
-
-#z <- diet %>%
-#  mutate(tot_sum_wm_mg = wm_sum_tot) %>%
-#  mutate(diet_wm_prop = sum_wm_mg / tot_sum_wm_mg) %>%
-#  select(PreyCategory_ED,diet_wm_prop) %>%
-#  pivot_wider()
-
-# only categories not matching are non-diet items (empty, destroyed, bait, etc)
-
-# next : check out energy density tabel from v1 to see less granular version of preycat
-
-
-## at this step, we need to convert prey dry mass in to wet mass and use that for the input
-
-# what we originally did: prey length --> dm
-# what we need to do: prey length --> dm --> wm
-
-## reviewer 2: "convert each of the major prey categories into wet mass proportions (i.e., divide by proportion dry weight)". proportion of what?
-
-### plan: continue prepping input files, return to here when dm --> wm conversion process clearer
-
-# create prey categorization scheme specific to bioenergetics modeling purposes
-# -import from google sheet "EPSCoR_SCTC_Prey_Energy_Densities" and mutate new column to diet data
-# -this sheet also contains energy density assignments, which must be manually input in "fishbioenergetics.r"
-# at a later step.
-
-
-
-# remove temporary objects
-#rm(diet15,diet16,ED)
+# download wet mass of each prey item assigned to each fish
+dir <- "other/outputs/fish_prey_wet_mass.csv"
+diet <- read.csv(dir)
+embed_file(dir,text = "Download full table of prey wet mass from each fish")
 ```
-
-</details>
-
-<br>
-
-At this stage, we now are using estimated wet weights for each diet item from each gastric lavage sample.
-
-<br>
-
-### Fish size and age
-
-We will import fish size and age, then for those fish from which we collected gastric lavage samples, associate each fish with its own wet mass diet data.
-
-<details>
-
-<summary>
-
-*Show/Hide Code used prepare fish age and size data inputs from 2015-2016 observations*
-
-</summary>
-
-```{r ,import all fish size and age data}
-
-# NOTE ON AGE STRUCTURE 3/28/18
-# This script originally imported google sheet titled "all_fish_ages.csv", which contained results output from the "fish_ages_all.R" script.  The "fish_ages_all.R" script used methods described in Ch. 5 of Ogle 2016 ("Introductory fisheries analyses with R") to age all captured fish from a subset of fish scale samples.  Resultant csv file was copied to the google sheet referenced here.
-
-# Further consideration has determined that using age-length keys for this project may not best serve its interests.  In the column "Age_manual2" imported in this chunk, age thresholds were identified visually as described in "fish_age_structure.R".  
-
-# ID googlesheet with fish age data (3/28/18: no longer in use)
-#fish_ages <- gs_title("all_fish_ages.csv") 
-#Sys.sleep(6)
-
-# read in desired worksheet 2015
-fish_ages15 <- read_excel(SCTC2015, sheet = "C 2015 Diet & LW Data") %>%
-  select(river,sample.id,sample.event,spp,Weight_g,Length_mm,Age_manual2,sample.event.num,`Date...41`,`Site ID`,reach_name) %>%
-  mutate(season = fct_recode(as.factor(sample.event.num), #code sampling events as seasons
-                             "Early Summer"="1", 
-                             "Mid-Summer" = "2",
-                             "Late Summer" ="3")) %>%
-  rename(wt_g = Weight_g,
-         len_mm = Length_mm,
-         age = Age_manual2,
-         Hydrologic.Segment = reach_name) %>%
-  transform(`Date...41` = anydate(`Date...41`)) %>%
-  rename(Date = `Date...41`) %>%
-  # filter out all species except Chinook and Coho
-  filter(spp %in% c("Coho", "Chinook")) %>% 
-  transform(wt_g = as.double(wt_g))
-
-
-# read in desired worksheet 2016
-fish_ages16 <- read_excel(SCTC2016, sheet = "C 2016 Diet & LW Data") %>%
-  select(river,sample.id,sample.event,spp,Weight_g,Length_mm,Age_manual2,sample.event.num,Date,`Site ID`,reach_name) %>%
-  mutate(season = fct_recode(as.factor(sample.event.num),         #code sampling events as seasons
-                             "Early Summer"="1", 
-                             "Mid-Summer" = "2",
-                             "Late Summer" ="3",
-                             "Fall" ="4")) %>%
-  rename(wt_g = Weight_g,
-         len_mm = Length_mm,
-         age = Age_manual2,
-         Hydrologic.Segment = reach_name) %>%
-  transform(Date = anydate(Date),
-            wt_g = as.numeric(wt_g)) %>%
-  filter(spp %in% c("Coho", "Chinook")) # filter out all species except Chinook and Coho
-
-
-#join 2015 and 2016 data
-fish_ages <- bind_rows(fish_ages15,fish_ages16)
-
-rm(fish_ages15,fish_ages16)
-
-#prep dataframe containing age data
-fish_ages <- fish_ages %>% 
-  separate(sample.event, c("reach","year","sample.event.num"), sep = "-", remove = F) %>%
-  unite(river_spp, river, spp, remove = F, sep = " ") %>%
-  # manually order appearance of seasons and rivers for plots
-  transform(year = as.factor(year),
-            river = factor(river, levels=c("Beaver Creek",
-                                              'Russian River',
-                                              'Ptarmigan Creek',
-                                              'Kenai River')),
-            season = factor(season, levels = c("Early Summer",
-                                     "Mid-Summer",
-                                     "Late Summer",
-                                     "Fall")), 
-            river_spp = as.factor(river_spp)) %>%
-  mutate(river_spp = paste(river,"\n",spp)) %>%
-  mutate(doy = yday(Date)) %>%
-  filter(!is.na(age))
- # age 2 fish: this cohort is sparse and likely departing for the ocean.
- #filter(age != 2) 
-
-
-# prep fish ages dataframe for later results table generation at end of this code chunk. Also save external csv for use in other script(s)
-fish_ages1 <- fish_ages
-write.csv(fish_ages,"other/outputs/all_fish_age_size.csv",row.names = F)
-
-# reduce dataframe width
-fish_ages %<>%
-  select(sample.id,Date,age,wt_g,len_mm)
-
-#eliminate duplicate rows
-## this code was not hashtagged in the original analysis ...
-#fish_ages <- unique(fish_ages)
-
-# join fish ages date with diet data      
-diet <- left_join(diet, fish_ages, by = c("sample.id"))  %>%
-  select(-date)
-
-
-
-```
-
-```{r}
-# Generate table of fish size distribution by site
-
-size_dist <- fish_ages1 %>%
-  select(river,Hydrologic.Segment,spp,wt_g,len_mm,age) %>%
-  filter(!is.na(wt_g),
-         !is.na(len_mm)) %>%
-  rename(reach = Hydrologic.Segment) %>%
-  group_by(reach,river,spp,age) %>%
-  summarise(mean_wt_g = round(mean(wt_g),1),
-            stdev_wt_g = round(sd(wt_g),1),
-            mean_len_mm = round(mean(len_mm),1),
-            stdev_len_mm = round(sd(len_mm),1),
-            mean_wt_g = paste0(mean_wt_g,"±",stdev_wt_g),
-            mean_len_mm = paste0(mean_len_mm,"±",stdev_len_mm),
-            n = n()) %>%
-  select(-stdev_len_mm,-stdev_wt_g)
-
-# use anti_join approach to remove all age 2 coho and age 1 chinook
-anti_size_dist <- size_dist %>%
-  filter(spp == "Coho" & age == 2 | spp == "Chinook" & age == 1)
-
-# remove select spp/age cohorts via anti_join
-size_dist <- anti_join(size_dist,anti_size_dist) %>%
-  arrange(river,reach,spp,age)
-
-# rename columns
-size_dist %<>%
-  rename(Reach = reach,
-         Watershed = river,
-         Species = spp,
-         Age = age,
-         `Mean Weight (g)` = mean_wt_g,
-         `Mean Fork Length (mm)` = mean_len_mm,
-         N = n)
-  
-```
-
-</details>
-
-<br>
-
-```{r, echo = F}
-# Overall summary of fish size, weight, and length values (mean ± SD).
-dir <- "other/outputs/fish_size_distribution.csv"
-write.csv(size_dist,dir, row.names = F)
-embed_file(dir,text = "Download table of observed fish weight/length distributions")
-```
-
-Next, before proceeding with preparing diet proportions, we have a bit more work to do finalizing fish size and age data. For example, a few fish have diet data but no age. We will remove these fish.
-
-##### How many fish have diet samples, but no age designation?
-
-<details>
-
-<summary>
-
-*Show/Hide Code*
-
-</summary>
-
-```{r remove un-aged fish with diet samples}
-
-# How many fish have diet samples, but no age designation?
-diet_no_age <- diet %>%
-  filter(is.na(age)) %>%
-  distinct(sample.id)
-diet_no_age <- nrow(diet_no_age)
-
-#exclude these individuals
-diet <- diet %>%
-  filter(!is.na(age))
-
-```
-
-</details>
-
-There are `r diet_no_age` fish with diet samples but no age manually assigned. These fish We will exclude these fish from analyses... for now, because we are running simulations seperately by age year/river/spp/age. Fish must have an age.
 
 <br>
 
@@ -575,11 +173,10 @@ We will group fish growth simulation inputs at the space/time scale of:
 
 -   Fish age (age 0 vs 1)
 
--   Year (2015 or 2016)
 
-Diet data, however is pooled among years (2015 and 2016) due to the heterogenous nature of this type of data.
+Diet data is pooled at the scale of spp, age, watershed.
 
-For example, an individual cohort of fish could be "2015 Beaver Creek Age 1 Coho." Diet data for this simulation is averaged from between 2015 and 2016.
+For example, an individual cohort of fish could be "Beaver Creek Age 1 Coho" for each simulation (diet/climate)
 
 <details>
 
@@ -639,22 +236,16 @@ embed_file("other/outputs/diet/wet_mass_diet_proportions.csv",text = "Download w
 
 <br>
 
-##### Define temporal extents of proposed simulations
 
-We set the time period of each simulation as the period of day leading up from the prior field sampling event. For example, suppose that one field sampling event at Lower Beaver Creek occurred on June 1, 2015 and the next one on July 1, 2015. In this case the simulations for "Early Summer Lower Beaver Creek" runs for 30 days and uses diet inputs based on field data from June 1, 2015. Overall, we constrained the time period of our summer growth simulations to the period of days for which field data was available form both 2015 and 2016.
-
-<details>
-
-<summary>
-
-*Show/Hide Code used to determine temporal length of fish growth simulations*
-
-</summary>
-
-```{r, }
+##### d.) Define temporal extents of simulations
+```{r}
 # Define temporal extents of proposed simulations
 
 # NOTE 1/22/18: this code also exists as a script at "/Users/bmeyer/Google Drive/Thesis/R Analysis/Thesis Analyses R Project/Overall_scripts_2015_2016/sampling_periods.R".  Attempted to just source("\path") this script in to the markdown document but, 'source' function prevents knitting through markdown for some reason.  
+
+# define locations of needed spreadsheets w/ diet data
+SCTC2015 <- "other/inputs/diet_size_other/2015 EPSCoR SCTC.xlsx"
+SCTC2016 <- "other/inputs/diet_size_other/2016_EPSCoR_Aquatic_Ecology_Database.xlsx"
 
 ############
 #
@@ -716,7 +307,1213 @@ effort <- bind_rows(effort2015,effort2016) %>%
 rm(effort2015,effort2016)
 ```
 
+<br> HERE
+
+B.) Simulation extents segregated by site
+```{r}
+
+# Define Temporal Extents of proposed simulations 
+
+# "Simulation" temporal extent 
+# Time period from first date of each season to first date of following season
+## (for projected sims, earliest sample date between both years to latest sample date)
+
+# prepare data to tibble form
+sim_extents_by_site <- effort %>% 
+  group_by(River,site, year,sample.event,sample.event.num) %>% 
+  nest() %>% 
+  mutate(season.start = map_dbl(data, ~min(.$deploy_dt)),
+         season.end = map_dbl(data, ~min(.$deploy_dt))
+         ) %>%
+  transform(season.start = anytime(season.start),
+            season.end = anytime(season.end)) %>%
+  arrange(site,year,sample.event) 
+
+# prepare data such that end of one season is beginning of next
+t15 <- sim_extents_by_site %>% 
+  filter(year == 2015) %>%
+  mutate(season.end_x = lead(season.end)) %>%
+  select(-season.end) %>%
+  arrange(River,year,sample.event)
+
+t16 <- sim_extents_by_site %>% 
+  filter(year == 2016) %>%
+  mutate(season.end_x = lead(season.end)) %>%
+  select(-season.end) %>%
+  arrange(River,year,sample.event)
+
+# prepare data such that final season of each year has duration of 30 days.
+# 2015 had 3 seasons, 2016 had 4 seasons.
+
+t_end15 <- t15 %>%
+  filter(sample.event.num == 3) %>%
+  mutate(season.end = season.start + days(30)) %>%
+  select(-season.end_x)
+
+t_end16 <- t16 %>%
+  filter(sample.event.num == 4) %>%
+  mutate(season.end = season.start + days(30)) %>%
+  select(-season.end_x)
+
+t_end15_1 <- t15 %>%
+  filter(sample.event.num != 3) %>%
+  rename(season.end = season.end_x)
+
+t_end16_1 <- t16 %>%
+  filter(sample.event.num != 4) %>%
+  rename(season.end = season.end_x) %>%
+  filter(sample.event != "MPC-2016-3")
+
+# NOTE: there was no 4th visit in 2016 to Middle Ptarmigan Creek due to logistical reasons and low CPUE.  Final season temporal extent is manually assigned here
+mpc_2016_3 <- t16 %>%
+  filter(sample.event == "MPC-2016-3") %>%
+  select(-season.end_x) %>%
+  mutate(season.end = season.start + days(30))
+
+# final version of simulation extents
+sim_extents_by_site <- bind_rows(t_end15_1,t_end15,t_end16_1,t_end16,mpc_2016_3) %>%
+  rename(Stream_Name = River,
+         sim.start = season.start,
+         sim.end = season.end) %>%
+  transform(year = as.factor(year)) %>%
+  mutate(season = fct_recode(as.factor(sample.event.num), #code sampling events as seasons
+                             "Early Summer"="1", 
+                             "Mid-Summer" = "2",
+                             "Late Summer" ="3",
+                             "Fall" = "4")) %>%
+  select(-data) %>%
+  mutate(days = round(sim.end - sim.start))
+
+# remove temporary objects
+rm(t_end15,t_end15_1,t_end16,t_end16_1,mpc_2016_3)
+
+# 6/4/19 edits: get duration of days from earliest to latest doy site visits
+sim_extents_by_stream1 <- sim_extents_by_site %>%
+  group_by(Stream_Name,site) %>%
+  mutate(sim.start.doy = yday(sim.start),
+         sim.end.doy = yday(sim.end)) %>%
+  summarise(sim.start1 = min(sim.start.doy),
+            sim.end1 = max(sim.end.doy)) %>%
+  mutate(days = sim.end1 - sim.start1) %>%
+  rename(sim.start = sim.start1,
+         sim.end = sim.end1)
+
+```
+
+<br>
+
+```{r}
+# match temporal extent of simulated diet proportion data to simulation date if it exists. 
+diet_prop_seasons <- left_join(wm_sum_by_event,sim_extents_by_stream1) %>%
+  #select(-`<NA>`) %>%
+  transform(days = as.double(days))
+
+```
+
+<br>
+
+We want each sim to be the duration of earliest site visit to latest site visit, and for diet props to be the mean of all sample events for that drainage by spp/age.
+
+```{r sim.day munging}
+
+# extend diet props down length of season
+# diet proportions are static throughout season for now, can consider other approaches later
+sim_diet_days <- diet_prop_seasons[rep(seq_len(nrow(diet_prop_seasons)),diet_prop_seasons[,"days"]), ]
+
+# add a row # ("SimDay") per row within each desired sim group, 
+sim_diet_days <- sim_diet_days %>%
+  mutate(sim_name = paste0(site,"_",
+                           spp,"_",
+                           "Age","_",
+                           age)) %>%
+  group_by(sim_name) %>%
+  mutate(SimDay = row_number()) 
+
+```
+
+<br>
 
 
+
+```{r, echo = F}
+# In the following chapter, we will need a way to match up the generic sim temporal extent data (Day 1 --> Day Y) with the actual julian days (Day X --> Day Y). Here we will export such a csv table for later use.
+
+sim_days_tbl <- sim_diet_days %>%
+  select(sim.start,sim.end,sim_name,SimDay)
+write.csv(sim_days_tbl,"other/outputs/sim_days_tbl.csv", row.names = F)
+
+```
+
+
+
+
+```{r}
+# join daily mean temperatures with diet proportions
+
+# 1.) create sim_diet_days object with identical diet props for each iteration of scenario_decade
+
+sim_diet_days_2030_rcp60 <- sim_diet_days %>%
+  mutate(scenario_period = "rcp60_2030_2039")
+
+sim_diet_days_2030_rcp85 <- sim_diet_days %>%
+  mutate(scenario_period = "rcp85_2030_2039")
+
+sim_diet_days_2060_rcp60 <- sim_diet_days %>%
+  mutate(scenario_period = "rcp60_2060_2069")
+
+sim_diet_days_2060_rcp85 <- sim_diet_days %>%
+  mutate(scenario_period = "rcp85_2060_2069")
+
+sim_diet_days_2010_rcp60 <- sim_diet_days %>%
+  mutate(scenario_period = "rcp60_2010_2019")
+
+sim_diet_days_2010_rcp85 <- sim_diet_days %>%
+  mutate(scenario_period = "rcp85_2010_2019")
+
+sim_diet_days <- bind_rows(sim_diet_days_2030_rcp60,
+               sim_diet_days_2030_rcp85,
+               sim_diet_days_2060_rcp60,
+               sim_diet_days_2060_rcp85,
+               sim_diet_days_2010_rcp60,
+               sim_diet_days_2010_rcp85) %>%
+  # create doy column
+  mutate(doy = sim.start + SimDay)
+
+
+# we only need one year of the dataframe "daily_mean_temps"
+daily_mean_temps <- daily_mean_temps %>%
+  mutate(year = year(Date)) %>%
+  filter(year == 2016) %>%
+  select(-year) %>%
+  mutate_all(funs(str_replace(., "_2010", "_2010_2019"))) %>%
+  mutate_all(funs(str_replace(., "_2030", "_2030_2039"))) %>%
+  mutate_all(funs(str_replace(., "_2060", "_2060_2069"))) %>%
+  transform(doy = as.numeric(doy))
+
+
+```
+
+
+
+
+```{r}
+
+# join downscaled/projected temps to diet data frame
+
+## first: prepare projected temperatures to be joined by MONTH instead of day, so that temporal extent of temps and diet data can match
+daily_mean_temps %<>%
+  mutate(month = month(Date)) %>%
+  select(-Date,-doy) %>%
+  distinct()
+
+## next: prep sim_diet_days to be joined to projected temps by month
+## we need sim_diet_days to retain a date so we can extract a month
+## create month column
+library(magrittr)
+
+sim_diet_days %<>%
+  mutate(date = as.Date(doy,origin = as.Date("2015-01-01")),
+         month = month(date),
+         doy = yday(date)) %>%
+  select(-doy,-date)
+
+## join diet data and projected temp data
+sim_diet_days  <- left_join(sim_diet_days,daily_mean_temps, by=c("site",
+                                                                 "scenario_period",
+                                                                 "month",
+                                                                 "Stream_Name")) %>%
+  rename(avg_temp = daily_avg_temp) %>%
+  # eliminate instances where paired diet data does not exist with temp data
+  filter(!is.na(avg_temp))
+
+# remove extraneous dfs
+rm(sim_diet_days_2030_rcp60, sim_diet_days_2030_rcp85, sim_diet_days_2060_rcp60, sim_diet_days_2060_rcp85, sim_diet_days_2010_rcp60, sim_diet_days_2010_rcp85)
+
+```
+
+
+On 6/24/2022 when attempting to use FB4 v1.1.3 to run projected simulations, the app will not proceed after simulation #18. The reason appears to be that within some main input folders, there is a mismatch between the extent of diet sim data and temp sim data. We want to get these two temporal extents to match... 
+
+These instances occur because in some cases observed water/air temp data did not extend in to late summer, whereas projected data can.
+
+Modified/resolved 6/24/2022, joined diet to data by month instead of day.
+
+```{r, echo = F}
+# export table of diet proportions for each cohort for table 2 in ms
+diet_prop_tbl <- sim_diet_days %>%
+  ungroup() %>%
+  filter(age != 2) %>%
+  select(Stream_Name,spp,age,
+         FishEggs,InvertAquatic_AqOrigin,
+         InvertTerrestrial,InvertTerrestrial_AqOrigin,
+         SalmonEggs) %>%
+  distinct()
+
+# export table
+write.csv(diet_prop_tbl,"other/outputs/diet_props_tbl2.csv",row.names = F)
+```
+
+
+
+
+```{r finalize format of sim_diet_days }
+
+ # arrange and rename columns to format identical as in "InputFileTemplate" for bioenergetics modeling
+sim_diet_days <- sim_diet_days %>%
+  rename(diet1 = FishEggs,
+         diet2 = InvertAquatic_AqOrigin,
+         diet3 = InvertTerrestrial,
+         diet4 = InvertTerrestrial_AqOrigin,
+         diet5 = SalmonEggs,
+         Temp = avg_temp) %>%
+  # add in blank columns 7-10 to match InputFileTemplate format
+  mutate(diet6 = 0,
+         diet7 = 0,
+         diet8 = 0,
+         diet9 = 0,
+         diet10 = 0) %>%
+  # select desired columns  
+  select(SimDay,Temp,
+         contains("Diet"),
+         sim_name,spp,scenario_period) %>%
+  # ensure that list of dataframes and list of dataframe names match up order in next step
+  arrange(sim_name) %>%
+  # round decimals to two digits
+  mutate_if(is.numeric, funs(round(., 1))) %>%
+  # filter out simulation days with no temperature data; trim lengths of sims to days w/ sims
+  filter(!is.na(Temp)) 
+  
+#replace all NA's with 0's
+sim_diet_days[is.na(sim_diet_days)] <- 0
+
+# eliminate simulations where diet inputs are all zeros (not possible to run a simulation)
+# a.) create dataframe that conatins sim names with zero diet content
+#zero_sims <- sim_diet_days %>%
+# select(-spp) %>%
+#  group_by(sim_name) %>% 
+#  #summarise_each(funs(sum)) %>%
+#  # sum across columns with diet proportions
+#  mutate(sum = select(diet1,diet2) %>% apply(1, sum, na.rm=TRUE))
+#  mutate(diet_prop_sum = rowSums(diet1,diet2,diet3,diet4,diet5,diet6,diet7,diet8,diet9,diet10, na.rm = T)) %>%
+#  select(sim_name, diet_prop_sum) %>%
+  # filter to create dataframe of simulations with zero diet content
+#  filter(diet_prop_sum == 0)
+
+
+
+# export names of simulations with zero diet mass to google sheet for later reference
+
+# code below hastagged out b/c there are already no samples included w/ zero diet mass
+
+## remove any existing googlesheet resulting from previous runs of this script
+#zero_sims_gs <- gs_title("zero_diet_mass_sims")
+#gs_delete(zero_sims_gs)
+## write new sheet with data
+#gs_new("zero_diet_mass_sims", input = zero_sims)
+
+# b.) use above table to remove simulatins with zero diet content
+#sim_diet_days <- anti_join(sim_diet_days,zero_sims)
+
+# correct SimDay assignment column...
+sim_diet_days <- sim_diet_days %>%
+  select(-SimDay) %>%
+  group_by(sim_name,scenario_period,spp) %>%
+  mutate(SimDay = row_number()) %>%
+  # arrange columns in desired order
+    select(SimDay,Temp,diet1,diet2,diet3,diet4,diet5,diet6,diet7,diet8,diet9,diet10,sim_name,spp,scenario_period)
+
+```
+
+```{r eval = FALSE}
+# How many simulations included?
+#(n_sims <- nrow(sim_size_inputs_list))
+
+```
+There are `r n_sims` distinct simulations included in bioenergetics modeling efforts.
+
+
+Alter sim names to specify decade, scenario, and diet inputs of simulations
+```{r}
+# 
+sim_diet_days <- sim_diet_days %>%
+  ungroup() %>%
+  mutate(sim_name = paste0(scenario_period,"_",sim_name)) %>%
+  select(-scenario_period) 
+
+```
+
+
+<br>
+
+a.) water temperature csv file export prep
+
+```{r eval = FALSE}
+
+# export water temperature csv files
+
+## select desired variables
+watertemps <- sim_diet_days %>%
+  select(SimDay,Temp,sim_name,spp) %>%
+  rename(day = SimDay,
+         temperature = Temp) %>%
+#recreate grouping variable
+  group_by(sim_name)
+
+# create individual dataframes for each species
+watertemps_coho <- watertemps %>%
+  filter(spp == "Coho") %>%
+  select(-spp)
+
+watertemps_chnk <- watertemps %>%
+  filter(spp == "Chinook") %>%
+  select(-spp)
+
+# split up all data in to lists of individual simulations by year, river, species, age, and season
+watertemps_list_coho <- split.data.frame(watertemps_coho, watertemps_coho$sim_name)
+watertemps_list_chnk <- split.data.frame(watertemps_chnk, watertemps_chnk$sim_name)
+
+# remove column containing name of simulation from all objects in list
+watertemps_list_coho <- lapply(watertemps_list_coho, function(x) x[!(names(x) %in% c("sim_name"))])
+watertemps_list_chnk <- lapply(watertemps_list_chnk, function(x) x[!(names(x) %in% c("sim_name"))])
+
+```
+
+<br>
+
+b.) diet proportion csv file export prep
+```{r}
+
+# export diet proportion csv files
+
+## select desired variables
+dietprops <- sim_diet_days %>%
+  select(-Temp) %>%
+  rename(day = SimDay) %>%
+#recreate grouping variable
+  group_by(sim_name)
+
+# create individual dataframes for each species
+dietprops_coho <- dietprops %>%
+  filter(spp == "Coho") %>%
+  select(-spp)
+
+dietprops_chnk <- dietprops %>%
+  filter(spp == "Chinook") %>%
+  select(-spp)
+
+# split up all data in to lists of individual simulations by year, river, species, age, and season
+dietprops_list_coho <- split.data.frame(dietprops_coho, dietprops_coho$sim_name)
+dietprops_list_chnk <- split.data.frame(dietprops_chnk, dietprops_chnk$sim_name)
+
+# remove column containing name of simulation from all objects in list
+dietprops_list_coho <- lapply(dietprops_list_coho, function(x) x[!(names(x) %in% c("sim_name"))])
+dietprops_list_chnk <- lapply(dietprops_list_chnk, function(x) x[!(names(x) %in% c("sim_name"))])
+
+```
+
+<br>
+
+```{r}
+
+# eliminate overall existing directory and contents if applicable
+unlink(sim_filepath, recursive = T)
+
+# create overall directory destination for input files
+dir.create(sim_filepath)
+
+# name directory paths
+chnk_dir <- paste0(sim_filepath,"/","chnk","/")
+coho_dir <- paste0(sim_filepath,"/","coho","/")
+
+# create directory destinations for input files
+dir.create(chnk_dir)
+dir.create(coho_dir)
+
+```
+
+<br>
+
+# export chinook diet proportions to csv files
+```{r}
+
+# get names of all simulations in a list
+dietprops_names_chnk <- dietprops_chnk %>%
+  select(sim_name) %>%
+  distinct()
+dietprops_names_chnk <- as.list(dietprops_names_chnk)
+
+# create sub-directory for each simulation
+## get simulation names
+### chinook
+dietprops_names_chnk <- as.data.frame(dietprops_names_chnk) %>%
+  mutate(folder_dir = paste0(chnk_dir,sim_name),
+         diet_csv_dir1 = paste0(chnk_dir,"Diet_prop_",sim_name,".csv"), 
+         diet_csv_dir2 = paste0(folder_dir,"/","Diet_prop_",sim_name,".csv"),
+         diet_csv_dir3 = paste0(folder_dir,"/","Diet_prop",".csv"))
+
+# create individual folders named after each simulation
+Map(dir.create,
+    dietprops_names_chnk$folder_dir)
+
+# write diet proportion csv files
+mapply(write.table,row.names = F, sep=",",
+       dietprops_list_chnk, file = paste0(chnk_dir,"Diet_prop","_", names(dietprops_list_chnk),".csv"))
+
+# move output files from chnk directory to individual simulation folders
+Map(file.rename,
+    from = dietprops_names_chnk$diet_csv_dir1,
+    to = dietprops_names_chnk$diet_csv_dir2)
+
+# rename each diet proportion csv file as "Diet_prop" to prepare for input to FB4
+Map(file.rename,
+    from = dietprops_names_chnk$diet_csv_dir2,
+    to = dietprops_names_chnk$diet_csv_dir3)
+
+# results: "Diet_prop.csv" exists in a named folder for each simulation
+
+```
+
+<br>
+
+# export chinook temperature data to csv files
+```{r}
+
+# get names of all simulations in a list
+watertemps_names_chnk <- watertemps_chnk %>%
+  select(sim_name) %>%
+  distinct()
+watertemps_names_chnk <- as.list(watertemps_names_chnk)
+
+# create sub-directory for each simulation
+## get simulation names
+### chinook
+watertemps_names_chnk <- as.data.frame(watertemps_names_chnk) %>%
+  mutate(folder_dir = paste0(chnk_dir,sim_name),
+         diet_csv_dir1 = paste0(chnk_dir,"Temperature_",sim_name,".csv"), 
+         diet_csv_dir2 = paste0(folder_dir,"/","Temperature_",sim_name,".csv"),
+         diet_csv_dir3 = paste0(folder_dir,"/","Temperature",".csv"))
+
+# create individual folders named after each simulation
+Map(dir.create,
+    watertemps_names_chnk$folder_dir)
+
+# write temperature csv files
+mapply(write.table,row.names = F, sep=",",
+       watertemps_list_chnk, file = paste0(chnk_dir,"Temperature","_", names(watertemps_list_chnk),".csv"))
+
+# move output files from chnk directory to individual simulation folders
+Map(file.rename,
+    from = watertemps_names_chnk$diet_csv_dir1,
+    to = watertemps_names_chnk$diet_csv_dir2)
+
+# rename each diet proportion csv file as "Diet_prop" to prepare for input to FB4
+Map(file.rename,
+    from = watertemps_names_chnk$diet_csv_dir2,
+    to = watertemps_names_chnk$diet_csv_dir3)
+
+# results: "Temperature.csv" exists in a named folder for each simulation
+
+```
+
+<br>
+
+# export coho diet proportions to csv files
+```{r}
+
+# get names of all simulations in a list
+dietprops_names_coho <- dietprops_coho %>%
+  select(sim_name) %>%
+  distinct()
+dietprops_names_coho <- as.list(dietprops_names_coho)
+
+# create sub-directory for each simulation
+## get simulation names
+dietprops_names_coho <- as.data.frame(dietprops_names_coho) %>%
+  mutate(folder_dir = paste0(coho_dir,sim_name),
+         diet_csv_dir1 = paste0(coho_dir,"Diet_prop_",sim_name,".csv"), 
+         diet_csv_dir2 = paste0(folder_dir,"/","Diet_prop_",sim_name,".csv"),
+         diet_csv_dir3 = paste0(folder_dir,"/","Diet_prop",".csv"))
+
+# create individual folders named after each simulation
+Map(dir.create,
+    dietprops_names_coho$folder_dir)
+
+# write diet proportion csv files
+mapply(write.table,row.names = F, sep=",",
+       dietprops_list_coho, file = paste0(coho_dir,"Diet_prop","_", names(dietprops_list_coho),".csv"))
+
+# move output files from coho directory to individual simulation folders
+Map(file.rename,
+    from = dietprops_names_coho$diet_csv_dir1,
+    to = dietprops_names_coho$diet_csv_dir2)
+
+# rename each diet proportion csv file as "Diet_prop" to prepare for input to FB4
+Map(file.rename,
+    from = dietprops_names_coho$diet_csv_dir2,
+    to = dietprops_names_coho$diet_csv_dir3)
+
+# results: "Diet_prop.csv" exists in a named folder for each simulation
+
+```
+
+<br>
+
+# export coho temperature data to csv files
+```{r}
+
+# get names of all simulations in a list
+watertemps_names_coho <- watertemps_coho %>%
+  select(sim_name) %>%
+  distinct()
+watertemps_names_coho <- as.list(watertemps_names_coho)
+
+# create sub-directory for each simulation
+## get simulation names
+watertemps_names_coho <- as.data.frame(watertemps_names_coho) %>%
+  mutate(folder_dir = paste0(coho_dir,sim_name),
+         diet_csv_dir1 = paste0(coho_dir,"Temperature_",sim_name,".csv"), 
+         diet_csv_dir2 = paste0(folder_dir,"/","Temperature_",sim_name,".csv"),
+         diet_csv_dir3 = paste0(folder_dir,"/","Temperature",".csv"))
+
+# create individual folders named after each simulation
+Map(dir.create,
+    watertemps_names_coho$folder_dir)
+
+# write diet proportion csv files
+mapply(write.table,row.names = F, sep=",",
+       watertemps_list_coho, file = paste0(coho_dir,"Temperature","_", names(watertemps_list_coho),".csv"))
+
+# move output files from coho directory to individual simulation folders
+Map(file.rename,
+    from = watertemps_names_coho$diet_csv_dir1,
+    to = watertemps_names_coho$diet_csv_dir2)
+
+# rename each diet proportion csv file as "Diet_prop" to prepare for input to FB4
+Map(file.rename,
+    from = watertemps_names_coho$diet_csv_dir2,
+    to = watertemps_names_coho$diet_csv_dir3)
+
+# results: "Temperature.csv" exists in a named folder for each simulation
+
+```
+
+<br>
+
+Final outcome so far: diet proportions and water temperature at scale of year/site/spp/age by day w/ water temp, stored in local directory named after the simulation
+
+<br>
+
+Task: include the other (constant) files necessary in each folder as is found in each "Main Inputs" folder for FB4:
+
+-Indigestable_Prey.csv
+-Pred_E.csv
+-Prey_E.csv
+
+These values remain constant for all simulations.
+
+```{r}
+# write the three constant Main Input files to local directory folder
+
+## Indigestible prey
+day <- c(1,365)
+diet1 <- .03
+diet2 <- .17
+diet3 <- .17
+diet4 <- .17
+diet5 <-  .03 
+diet6 <- 0
+diet7 <- 0
+diet8 <- 0 
+diet9 <- 0
+diet10 <- 0
+
+# collate to data frame
+Indigestible_Prey <- data.frame(day,diet1,diet2,diet3,diet4,diet5,
+                                diet6,diet7,diet8,diet9,diet10)
+
+# write file
+dir_projected_main_inputs <- "other/FB4_1.1.3_projected.1/projected_main_inputs/"
+unlink(dir_projected_main_inputs, recursive = T)
+dir.create(dir_projected_main_inputs)
+write.csv(Indigestible_Prey, paste0(dir_projected_main_inputs,"Indigestible_Prey.csv"), row.names = F)
+
+  
+## Pred_E.csv
+predator <- 5000
+# collate to data frame
+Pred_E <- data.frame(day,predator)
+# write file
+write.csv(Pred_E, paste0(dir_projected_main_inputs,"Pred_E.csv"), row.names = F)
+
+
+## Prey_E.csv
+### see googlesheet "EPSCoR_SCTC_Prey_Energy_Densities"
+diet1 <- 5235 # FishEggs
+diet2 <- 3365 # InvertAquatic_AqOrigin
+diet3 <- 5250 # InvertTerrestrial
+diet4 <- 4225 # InvertTerrestrial_AqOrigin
+diet5 <- 9000 # SalmonEggs
+diet6 <- 0
+diet7 <- 0
+diet8 <- 0
+diet9 <- 0
+diet10 <- 0
+  
+Prey_E <- data.frame(day,diet1,diet2,diet3,diet4,diet5,
+                     diet6,diet7,diet8,diet9,diet10)
+
+write.csv(Prey_E, paste0(dir_projected_main_inputs,"Prey_E.csv"), row.names = F)
+
+```
+
+
+<br>
+
+Approach: same as other csv exports; create list of dataframes and use mapply to export to folder of each individual simulation's folder
+
+# chinook 
+
+Indigestible_Prey.csv
+```{r}
+# get master copy file directory for indigestible prey
+ip_dir <- "other/FB4_1.1.3_projected.1/projected_main_inputs/Indigestible_Prey.csv"
+
+# Get list of folders in directory destination
+z <- as.data.frame(list.dirs(path = chnk_dir)) 
+z <- as.data.frame(z[-1, ], drop = F) 
+colnames(z) <- "sim_dir"
+z <- z %>%
+  mutate(simx = str_replace(z$sim_dir,"//","/")) %>%
+  select(-sim_dir) %>%
+  mutate(sim_dir = paste0(simx,"/","Indigestible_Prey",".csv")) %>%
+  select(-simx)
+  
+# write same csv file to all simulation sub-folders
+Map(file.copy,
+    from = ip_dir,
+    to = z$sim_dir,
+    overwrite = T)
+  
+```
+
+<br>
+
+Pred_E csv file export
+
+# chinook Pred_E.csv
+```{r}
+# get master copy file directory for indigestible prey
+pe_dir <- "other/FB4_1.1.3_projected.1/projected_main_inputs/Pred_E.csv"
+
+# Get list of folders in directory destination
+z <- as.data.frame(list.dirs(path = chnk_dir)) 
+z <- as.data.frame(z[-1, ], drop = F) 
+colnames(z) <- "sim_dir"
+z <- z %>%
+  mutate(simx = str_replace(z$sim_dir,"//","/")) %>%
+  select(-sim_dir) %>%
+  mutate(sim_dir = paste0(simx,"/","Pred_E",".csv")) %>%
+  select(-simx)
+  
+# write same csv file to all simulation sub-folders
+Map(file.copy,
+    from = pe_dir,
+    to = z$sim_dir,
+    overwrite = T)
+  
+```
+
+<br>
+
+Prey_E export
+
+# chinook Prey_E.csv
+```{r}
+# get master copy file directory for indigestible prey
+prey_dir <- "other/FB4_1.1.3_projected.1/projected_main_inputs/Prey_E.csv"
+
+# Get list of folders in directory destination
+z <- as.data.frame(list.dirs(path = chnk_dir)) 
+z <- as.data.frame(z[-1, ], drop = F) 
+colnames(z) <- "sim_dir"
+z <- z %>%
+  mutate(simx = str_replace(z$sim_dir,"//","/")) %>%
+  select(-sim_dir) %>%
+  mutate(sim_dir = paste0(simx,"/","Prey_E",".csv")) %>%
+  select(-simx)
+  
+# write same csv file to all simulation sub-folders
+Map(file.copy,
+    from = prey_dir,
+    to = z$sim_dir,
+    overwrite = T)
+  
+```
+
+
+<br>
+
+# coho 
+
+Indigestible_Prey.csv
+```{r results = "hide"}
+# get master copy file directory for indigestible prey
+#ip_dir <- already made
+
+# Get list of folders in directory destination
+z <- as.data.frame(list.dirs(path = coho_dir)) 
+z <- as.data.frame(z[-1, ], drop = F) 
+colnames(z) <- "sim_dir"
+z <- z %>%
+  mutate(simx = str_replace(z$sim_dir,"//","/")) %>%
+  select(-sim_dir) %>%
+  mutate(sim_dir = paste0(simx,"/","Indigestible_Prey",".csv")) %>%
+  select(-simx)
+  
+# write same csv file to all simulation sub-folders
+Map(file.copy,
+    from = ip_dir,
+    to = z$sim_dir,
+    overwrite = T)
+  
+```
+
+<br>
+
+Pred_E csv file export
+
+# coho Pred_E.csv
+```{r}
+# get master copy file directory for indigestible prey
+#pe_dir <- already exists
+
+# Get list of folders in directory destination
+z <- as.data.frame(list.dirs(path = coho_dir)) 
+z <- as.data.frame(z[-1, ], drop = F) 
+colnames(z) <- "sim_dir"
+z <- z %>%
+  mutate(simx = str_replace(z$sim_dir,"//","/")) %>%
+  select(-sim_dir) %>%
+  mutate(sim_dir = paste0(simx,"/","Pred_E",".csv")) %>%
+  select(-simx)
+  
+# write same csv file to all simulation sub-folders
+Map(file.copy,
+    from = pe_dir,
+    to = z$sim_dir,
+    overwrite = T)
+  
+```
+
+<br>
+
+Prey_E export
+
+# coho Prey_E.csv
+```{r}
+# get master copy file directory for indigestible prey
+#prey_dir <- already exists
+
+# Get list of folders in directory destination
+z <- as.data.frame(list.dirs(path = coho_dir)) 
+z <- as.data.frame(z[-1, ], drop = F) 
+colnames(z) <- "sim_dir"
+z <- z %>%
+  mutate(simx = str_replace(z$sim_dir,"//","/")) %>%
+  select(-sim_dir) %>%
+  mutate(sim_dir = paste0(simx,"/","Prey_E",".csv")) %>%
+  select(-simx)
+  
+# write same csv file to all simulation sub-folders
+Map(file.copy,
+    from = prey_dir,
+    to = z$sim_dir,
+    overwrite = T)
+  
+```
+
+<br>
+
+Prep Initial settings single csv file for intake into Fishbioenergetics 4.1
+
+All input files are exported to local directory at the scale of site/spp/age.  We now want to create a file of all simulations to be performed.  This will include a set fit to the mean and +/- 20% the Cmax value associated with this site/spp/age
+
+<br>
+
+Note: if we are going to use diet proportion inputs grouped within a watershed for projected sims, we should use that same scale of input for the 2015-2016 sims too to obtain Cmax values.  Done 7/5/19.
+
+
+
+-Fit simulations to Cmax value for each site
+a.) using mean/min/max consumption from empirical sims
+b.) using mean 20% +/- Cmax values from empirical sims
+
+
+<br>
+
+
+<br>
+
+b.) sim inputs for mean and  20% +/- consumption values, NEW PARAMETERS
+```{r}
+library(janitor)
+
+# from manuscript: "Future salmon growth was projected from May 26th to Sept 4th. The start date was the earliest day of available fish weight data common to all sites and fieldwork years and the end date was calculated as the earliest final fish sampling event (August 6th) plus an additional 30 days to include the remaining summer season. Starting weight for each scenario simulation was the mean weight (either observed or linearly interpolated) on May 26th from the simulations of current conditions."
+
+# import results (p-values) from 2015-2016 bioenerg output
+fb4_2015_2016_output_dir <- "other/FB4_1.1.3_2015_2016.1/FB4_2015_2016_models_new_parameters.csv"
+
+# prep
+cmax_stats_pct <- read.csv(fb4_2015_2016_output_dir) %>%
+  clean_names() %>%
+  # mutate sim name
+  rename(Simulation = run_name) %>%
+  separate(Simulation, into = c("year","season","site","spp","e","age"),sep = "_") %>%
+  separate(site, into = c("reach","river1","river2"), remove = F) %>%
+  mutate(Stream_Name = paste(river1,river2)) %>%
+  # retain needed columns
+  select(spp,age,year,season,site,reach,initial_w,p_value,Stream_Name)
+
+
+## calculate duration between start and end doy
+min_sim_date <- yday(ymd("2015-05-26"))
+max_sim_date <- yday(ymd("2015-09-04"))
+sim_duration <- max_sim_date - min_sim_date
+
+## calculate mean p-val by watershed, spp, age
+mean_pvals <- cmax_stats_pct %>%
+  group_by(Stream_Name,spp,age) %>%
+  summarise(mean_pval = mean(p_value))
+
+## calculate mean initial weight by age, spp, site
+mean_start_w <- cmax_stats_pct %>%
+  filter(season == "Early Summer") %>%
+  group_by(Stream_Name,spp,age,site) %>%
+  summarise(mean_init_w = mean(initial_w))
+
+# join sim duration, mean p-vals, and start weights
+init_file_dat <- left_join(mean_start_w,mean_pvals) %>%
+  # retain mean p_val and calculate 20 % +/- consumption from each site, by site,spp,age
+  mutate(`20plus_pval` = mean_pval*1.2,
+         `20minus_pval` = mean_pval*0.8) %>%
+  # reshape to long
+  pivot_longer(cols = c("mean_pval","20plus_pval","20minus_pval")) %>%
+  rename("consumption_scenario" = "name") %>%
+  
+  # specify simulation cohort
+  mutate(Simulation = paste0(site,"_",spp,"_Age_",age))
+  
+
+# replicate inputs for all temperature scenarios, collate in to single dataframe
+`2030_rcp60` <- init_file_dat %>%
+  mutate(Simulation = paste0("rcp60","_","2030_2039","_",Simulation))
+`2030_rcp85` <- init_file_dat %>%
+  mutate(Simulation = paste0("rcp85","_","2030_2039","_",Simulation))
+`2060_rcp60` <- init_file_dat %>%
+  mutate(Simulation = paste0("rcp60","_","2060_2069","_",Simulation))
+`2060_rcp85` <- init_file_dat %>%
+  mutate(Simulation = paste0("rcp85","_","2060_2069","_",Simulation))
+`2010_2019_rcp60` <- init_file_dat %>%
+  mutate(Simulation = paste0("rcp60","_","2010_2019","_",Simulation))
+`2010_2019_rcp85` <- init_file_dat %>%
+  mutate(Simulation = paste0("rcp85","_","2010_2019","_",Simulation))
+sim_size_inputs_FB4.1 <- bind_rows(`2030_rcp60`,
+                                   `2030_rcp85`,
+                                   `2060_rcp60`,
+                                   `2060_rcp85`,
+                                   `2010_2019_rcp60`,
+                                   `2010_2019_rcp85`)  
+
+
+# create design file
+
+# 6/19/2022 --- first: we need to ensure that the "sim_size_inputs_v2" list of unique simulations matches the list of unique sims that we just used to generate main inputs
+
+# get list of unique simulations for which main input files were generated
+unique_sims <- data.frame(unique(sim_size_inputs_FB4.1$Simulation))
+colnames(unique_sims) <- "sim"
+
+# use the above list to subset list of length/weights for master simulation list file
+#sim_size_inputs_FB4.1 <- read_excel("other/inputs/diet_size_other/sim_size_inputs_v2.xlsx",sheet = "lw_data") %>% inner_join(unique_sims)
+
+
+# 6/19/2022 - there appears to still be a mismatch between the list of "main input" folder directories and the list of simulation names in the design file. Here we will work to diagnose where the mismatch lies, and rectify the two lists.
+
+
+# Get list of folders in directory for each species
+coho_dirs <- as.data.frame(list.dirs(path = "other/FB4_1.1.3_projected.1/all_projected_sims/coho"))
+colnames(coho_dirs) <- "dir"
+chnk_dirs <- as.data.frame(list.dirs(path = "other/FB4_1.1.3_projected.1/all_projected_sims/chnk"))
+colnames(chnk_dirs) <- "dir"
+folder_dirs <- bind_rows(coho_dirs,chnk_dirs) %>%
+  clean_names() %>%
+  separate(dir,sep = "/",into = c("a","b","c","d","sim")) %>%
+  filter(!is.na(sim)) %>%
+  select("sim") %>%
+  rename("Simulation" = "sim")
+
+# again, use the above list to subset list of length/weights for master simulation list file
+sim_size_inputs_FB4.1 %<>% 
+  inner_join(folder_dirs)
+
+
+# create design input file for projected simulations, specifying these are results from NEW PARAMETERS (plumb & moffit 2015)
+design_projected_new_parameters <- sim_size_inputs_FB4.1 %>%
+  ungroup() %>%
+  # mutate column with species abbreviations
+  mutate(spp_v2 = case_when(
+      spp == "Coho" ~ "coho",
+      spp == "Chinook" ~ "chnk")) %>%
+  mutate(
+    NRun = row_number(),
+    Run_Name = Simulation,
+    Species_Num = case_when(
+      spp == "Coho" ~ "22",
+      spp == "Chinook" ~ "21"),
+    Species_txt = case_when(
+      spp == "Coho" ~ "Coho salmon (adult)",
+      spp == "Chinook" ~ "Chinook salmon (adult)"),
+    Initial_W = mean_init_w,
+    fit.to = "p-value",
+    fit.to.value = value,
+    First_day = 1,
+    Last_day = sim_duration,
+    N_indiv = 1,
+    Oxycal = 13560,
+    calc.pop_mort = "FALSE",
+    calc.spawn = "FALSE",
+    calc.nut = "FALSE",
+    calc.contaminant = "FALSE",
+    Init_pred_conc = "NA",
+    contam_eq = "NA",
+    T_File = paste0("all_projected_sims/",spp_v2,"/",Run_Name,"/","Temperature.csv"),
+    Diet_File = paste0("all_projected_sims/",spp_v2,"/",Run_Name,"/","Diet_prop.csv"),
+    Prey_E_File = paste0("all_projected_sims/",spp_v2,"/",Run_Name,"/","Prey_E.csv"),
+    Indigest_Prey_File = paste0("all_projected_sims/",spp_v2,"/",Run_Name,"/","Indigestible_Prey.csv"),
+    Pred_E_File = paste0("all_projected_sims/",spp_v2,"/",Run_Name,"/","Pred_E.csv"),
+    Mort_File = "NA",
+    Reprod_File = "NA",
+    Contam_Prey_C_File = "NA",
+    Contam_assim_File = "NA",
+    Contam_TE_File = "NA",
+    Phos_Ae_File = "NA",
+    Phos_Co_Pred_File = "NA",
+    Phos_Co_Prey_File = "NA",
+    Nit_Ae_File = "NA",
+    Nit_Co_Pred_File = "NA",
+    Nit_Co_Prey_File = "NA",
+    FB4_Log_File = "FB4_projected_models.csv",
+    .keep = "unused")
+
+# rename simulations names to include info about diet scenarios
+design_projected_new_parameters %<>%
+  mutate(Run_Name = paste0(consumption_scenario,"_",Run_Name))
+
+
+# select final column names for input file
+# get all column names design file example
+design_colnames <- read.csv("other/FB4_1.1.3_2015_2016.1/FB4_Design_Bluegill_1.csv") %>% colnames()
+
+# select from subset of column in example input template
+ design_projected_new_parameters %<>%
+   ungroup() %>%
+  select(one_of(design_colnames))
+
+
+## save input csv to local directory
+# name directory location
+input_csv_dir <- "other/FB4_1.1.3_projected.1/design_projected_new_parameters.csv"
+
+# remove any previous output versions
+file.remove(input_csv_dir)
+
+# write new csv file
+write.csv(design_projected_new_parameters, input_csv_dir, row.names = F)
+
+# 6/19/2022 - app produces output in "FB4_projected_models.csv"
+```
+
+<br>
+
+c.) sim inputs for mean and  20% +/- consumption values, OLD PARAMETERS
+```{r}
+
+# import results (p-values) from 2015-2016 bioenerg output
+fb4_2015_2016_output_dir <- "other/FB4_1.1.3_2015_2016.1/FB4_2015_2016_models_old_parameters.csv"
+
+# prep
+cmax_stats_pct <- read.csv(fb4_2015_2016_output_dir) %>%
+  clean_names() %>%
+  # mutate sim name
+  rename(Simulation = run_name) %>%
+  separate(Simulation, into = c("year","season","site","spp","e","age"),sep = "_") %>%
+  separate(site, into = c("reach","river1","river2"), remove = F) %>%
+  mutate(Stream_Name = paste(river1,river2)) %>%
+  # retain needed columns
+  select(spp,age,year,season,site,reach,initial_w,p_value,Stream_Name)
+
+
+## calculate mean p-val by watershed, spp, age
+mean_pvals <- cmax_stats_pct %>%
+  group_by(Stream_Name,spp,age) %>%
+  summarise(mean_pval = mean(p_value))
+
+## calculate mean initial weight by age, spp, site
+mean_start_w <- cmax_stats_pct %>%
+  filter(season == "Early Summer") %>%
+  group_by(Stream_Name,spp,age,site) %>%
+  summarise(mean_init_w = mean(initial_w))
+
+# join sim duration, mean p-vals, and start weights
+init_file_dat <- left_join(mean_start_w,mean_pvals) %>%
+  # retain mean p_val and calculate 20 % +/- consumption from each site, by site,spp,age
+  mutate(`20plus_pval` = mean_pval*1.2,
+         `20minus_pval` = mean_pval*0.8) %>%
+  # reshape to long
+  pivot_longer(cols = c("mean_pval","20plus_pval","20minus_pval")) %>%
+  rename("consumption_scenario" = "name") %>%
+  
+  # specify simulation cohort
+  mutate(Simulation = paste0(site,"_",spp,"_Age_",age))
+  
+
+# replicate inputs for all temperature scenarios, collate in to single dataframe
+`2030_rcp60` <- init_file_dat %>%
+  mutate(Simulation = paste0("rcp60","_","2030_2039","_",Simulation))
+`2030_rcp85` <- init_file_dat %>%
+  mutate(Simulation = paste0("rcp85","_","2030_2039","_",Simulation))
+`2060_rcp60` <- init_file_dat %>%
+  mutate(Simulation = paste0("rcp60","_","2060_2069","_",Simulation))
+`2060_rcp85` <- init_file_dat %>%
+  mutate(Simulation = paste0("rcp85","_","2060_2069","_",Simulation))
+`2010_2019_rcp60` <- init_file_dat %>%
+  mutate(Simulation = paste0("rcp60","_","2010_2019","_",Simulation))
+`2010_2019_rcp85` <- init_file_dat %>%
+  mutate(Simulation = paste0("rcp85","_","2010_2019","_",Simulation))
+sim_size_inputs_FB4.1 <- bind_rows(`2030_rcp60`,
+                                   `2030_rcp85`,
+                                   `2060_rcp60`,
+                                   `2060_rcp85`,
+                                   `2010_2019_rcp60`,
+                                   `2010_2019_rcp85`)  
+
+
+# create design file
+
+# 6/19/2022 --- first: we need to ensure that the "sim_size_inputs_v2" list of unique simulations matches the list of unique sims that we just used to generate main inputs
+
+# get list of unique simulations for which main input files were generated
+unique_sims <- data.frame(unique(sim_size_inputs_FB4.1$Simulation))
+colnames(unique_sims) <- "sim"
+
+# use the above list to subset list of length/weights for master simulation list file
+#sim_size_inputs_FB4.1 <- read_excel("other/inputs/diet_size_other/sim_size_inputs_v2.xlsx",sheet = "lw_data") %>% inner_join(unique_sims)
+
+
+# 6/19/2022 - there appears to still be a mismatch between the list of "main input" folder directories and the list of simulation names in the design file. Here we will work to diagnose where the mismatch lies, and rectify the two lists.
+
+
+# Get list of folders in directory for each species
+coho_dirs <- as.data.frame(list.dirs(path = "other/FB4_1.1.3_projected.1/all_projected_sims/coho"))
+colnames(coho_dirs) <- "dir"
+chnk_dirs <- as.data.frame(list.dirs(path = "other/FB4_1.1.3_projected.1/all_projected_sims/chnk"))
+colnames(chnk_dirs) <- "dir"
+folder_dirs <- bind_rows(coho_dirs,chnk_dirs) %>%
+  clean_names() %>%
+  separate(dir,sep = "/",into = c("a","b","c","d","sim")) %>%
+  filter(!is.na(sim)) %>%
+  select("sim") %>%
+  rename("Simulation" = "sim")
+
+# again, use the above list to subset list of length/weights for master simulation list file
+sim_size_inputs_FB4.1 %<>% 
+  inner_join(folder_dirs)
+
+
+# create design input file for projected simulations, specifying these are results from OLD PARAMETERS (stewart & ibarra 199?)
+design_projected_old_parameters <- sim_size_inputs_FB4.1 %>%
+  ungroup() %>%
+  # mutate column with species abbreviations
+  mutate(spp_v2 = case_when(
+      spp == "Coho" ~ "coho",
+      spp == "Chinook" ~ "chnk")) %>%
+  mutate(
+    NRun = row_number(),
+    Run_Name = Simulation,
+    Species_Num = case_when(
+      spp == "Coho" ~ "22",
+      spp == "Chinook" ~ "21"),
+    Species_txt = case_when(
+      spp == "Coho" ~ "Coho salmon (adult)",
+      spp == "Chinook" ~ "Chinook salmon (adult)"),
+    Initial_W = mean_init_w,
+    fit.to = "p-value",
+    fit.to.value = value,
+    First_day = 1,
+    Last_day = sim_duration,
+    N_indiv = 1,
+    Oxycal = 13560,
+    calc.pop_mort = "FALSE",
+    calc.spawn = "FALSE",
+    calc.nut = "FALSE",
+    calc.contaminant = "FALSE",
+    Init_pred_conc = "NA",
+    contam_eq = "NA",
+    T_File = paste0("all_projected_sims/",spp_v2,"/",Run_Name,"/","Temperature.csv"),
+    Diet_File = paste0("all_projected_sims/",spp_v2,"/",Run_Name,"/","Diet_prop.csv"),
+    Prey_E_File = paste0("all_projected_sims/",spp_v2,"/",Run_Name,"/","Prey_E.csv"),
+    Indigest_Prey_File = paste0("all_projected_sims/",spp_v2,"/",Run_Name,"/","Indigestible_Prey.csv"),
+    Pred_E_File = paste0("all_projected_sims/",spp_v2,"/",Run_Name,"/","Pred_E.csv"),
+    Mort_File = "NA",
+    Reprod_File = "NA",
+    Contam_Prey_C_File = "NA",
+    Contam_assim_File = "NA",
+    Contam_TE_File = "NA",
+    Phos_Ae_File = "NA",
+    Phos_Co_Pred_File = "NA",
+    Phos_Co_Prey_File = "NA",
+    Nit_Ae_File = "NA",
+    Nit_Co_Pred_File = "NA",
+    Nit_Co_Prey_File = "NA",
+    FB4_Log_File = "FB4_projected_models.csv",
+    .keep = "unused")
+
+# rename simulations names to include info about diet scenarios
+design_projected_old_parameters %<>%
+  mutate(Run_Name = paste0(consumption_scenario,"_",Run_Name))
+
+
+
+# select final column names for input file
+# get all column names design file example
+design_colnames <- read.csv("other/FB4_1.1.3_2015_2016.1/FB4_Design_Bluegill_1.csv") %>% colnames()
+
+# select from subset of column in example input template
+ design_projected_old_parameters %<>%
+   ungroup() %>%
+  select(one_of(design_colnames))
+
+
+## save input csv to local directory
+# name directory location
+input_csv_dir <- "other/FB4_1.1.3_projected.1/design_projected_old_parameters.csv"
+
+# remove any previous output versions
+file.remove(input_csv_dir)
+
+# write new csv file
+write.csv(design_projected_old_parameters, input_csv_dir, row.names = F)
+
+# 6/19/2022 - app produces output in "FB4_projected_models.csv"
+```
+
+final result: single input file for FB4.1 listing all the sims, including the % +/- the mean Cmax of each site/spp/age.
+
+
+
+
+
+
+working here ::: adapting create_biol_input_v3.rmd from line 873 on down to this new script...
 
 

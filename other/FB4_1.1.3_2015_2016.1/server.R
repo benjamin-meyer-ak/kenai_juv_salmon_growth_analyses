@@ -48,7 +48,7 @@ Nit_Conc_Pred_File  = "Sub-Models/Nutrient Regeneration/Nit_Conc_Pred.csv" # N i
 Nit_Conc_Prey_File  = "Sub-Models/Nutrient Regeneration/Nit_Conc_Prey.csv" # N in prey (g N/g), by prey type, over time
 #
 #   Output file
-FB4_Log_File        = "FB4_Log_File.csv" # File to save values used in this run, and summary output.
+FB4_Log_File        = "FB4_2015_2016_models_new_parameters.csv" # File to save values used in this run, and summary output.
 
 shinyServer(function(input, output,session) {
 

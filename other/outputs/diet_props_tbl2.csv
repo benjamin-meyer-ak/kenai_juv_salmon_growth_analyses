@@ -1,0 +1,15 @@
+"Stream_Name","spp","age","FishEggs","InvertAquatic_AqOrigin","InvertTerrestrial","InvertTerrestrial_AqOrigin","SalmonEggs"
+"Beaver Creek","Chinook",0,NA,0.464,0.018,0.518,NA
+"Beaver Creek","Chinook",1,NA,0.14,0.716,0.144,NA
+"Beaver Creek","Coho",0,NA,0.534,0.027,0.438,NA
+"Beaver Creek","Coho",1,0.041,0.503,0.071,0.385,NA
+"Kenai River","Chinook",0,NA,0.676,0.037,0.269,0.018
+"Kenai River","Chinook",1,NA,0.171,0.03,0.799,NA
+"Kenai River","Coho",0,NA,0.1,0.271,0.095,0.534
+"Kenai River","Coho",1,NA,0.818,0.001,0.066,0.115
+"Ptarmigan Creek","Chinook",0,NA,0.734,0.092,0.174,NA
+"Ptarmigan Creek","Coho",0,NA,0.134,0.026,0.098,0.742
+"Ptarmigan Creek","Coho",1,0.05,0.591,0.136,0.163,0.061
+"Russian River","Chinook",0,NA,0.351,0.017,0.184,0.449
+"Russian River","Coho",0,0.008,0.455,0.041,0.378,0.119
+"Russian River","Coho",1,0.003,0.472,0.053,0.431,0.041

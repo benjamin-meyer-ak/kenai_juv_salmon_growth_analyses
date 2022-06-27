@@ -21,7 +21,7 @@ parms <- read.csv("Parameters_official.csv",stringsAsFactors = FALSE) #  Read pa
 #Design_File = "FB4_Design_Check_Trout.csv"   # Design file to test several salmonid models
 #Design_File = "FB4_Design_Test_96_Models.csv"  # Design file to test that 96 models run; ~131 seconds
 #Design_File = "design_2015_2016.csv"
-Design_File = "design_2015_2016_final.csv"
+Design_File = "design_projected_new_parameters.csv"
 ## See Line 53 to set UseDesignFile to TRUE or FALSE; This will eventually be done in Shiny: Initial Settings
 
 #   Main Input files
@@ -48,7 +48,7 @@ Nit_Conc_Pred_File  = "Sub-Models/Nutrient Regeneration/Nit_Conc_Pred.csv" # N i
 Nit_Conc_Prey_File  = "Sub-Models/Nutrient Regeneration/Nit_Conc_Prey.csv" # N in prey (g N/g), by prey type, over time
 #
 #   Output file
-FB4_Log_File        = "FB4_Log_File.csv" # File to save values used in this run, and summary output.
+FB4_Log_File        = "FB4_projected_models_old_parameters.csv" # File to save values used in this run, and summary output.
 
 shinyServer(function(input, output,session) {
 
