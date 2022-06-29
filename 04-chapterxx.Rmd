@@ -1,1 +1,1118 @@
-# Chapter
+# Fish Diet Contnets
+
+```{r initialize script, include=FALSE}
+
+# clear environment
+rm(list=ls())
+
+#require packages
+library(googlesheets4)
+library(tidyverse)
+library(forcats)
+library(lubridate)
+library(DT)
+library(dplyr)
+library(broom)
+library(tidyr)
+library(ggrepel)
+library(ggpmisc)
+library(janitor)
+library(stringr)
+library(stringi)
+library(FSA)
+library(cowplot)
+library(nnet)
+library(knitr)
+library(anytime)
+library(ggridges)
+library(lme4)
+library(plotrix)
+suppressMessages(library(dplyr))
+# detach("package:MASS", unload=TRUE) #pkg masks some dplyr functions
+
+select <- dplyr::select
+
+```
+
+***
+***
+
+<br>
+
+```{r}
+# create an overall plotting theme
+bm_theme <- theme(plot.title = element_text(size= 26, face = "bold"),        # plot title
+                  axis.text.x = element_text(size=10),
+                  axis.text.y = element_text(size=10),                       # x axis text
+                  axis.title.x = element_text(size=16),                      # x axis title
+                  axis.title.y = element_text(size=16)) +                    # y axis title
+  theme(strip.text = element_text(face="bold", size=12),
+        strip.background = element_rect(fill="lightblue", 
+                                        colour="black",size=1)) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) 
+
+
+# variant theme WITHOUT angled x-axis labels
+bm_theme_1 <- theme(plot.title = element_text(size= 26, face = "bold"),        # plot title
+                  axis.text.x = element_text(size=10),
+                  axis.text.y = element_text(size=10),                       # x axis text
+                  axis.title.x = element_text(size=16),                      # x axis title
+                  axis.title.y = element_text(size=16)) +                    # y axis title
+  theme(strip.text = element_text(face="bold", size=12),
+        strip.background = element_rect(fill="lightblue", 
+                                        colour="black",size=1))
+
+# variant theme WITH angled x-axis labels, no light blue facet label fill
+bm_theme_2 <- theme(plot.title = element_text(size= 26, face = "bold"),        # plot title
+                  axis.text.x = element_text(size=10),
+                  axis.text.y = element_text(size=10),                       # x axis text
+                  axis.title.x = element_text(size=16),                      # x axis title
+                  axis.title.y = element_text(size=12)) +                    # y axis title
+  theme(strip.text = element_text(face="bold", size=12),
+        strip.background = element_rect(colour="black",size=1)) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) 
+
+# generic names for facet labels
+stream_facets <- c(
+  "Beaver Creek" = "Beaver\nCreek\n(Lowland)", 
+    "Russian River" = "Russian\nRiver\n(Montane)",
+    "Ptarmigan Creek" = "Ptarmigan\nCreek\n(Glacial)", 
+    "Kenai River" = "Kenai\nRiver\n(Mainstem)")
+```
+
+
+
+<br>
+
+2015 Diet
+```{r 2015 import}
+
+#create objects from overall diet data google sheets
+SCTC2015 <- "other/inputs/diet_size_other/2015 EPSCoR SCTC.xlsx"
+
+# read in worksheets containing diet data
+diet15 <- read_excel(SCTC2015, sheet = "2015 Diet Contents Data") 
+
+
+#read in worksheet containing diet data
+diet15 <- diet15 %>% 
+  
+#rename needed columns  
+rename(sample.id=Sample.ID,
+      spp=Fish_Species,
+      river=River,
+      reach=Reach,
+      site=Site,
+      date=Date,
+      sampledate=Sample_Date,
+      taxkey=Taxon_Keyed,
+      prey=Prey_Type_Used,
+      preytype = Prey_Type,
+      preycat=PreyCategory,
+      quantity = Quantity,
+      dm_tot=Total_Prey_Dry_Mass_mg,
+      sample.event=Sample.Event,
+      event.num=sample.event.num,
+      TA=TA_Final) %>%
+  
+  select(sample.id,sample.event,river,
+       reach,site,sampledate,preycat,preytype,quantity,spp,dm_tot,TA,event.num) %>% 
+
+#filter out non-diet samples and blank data
+filter(site!="DR1",
+       !is.na(spp),
+       !is.na(sample.event),
+       #####!is.na(preycat),
+       !is.na(dm_tot),
+       !is.na(event.num)) %>%
+  mutate(quantity = na_if(quantity,"NULL")) %>%
+  mutate(quantity = unlist(quantity))
+
+
+    
+#transform columns to desired classes
+diet15 <- transform(diet15, 
+                  dm_tot = as.numeric(dm_tot),
+                  sample.event = as.factor(sample.event),
+                  event.num = as.factor(event.num),
+                  spp = as.factor(spp)) %>%
+  mutate(season = fct_recode(event.num,         #code sampling events as seasons
+                          "Early Summer"="1", 
+                          "Mid-Summer" = "2",
+                          "Late Summer" ="3"))
+
+```
+
+<br>
+
+```{r 2016 import, echo = F}
+
+SCTC2016 <- "other/inputs/diet_size_other/2016_EPSCoR_Aquatic_Ecology_Database.xlsx"
+
+###################################################################
+# Create Stacked Bar Charts of Diet Proportions by Sampling Event #
+###################################################################
+
+#read in worksheet containing diet data
+diet16 <- SCTC2016 %>% 
+ # gs_read(ws = "2016 Diet Contents Data",col_names=TRUE) %>%
+  
+  #rename needed columns  
+  rename(prcsdt=Process_Date,
+         sample.id=Sample.ID,
+         spp=Fish_Species,
+         river=River,
+         reach=Reach,
+         site=Site,
+         date=Date,
+         sampledate=Sample_Date,
+         taxkey=Taxon_Keyed,
+         preytype= Prey_Type,
+         prey=Prey_Type_Used,
+         preycat=PreyCategory,
+         quantity = Quantity,
+         dm_tot=Total_Prey_Dry_Mass_mg,
+         sample.event=Sample.Event,
+         event.num=sample.event.num,
+         TA=TA_Final) %>%
+  
+  #select desired columns
+  select(sample.id,sample.event,river,
+         reach,site,sampledate,preycat,preytype,quantity,spp,dm_tot,TA,event.num) %>%
+
+#filter out non-diet samples and blank data
+  filter(site!="DR1",
+                        !is.na(spp),
+                        !is.na(sample.event),
+                        ###!is.na(preycat),
+                        !is.na(dm_tot),
+                        !is.na(event.num))
+
+#transform columns to desired classes
+diet16 <- transform(diet16, 
+                  dm_tot = as.numeric(dm_tot),
+                  sample.event = as.factor(sample.event),
+                  event.num = as.factor(event.num),
+                  spp = as.factor(spp))  %>%
+  mutate(season = fct_recode(event.num,         #code sampling events as seasons
+                             "Early Summer"="1", 
+                             "Mid-Summer" = "2",
+                             "Late Summer" ="3",
+                             "Fall"="4"))
+ 
+
+```
+
+
+Join 2015 and 2016 diet data
+```{r}
+# join
+diet <- bind_rows(diet15,diet16) %>%
+  transform(sampledate = mdy(sampledate)) %>%
+  mutate(year = year(sampledate)) %>%
+  separate(col = reach, sep = " ", into = "section", remove = F)
+
+
+# remove temporary objects
+#rm(diet15,diet16)
+
+```
+
+<br>
+
+More details on how many of the diet items were identifiable
+```{r}
+
+# total number of individual diet items, both id'd and unid'd
+(z1 <- diet %>%
+  filter(!is.na(quantity)) %>%
+  summarise(n_unid = sum(quantity)))
+
+# total number of unidentifiable diet items
+(z2 <- diet %>%
+  filter(is.na(preytype)) %>% 
+  filter(!is.na(quantity)) %>%
+  summarise(z = sum(quantity)))
+
+# total number of diet items attributable to individual organisms
+z1 - z2
+
+# total number of items identifiable as individual organisms but not to a specific taxa more specific than insectae
+
+# remove unidentifiable insects and parts from diet dataset
+diet <- diet %>%
+  filter(!is.na(preycat),
+         !is.na(quantity))
+
+# total number of individual organisms with an idenfiable taxa
+z3 <- diet %>%
+    summarise(n_ct = sum(quantity))
+
+# total number of "InsectUnk"
+z4 <- diet %>%
+  filter(preytype == "Insect UNK") %>%
+  summarise(n_ct = sum(quantity))
+
+```
+
+
+A total of 13723 individual diet items were identified, with 1740 of them not attributable individual organisms (legs, trichoptera casings, etc).  Among the 11983 diet items recognizable as individual organisms, 8879 of them were identifiable as specific invertebrate taxa with the remainder assigned as "unknown insect" without a dry mass estimate or assigned energy value.
+
+
+
+<br>
+
+How many different type of unique taxa/lifestage were ID'd?
+
+```{r}
+n_taxa <- diet %>%
+  distinct(preytype)
+nrow(n_taxa)
+
+```
+
+<br>
+
+How many unique individuals measured for length?
+
+```{r}
+diet %>%
+  filter(!is.na(quantity)) %>%
+  summarise(n = sum(quantity))
+
+```
+
+<br>
+
+How many diet samples were collected?
+
+```{r}
+
+diet %>%
+  distinct(sample.id) %>%
+  summarise(n = n())
+
+```
+
+
+
+
+<br>
+
+Import prey energy densities
+```{r}
+
+prey_energy_density <-
+  read_sheet("https://docs.google.com/spreadsheets/d/1ggEtDprUCtfHcqnmHdksttUeqg-jsbgsA0YYutXeSUk/edit#gid=1069715994") %>%
+ #gs_read(gs_title("EPSCoR_SCTC_Prey_Energy_Densities")) %>%
+  rename(preycat_ed = PreyCategory_ED,
+         preycat = PreyCategory,
+         ed_jg = Energy_Density_Jg_ww ) %>%
+  mutate(ed_jg = as.numeric(unlist(ed_jg))) %>%
+  # convert J/g values to J/mg values
+  mutate(ed_jmg = ed_jg / 1000) %>%
+  select(-diet,-Reference,-ed_jg) 
+
+```
+
+
+Join prey energy density values to prey dry mass values
+```{r}
+ diet <- left_join(diet,prey_energy_density, by = "preycat") %>%
+  # create column with total energy density for each prey category per fish
+  mutate(tot_j = dm_tot * ed_jmg)
+
+# note that we use "preycat" to join tables.  This is the categorization scheme that is more complex than "preycat_ed."  But we will be using "preycat_ed" values to assign diet energy values.
+
+```
+
+<br>
+
+Join fish age, length, weight data to diet data
+```{r}
+# import fish ID and age data
+# 2015
+age15 <- 
+  read_sheet("https://docs.google.com/spreadsheets/d/1paBK_prL5tTwdCmycMjtE7MM2Bv9r5i_AwBOg7cIpHE/edit#gid=1245878580", sheet = "C 2015 Diet & LW Data") %>%
+  select(sample.id,Age_manual2,Weight_g,Length_mm) %>%
+  filter(!is.na(sample.id),
+         sample.id != "NA") %>%
+  mutate(Weight_g = as.numeric(unlist(Weight_g)))
+
+
+
+# 2016
+age16 <- 
+  read_sheet("https://docs.google.com/spreadsheets/d/135snQtojhn6Lt7ZN1L6vN2lpv3GljQCMCrrQlh35vA4/edit#gid=2093669361", sheet = "C 2016 Diet & LW Data") %>%
+  select(sample.id,Age_manual2,Weight_g,Length_mm) %>%
+  filter(!is.na(sample.id))
+
+# join age dataframes
+fish_age <- bind_rows(age15,age16)
+
+# join age dataframe to diet data
+diet <- left_join(diet,fish_age) %>%
+  rename(age = Age_manual2,
+         len_mm = Length_mm,
+         wt_g = Weight_g) %>%
+  mutate(event.num = as.integer(event.num)) %>%
+  # remove instances of where a fish age is not assigned
+  filter(!is.na(age)) %>%
+  # remove age 2 fish 
+  filter(age != 2) %>%
+  # remove age 1 chinook
+  mutate(spp_age = paste0(spp,"_",age)) %>%
+  filter(spp_age != "Chinook_1") %>%
+  select(-spp_age)
+
+```
+
+
+<br>
+
+Replace NAs in diet dataframe with 0s. Want to make sure all NA are replaced w/ 0 before any summation processes!
+```{r}
+# replace NAs with 0s
+diet[is.na(diet)] <- 0 
+```
+
+<br>
+
+Calculate diet proportion for each watershed/age/spp by prey item 
+```{r}
+tbl_dietprop <- diet %>%
+  # choose scale of segregation
+  group_by(river,spp,age,preycat_ed) %>%
+  
+  summarise(sum(dm_tot)) %>%
+  rename(dm_sum =`sum(dm_tot)`) %>%
+  spread(preycat_ed,dm_sum) %>%
+  rowwise() %>%
+  mutate(dm_tot = sum(FishEggs,    # create column for summed dry mass of all prey categories
+                      InvertAquatic_AqOrigin,
+                      InvertTerrestrial,
+                      InvertTerrestrial_AqOrigin,
+                      InvertUnknown,
+                      SalmonEggs, 
+                      na.rm = TRUE)) %>%
+  mutate(FishEggs = FishEggs/dm_tot,
+         # change prey quantities to relative proportions by category
+         InvertAquatic_AqOrigin = InvertAquatic_AqOrigin/dm_tot,  
+         InvertTerrestrial = InvertTerrestrial/dm_tot,
+         InvertTerrestrial_AqOrigin = InvertTerrestrial_AqOrigin/dm_tot,
+         InvertUnknown = InvertUnknown/dm_tot,
+         SalmonEggs = SalmonEggs/dm_tot) %>%
+  rename(Stream_Name = river) %>%
+  select(-dm_tot) %>%
+  mutate_if(is.numeric, funs(round(., 2))) 
+
+#replace all NA's with 0's
+tbl_dietprop[is.na(tbl_dietprop)] <- 0
+
+# manually order facets
+# order facets
+tbl_dietprop$Stream_Name <- factor(tbl_dietprop$Stream_Name, levels = 
+                                    c("Beaver Creek",
+                                      "Russian River",
+                                      "Ptarmigan Creek",
+                                      "Kenai River"))
+
+# show table
+tbl_dietprop
+
+# use this table in methods section
+write.csv(tbl_dietprop, "/Users/bmeyer/Google Drive/Thesis/Current Draft/Chapter 2/Chapter 2 Figures/tbl_dietprop.csv")
+
+
+#Visualize diet proportions
+ (p  <- tbl_dietprop %>%
+  gather(preycat, dietprop, FishEggs, InvertAquatic_AqOrigin,InvertTerrestrial,InvertTerrestrial_AqOrigin,InvertUnknown,SalmonEggs) %>%
+  filter(preycat != "InvertUnknown") %>%
+  mutate(spp_age = paste(spp,"Age",age)) %>%
+  ggplot(aes(spp_age,dietprop,fill = preycat)) +
+  geom_bar(position = "fill", stat = "identity") +
+  facet_grid(.~ Stream_Name, labeller = labeller(Stream_Name = stream_facets)) +
+     scale_fill_discrete(breaks=c("FishEggs", 
+                               "SalmonEggs",
+                               "InvertAquatic_AqOrigin", 
+                               "InvertTerrestrial", 
+                               "InvertTerrestrial_AqOrigin", 
+                               "InvertUnknown"),
+                         
+                         
+                         # note 6/16/2021 - modified prey category labels here according comments from E Schoen and D Rinella
+                         
+                         labels=c("Fish Eggs",
+                                  "Salmon Eggs",
+                                  "Immature Aquatic",
+                                  "Terrestrial",
+                                  "Adult Aquatic",
+                                  "Unknown")) +
+
+   
+   
+  theme_bw() +
+  bm_theme_2 +
+  xlab("") +
+  ylab("Diet Proportion\n(Dry Mass)") +
+  labs(fill = "Prey Category") +
+  theme(strip.background = element_rect(fill="white", 
+                                        colour="black",size=1),
+        strip.text = element_text(size = 12)) )
+ 
+
+ggsave("/Users/bmeyer/Desktop/Figure 6.png", units = "cm", width = 16, height = 7)
+
+```
+
+<br>
+
+B&W friendly version
+```{r}
+p + scale_fill_brewer(palette="RdYlGn")
+
+ggsave("/Users/bmeyer/Google Drive/Thesis/Current Draft/Chapter 1/Chapter 1 Figures/dietprops_fig_bw.png", units = "cm", width = 16, height = 7)
+
+```
+
+
+<br>
+
+Repeat above, but for caloric proportion instead of dry mass
+```{r}
+tbl_dietprop1 <- diet %>%
+  # choose scale of segregation
+  group_by(river,spp,age,preycat_ed) %>%
+  
+  summarise(sum(tot_j)) %>%
+  rename(j_sum =`sum(tot_j)`) %>%
+  spread(preycat_ed,j_sum) %>%
+  rowwise() %>%
+  mutate(j_tot = sum(FishEggs,    # create column for summed dry mass of all prey categories
+                      InvertAquatic_AqOrigin,
+                      InvertTerrestrial,
+                      InvertTerrestrial_AqOrigin,
+                      InvertUnknown,
+                      SalmonEggs, 
+                      na.rm = TRUE)) %>%
+  mutate(FishEggs = FishEggs/j_tot,
+         # change prey quantities to relative proportions by category
+         InvertAquatic_AqOrigin = InvertAquatic_AqOrigin/j_tot,  
+         InvertTerrestrial = InvertTerrestrial/j_tot,
+         InvertTerrestrial_AqOrigin = InvertTerrestrial_AqOrigin/j_tot,
+         InvertUnknown = InvertUnknown/j_tot,
+         SalmonEggs = SalmonEggs/j_tot) %>%
+  rename(Stream_Name = river) %>%
+  select(-j_tot) %>%
+  mutate_if(is.numeric, funs(round(., 2))) 
+
+#replace all NA's with 0's
+tbl_dietprop1[is.na(tbl_dietprop1)] <- 0
+
+# manually order facets
+# order facets
+tbl_dietprop1$Stream_Name <- factor(tbl_dietprop1$Stream_Name, levels = 
+                                    c("Beaver Creek",
+                                      "Russian River",
+                                      "Ptarmigan Creek",
+                                      "Kenai River"))
+
+# show table
+tbl_dietprop1
+
+# use this table in methods section
+write.csv(tbl_dietprop, "/Users/bmeyer/Google Drive/Thesis/Current Draft/Chapter 2/Chapter 2 Figures/tbl_dietprop1.csv")
+
+#Visualize diet proportions
+ (p  <- tbl_dietprop1 %>%
+  gather(preycat, dietprop, FishEggs, InvertAquatic_AqOrigin,InvertTerrestrial,InvertTerrestrial_AqOrigin,InvertUnknown,SalmonEggs) %>%
+  mutate(spp_age = paste(spp,"Age",age)) %>%
+  ggplot(aes(spp_age,dietprop,fill = preycat)) +
+  geom_bar(position = "fill", stat = "identity") +
+  facet_grid(.~ Stream_Name, labeller = labeller(Stream_Name = stream_facets)) +
+  scale_fill_discrete(breaks=c("FishEggs", 
+                               "SalmonEggs",
+                               "InvertAquatic_AqOrigin", 
+                               "InvertTerrestrial", 
+                               "InvertTerrestrial_AqOrigin", 
+                               "InvertUnknown"),
+                         labels=c("Fish Eggs",
+                                  "Salmon Eggs",
+                                  "Aquatic, Aquatic Origin",
+                                  "Terrestrial",
+                                  "Terrestrial, Aquatic Origin",
+                                  "Unknown")) +
+  theme_bw() +
+  bm_theme +
+  xlab("") +
+  ylab("Diet Proportion (Calories)") +
+  labs(fill = "Prey Category")
+ )
+
+```
+
+
+<br>
+
+Calculate mean calories per fish for each iteration of year/spp/age/sample.event
+```{r}
+# how many diet samples were collected per sample.event/age/spp ?
+fish_diet_n <- diet %>%
+  distinct(sample.id, .keep_all = TRUE) %>%
+  group_by(spp,age,sample.event) %>%
+  summarise(fish_ct = n())
+
+# calculate fish size and calorie content summary table
+tot_j_by_event <- diet %>%
+  group_by(river,reach,section,sample.event,event.num,spp,season,year,age) %>%
+  summarise(tot_j_event = sum(tot_j),
+            avg_len_event = mean(len_mm),
+            avg_wt_event = mean(wt_g)) 
+
+# join fish size/calorie data to diet sample counts
+tot_j_by_event <- left_join(tot_j_by_event,fish_diet_n) %>%
+  mutate(v_event = tot_j_event / fish_ct)
+
+```  
+
+<br>
+
+Calculate total calories per individual fish w/ diet sample
+```{r}
+# calculate total calories per sampled fish
+tot_j_by_fish <- diet %>%
+  group_by(river,reach,section,sample.event,event.num,spp,season,year,age,sample.id) %>%
+  summarise(tot_j_fish = sum(tot_j)) 
+  
+```
+<br>
+
+Join table of total calories per individual fish to data of mean calories per fish by age/spp/sample.event
+```{r}
+
+tot_j_fish_event <- left_join(tot_j_by_fish,tot_j_by_event)
+
+```
+
+
+<br>
+
+Export tot_j_event values for later use in other scripts
+```{r}
+
+#gs_delete(gs_title("fish_diet_calories_by_event"))
+
+#gs_new(title = "fish_diet_calories_by_event") %>%
+#  gs_ws_new(ws = "diet", input = tot_j_by_event)
+
+#write.csv(file = "/Users/bmeyer/Desktop/temp.csv", tot_j_by_event)
+
+```
+
+<br>
+
+Export tot_j by fish and event data table for later use in other scripts
+
+```{r}
+
+#gs_delete(gs_title("fish_diet_calories_by_fish_event"))
+
+#gs_new(title = "diet_calories_by_fish_event") %>%
+#  gs_ws_new(ws = "diet", input = tot_j_fish_event)
+
+# used to upload because internet was too slow
+#write.csv(tot_j_fish_event, file = "/Users/bmeyer/Desktop/dietfile.csv")
+#gs_upload(file = "/Users/bmeyer/Desktop/dietfile.csv", sheet_title = "diet_calories_by_fish_event")
+
+```
+
+
+
+
+We also want a table in which results (dry mass and caloric value) are segregated by prey type for each event; so we can explore hypotheses about how prey type in diet could affect growth.
+
+
+Calculate sum of dry mass and caloric value for each prey type for each fish
+```{r}
+
+# calculate summary table
+tot_j_by_event_preytype <- diet %>%
+  group_by(river,reach,section,sample.event,event.num,spp,season,year,age,preycat_ed) %>%
+  summarise(tot_j = sum(tot_j),
+            avg_len = mean(len_mm),
+            avg_wt = mean(wt_g)) 
+
+```
+
+<br>
+
+11/6/18: Calculate and export table of mean proportion of calories derived from subsidies by age/spp/site/year
+
+```{r}
+
+# calculate number of fish per site/year/spp/age
+fish_diet_n_1 <- diet %>%
+  group_by(reach,year,spp,age) %>%
+  summarise(n_fish = n()) %>%
+  # remove age 2 coho and age 1 chinook
+  filter(age != 2) %>%
+  filter(age != 1 | spp != "Chinook")
+
+# calculate total calories by site/year/age/spp
+z1 <- diet %>%
+  group_by(reach,river,year,spp,age) %>%
+  summarise(tot_cal_j = sum(tot_j))
+
+
+# define diet subsidies
+subsidies <- c("SalmonEggs","InvertTerrestrial","InvertTerrestrial_AqOrigin")
+
+# calculate total calories from subsidies (salmon eggs & terrestrial inverts) by site/year/age/spp
+z2 <- diet %>%
+  filter(preycat_ed == subsidies) %>%
+  group_by(reach,year,spp,age) %>%
+  summarise(tot_cal_subs_j = sum(tot_j))
+
+# join three tables and calculate column for mean proportion of calories derived from subsidies
+tbl <- left_join(fish_diet_n_1,z1) %>%
+  left_join(z2) %>%
+  # replace NAs with 0 
+  mutate(tot_cal_subs_j = if_else(is.na(tot_cal_subs_j), 0, tot_cal_subs_j)) %>%
+  # calculate mean proportion column
+  mutate(mean_prop_subs = (tot_cal_subs_j/tot_cal_j) / n_fish)
+
+# replace NAs with 0s
+tbl[is.na(tbl)] <- 0
+
+# basic EDA plots
+tbl %>%
+  ggplot(aes(as.factor(age),mean_prop_subs,color = spp)) +
+  geom_jitter(width = 0.03) +
+  theme_bw()
+
+tbl %>%
+  ggplot(aes(as.factor(age),mean_prop_subs,color = spp)) +
+  geom_jitter(width = 0.03) +
+  facet_grid(~river) +
+  theme_bw()
+
+```
+
+<br>
+
+Export values of diet subsidy proportion to google sheet
+```{r}
+
+# remove previous versions
+#gs_delete(gs_title("diet_subsidy_proportions"))
+
+# export table of proportion of overall caloric content from subsidy
+#gs_new(title = "diet_subsidy_proportions", input = tbl)
+
+```
+
+<br>
+
+What do SEASONAL trends in subsidy(s) contribution look like?
+
+```{r}
+
+# calculate number of fish per site/year/spp/age/season
+fish_diet_n_2 <- diet %>%
+  group_by(reach,year,spp,age,season) %>%
+  summarise(n_fish = n()) %>%
+  # remove age 2 coho and age 1 chinook
+  filter(age != 2) %>%
+  filter(age != 1 | spp != "Chinook")
+
+# calculate total calories by site/year/age/spp
+z1 <- diet %>%
+  group_by(reach,river,year,spp,age,season) %>%
+  summarise(tot_cal_j = sum(tot_j))
+
+
+# define diet subsidies
+subsidies <- c("SalmonEggs","InvertTerrestrial","InvertTerrestrial_AqOrigin")
+
+# calculate total calories from subsidies (salmon eggs & terrestrial inverts) by site/year/age/spp
+z2 <- diet %>%
+  filter(preycat_ed == subsidies) %>%
+  group_by(reach,year,spp,age,season) %>%
+  summarise(tot_cal_subs_j = sum(tot_j))
+
+# join three tables and calculate column for mean proportion of calories derived from subsidies
+tbl <- left_join(fish_diet_n_1,z1) %>%
+  left_join(z2) %>%
+  # replace NAs with 0 
+  mutate(tot_cal_subs_j = if_else(is.na(tot_cal_subs_j), 0, tot_cal_subs_j)) %>%
+  # calculate mean proportion column
+  mutate(mean_prop_subs_j = (tot_cal_subs_j/tot_cal_j) / n_fish)
+
+# order seasons
+tbl$season <- factor(tbl$season, levels = 
+                                    c("Early Summer",
+                                      "Mid-Summer",
+                                      "Late Summer",
+                                      "Fall"))
+
+# replace NAs with 0s
+tbl[is.na(tbl)] <- 0
+
+# basic EDA plots
+p <- tbl %>%
+  ggplot(aes(season,mean_prop_subs_j)) +
+  geom_point() +
+  facet_grid(reach~year) +
+  bm_theme +
+  theme_bw() +
+  theme(strip.text.y = element_text(angle = 360))
+
+p %+% subset(tbl, spp %in% "Chinook")
+
+
+```
+
+
+
+
+#### Use these results in "fish_growth_size_v2.Rmd" as a predictive covariate in AICc selection ???  (Dropped this idea in Oct 2018)
+
+
+<br>
+<br>
+<br>
+
+NEXT: we want to do some data visualization to understand proportional diet contribution by prey type.  We will use this visualization to understand if an additional/different covariate could be useful in AICc selection in the script "fish_diet_growth_v2.Rmd".  E.g., if fish eggs are an outsized by temporally variable food item; use as a seperate covariate!?
+
+
+<br>
+
+Create data table for plotting proportional diet contribution as a bubble plot
+
+```{r}
+
+# calculate number of fish per river/year
+fish_diet_n_1 <- diet %>%
+  group_by(river,year) %>%
+  summarise(n_fish = n())
+
+
+# calculate sum of dry mass (dm) and energy per prey type per river/year/spp/age
+preycat_sum_1 <- diet %>%
+  group_by(river,year,preycat_ed) %>%
+  summarise(dm_tot_sum = sum(dm_tot),
+            tot_j_sum = sum(tot_j)) %>%
+  # join fish count data
+  left_join(fish_diet_n_1)
+
+
+# we can try more finite spp/age/season groupings for ggplot objects later as needed ???
+
+## clean up energy ensity values to reduce to fewer categories
+prey_energy_density <- prey_energy_density %>%
+  select(-preycat) %>%
+  distinct()
+
+## join preycat energy density values back to plot datatable
+dat_diet_plot1 <- left_join(preycat_sum_1,prey_energy_density, by = "preycat_ed") 
+
+## assign 0 energy value to InvertUnknown prey category
+dat_diet_plot1[is.na(dat_diet_plot1)] <- 0 
+
+```
+
+<br>
+
+Manual order of prey item facets
+```{r}
+
+# manually order x-axis variable (preycat) by ascending energy density
+dat_diet_plot1$preycat_ed <- factor(dat_diet_plot1$preycat_ed, levels = 
+                                    c("InvertUnknown",
+                                      "InvertAquatic_AqOrigin",
+                                      "InvertTerrestrial_AqOrigin",
+                                      "FishEggs",
+                                      "InvertTerrestrial",
+                                      "SalmonEggs"))
+```
+
+<br>
+
+Proportional bubble plot of diet items
+```{r }
+library(ggrepel)
+
+# all data plots
+## facet scatter plot w point proportional to relative caloric contribution
+dat_diet_plot1 %>%
+  ungroup() %>%
+  group_by(preycat_ed, ed_jmg) %>%
+  summarise(dm_tot_sum = sum(dm_tot_sum),
+            tot_j_sum = sum(tot_j_sum)) %>%
+  mutate(point_labels = fct_recode(as.factor(preycat_ed),
+                                   "Terrestrial Invertebrate" = "InvertTerrestrial",
+                                   "Other Fish Eggs" = "FishEggs",
+                                   "Salmon Eggs" = "SalmonEggs",
+                                   "Aquatic Invertebrate \nof Aquatic Origin" = "InvertAquatic_AqOrigin",
+                                   "Terrestrial Invertebrate \nof Aquatic Origin" = "InvertTerrestrial_AqOrigin")) %>%
+  ggplot(aes(ed_jmg,dm_tot_sum, 
+             size = tot_j_sum, 
+             color = preycat_ed)) +
+  scale_size(range = c(0,25)) +
+  geom_point() + 
+  xlim(3,10) +
+  ylim(0,2300) +
+  theme_bw() +
+  xlab("Prey Item Energy Density (j/mg)") +
+  ylab("Total Diet Dry Mass (mg)") +
+  theme(legend.position="none") +
+  geom_label_repel(aes(label = point_labels),size = 5,
+                  box.padding   = 1.2, 
+                  point.padding = 0.2,
+                  segment.color = 'grey50') +
+  bm_theme_1
+
+
+z2 <- as.data.frame(summary(diet))
+z2
+tidy(z2)
+glance(diet)
+
+# what are the % values for overalll caloric proportion by category?
+dat_diet_plot1 %>%
+  ungroup() %>%
+  group_by(preycat_ed, ed_jmg) %>%
+  summarise(dm_tot_sum = sum(dm_tot_sum),
+            tot_j_sum = sum(tot_j_sum)) %>%
+  ungroup() %>%
+  mutate(cumsum_j = sum(tot_j_sum),
+         pct_j = ((tot_j_sum / cumsum_j)*100)) %>%
+  arrange(pct_j)
+    
+   
+
+```
+Bubble plot 1: on the x-axis is prey item energy density, on the y-axis is total sum of prey dry mass.  The size of each point is proportional to a prey item's share of the overall caloric pool.  A smaller point indicates that prey item category contributed less overall calorically.  Salmon Eggs and terrestrial invertebrates have the largest relative caloric contributions and also have the highest energy density.
+
+
+<br>
+
+```{r }
+
+## facet scatter plot w point proportional to relative caloric contribution
+
+p <- dat_diet_plot1 %>%
+  ggplot(aes(ed_jmg,(dm_tot_sum / n_fish), 
+             size = (tot_j_sum / n_fish), 
+             color = preycat_ed)) +
+  scale_size(range = c(0,10)) +
+  geom_point() + 
+  facet_grid(river~year) +
+  theme_bw()
+ 
+# all fish
+p + ggtitle("All Fish")
+
+
+```
+Bubble plot 2 (faceted): on the x-axis is prey item energy density, on the y-axis is total sum of prey dry mass.  The size of each point is proportional to a prey item's share of the overall caloric pool.  A smaller point indicates that prey item category contributed less overall calorically.  Salmon Eggs and terrestrial invertebrates have the largest relative caloric contributions and also have the highest energy density.
+
+<br>
+
+```{r}
+
+## scatter plot w/ bubbble size proportional to total dry mass.
+dat_diet_plot1 %>%
+  ungroup() %>%
+  group_by(preycat_ed, ed_jmg) %>%
+  summarise(dm_tot_sum = sum(dm_tot_sum),
+            tot_j_sum = sum(tot_j_sum)) %>%
+  ggplot(aes(preycat_ed,tot_j_sum, 
+             size = dm_tot_sum, 
+             color = preycat_ed)) +
+  scale_size(range = c(0,25)) +
+  geom_point() + 
+  ylim(0,12000) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1))
+
+```
+Bubble plot 3: x-axis is prey item category, y-axis is total energy by prey category.  Point size is proportional to the total dry mass by prey category.  Terrestrial inverts and salmon eggs contributed the largest caloric proportions by a large margin.  Subsides matter for juv salmon diet!
+
+<br>
+
+
+```{r}
+
+## scatter plot w/ bubbble size proportional to total dry mass.
+dat_diet_plot1 %>%
+  group_by(year,river,preycat_ed) %>%
+  summarise(dm_tot_sum = sum(dm_tot_sum / n_fish),
+            tot_j_sum = sum(tot_j_sum / n_fish)) %>%
+  ggplot(aes(preycat_ed,tot_j_sum, 
+             size = dm_tot_sum, 
+             color = preycat_ed)) +
+  facet_grid(river~year) +
+  scale_size(range = c(0,10)) +
+  geom_point() + 
+  ylim(0,8) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+  theme(strip.text.y = element_text(angle = 360))
+
+
+```
+Bubble plot 4: x-axis is prey item category, y-axis is total energy by prey category, left to right increasing by energy density.  Point size is proportional to the total dry mass by prey category.  Terrestrial inverts and salmon eggs contributed the largest caloric proportions by a large margin.  Subsides matter for juv salmon diet!
+
+<br>
+
+
+
+
+6/10/19
+
+Question: what does the trend of SalmonEggs look like particularly in the lower russian river site?
+
+Create data table for plotting proportional diet contribution as a bubble plot (at scale of spp/age/season/year)
+```{r}
+
+# calculate number of fish per spp/age/season/year
+fish_diet_n_2 <- diet %>%
+  group_by(river,reach,spp,age,year,season) %>%
+  summarise(n_fish = n())
+
+# FYI : 133 + 77 = 210 chinook at LRR site overall.  1 - 48 range catch per visit.
+
+
+# calculate sum of dry mass (dm) and energy per prey type per river/year/spp/age
+preycat_sum_2 <- diet %>%
+  group_by(river,reach,spp,age,year,season,preycat_ed) %>%
+  summarise(dm_tot_sum = sum(dm_tot),
+            tot_j_sum = sum(tot_j)) %>%
+  # join fish count data
+  left_join(fish_diet_n_2)
+
+
+# we can try more finite spp/age/season groupings for ggplot objects later as needed ???
+
+## clean up energy ensity values to reduce to fewer categories
+prey_energy_density <- prey_energy_density %>%
+  select(-preycat) %>%
+  distinct()
+
+## join preycat energy density values back to plot datatable
+dat_diet_plot2 <- left_join(preycat_sum_2,prey_energy_density, by = "preycat_ed")
+
+# order seasons choronologically
+dat_diet_plot2$season <- factor(dat_diet_plot2$season, levels = 
+                                    c("Early Summer",
+                                      "Mid-Summer",
+                                      "Late Summer",
+                                      "Fall"))
+  
+
+## assign 0 energy value to InvertUnknown prey category
+dat_diet_plot2[is.na(dat_diet_plot2)] <- 0 
+
+```
+
+
+<br>
+
+Plot seasonal diet proportion & caloric trend(s) in LRR site
+
+```{r}
+
+p <- dat_diet_plot2 %>%
+  group_by(preycat_ed,season,reach,spp,age,year) %>%
+  summarise(dm_tot_sum = sum(dm_tot_sum / n_fish),
+            tot_j_sum = sum(tot_j_sum / n_fish)) %>%
+  ggplot(aes(season,tot_j_sum, 
+             size = dm_tot_sum)) +
+  geom_point() +
+  facet_grid(preycat_ed~year) +
+  scale_size(range = c(0,10)) +
+  #ylim(0,8) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+  theme(strip.text.y = element_text(angle = 360)) +
+  xlab("") +
+  ylab("Mean Energy (J) Contribution per Fish") +
+  ylim(0,3000)
+
+# chinook
+p %+% subset(dat_diet_plot2, spp %in% "Chinook" & reach %in% "Lower Russian River") +
+  ggtitle("Lower Russian Chinook Diet Proportions")
+
+# age 0 coho
+p %+% subset(dat_diet_plot2, spp %in% "Coho" & age %in% 0 & reach %in% "Lower Russian River") +
+  ggtitle("Lower Russian Age 0 Coho Diet Proportions")
+
+# age 1 coho
+p %+% subset(dat_diet_plot2, spp %in% "Coho" & age %in% 1 & reach %in% "Lower Russian River") +
+  ggtitle("Lower Russian Age 1 Coho Diet Proportions")
+
+
+```
+[Notes 6/10/19]
+
+Bubble plot #5: Lower Russian River diet data, x-axis is season, y axis is mean number of joules, size of point is proportional to the dry mass of that diet item.  There is a very substantial pulse of salmon eggs in Fall 2016.  Use of these diet proportions averaged across the growing season produces a ~60g age 0 chinook by Fall.  This is obviously not realistic; trying to determine how to proceed. 
+
+Possibilities:
+- reduce proportion of salmon eggs to 0.25 of current number; more respresentative of experience
+- see EndNote entry
+
+
+
+
+
+
+<br>
+
+Further EDA in determining if SalmonEggs should be used as a seperate covariate:
+
+Plot: fork length vs. presence of salmon eggs in diet
+
+```{r}
+p <- diet %>%
+  mutate(SalmonEggsPresent = case_when(preycat_ed == "SalmonEggs" ~ 1,
+                                       preycat_ed != "SalmonEggs" ~ 0)) %>%
+  ggplot(aes(len_mm,SalmonEggsPresent)) +
+  geom_jitter(height = 0.05) +
+  facet_grid(.~age) +
+  theme_bw() +
+  ggtitle("Salmon Eggs Present/Absent")
+
+p
+
+
+p1 <- diet %>%
+  mutate(SalmonEggsPresent = case_when(preycat_ed == "FishEggs" ~ 1,
+                                       preycat_ed != "FishEggs" ~ 0)) %>%
+  ggplot(aes(len_mm,SalmonEggsPresent)) +
+  geom_jitter(height = 0.05) +
+  facet_grid(.~age) +
+  theme_bw() +
+  ggtitle("Fish Eggs Present/Absent")
+
+p1
+  
+```
+Plot of fish fork length vs. presence/absence of salmon eggs in diet.  Interpretation: there does not appear to be a clean/obvious fork length threshold for presence/absence of eggs.  Probably would have needed to include fish < 50 mm FL to get more obvious distinction.
+
+Hypothesis: higher proportion of subsidies (salmon eggs and terrestrial inverts == higher growth ?!?!?!)
+
+In locations where fish have higher proportion of terrestrial & marine subsidy in their diet, they will have greater fork lengths.
+
+
+See line ~286 of this script.  We can envision two possible approaches for seeing how % subsidy in diet relates to fork length.
+
+a.) we can include only fork lengths for which we have associated diet samples (~800).  
+
+b.) we can include all fork length data.  to be able to associate diet data with each fish, we will need mean diet dm/cal values from each age/spp/sample event iteration.
+
+
+
+11/21/18:::
+
+EDA: Do we see differences im diet patterns? in MS vs Trib?  Make some stacked proportional bar charts

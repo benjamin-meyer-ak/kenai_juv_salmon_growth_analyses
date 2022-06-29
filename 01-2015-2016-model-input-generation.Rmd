@@ -871,12 +871,50 @@ rm(z,z1,filtered_temperature_data)
 
 ```
 
+<br>
+
+How many sampling events had n < 3 fish per cohort? Eliminate these.
+```{r}
+dat15 <- read_excel(SCTC2015, sheet = "C 2015 Diet & LW Data") %>%
+  clean_names() %>%
+  select(sample_event_num,sample_event,river,reach_name,spp,age_manual2,weight_g,length_mm) %>%
+  transform(weight_g = as.double(weight_g)) %>%
+  mutate(year = "2015")
+dat16 <- read_excel(SCTC2016, sheet = "C 2016 Diet & LW Data") %>%
+  clean_names() %>%
+  select(sample_event_num,sample_event,river,reach_name,spp,age_manual2,weight_g,length_mm) %>%
+  mutate(year = "2016")
+
+dat <- bind_rows(dat15,dat16) %>%
+  rename(age = age_manual2) %>%
+  filter(spp %in% c("Coho","Chinook"),
+         !is.na(weight_g),
+         !is.na(length_mm),
+         age != 2) %>%
+  group_by(sample_event,sample_event_num,year,river,reach_name,spp,age) %>%
+  summarise(n = n()) %>%
+  filter(n > 2) %>%
+  mutate(season = case_when(
+    sample_event_num == 1 ~ "Early Summer",
+    sample_event_num == 2 ~ "Mid-Summer",
+    sample_event_num == 3 ~ "Late Summer",
+    sample_event_num == 4 ~ "Fall"
+  )) %>%
+  mutate(sim_name = paste0(year,"_",season,"_",reach_name," ",river,"_",spp,"_Age_",age)) 
+```
+
+
+
+
 ```{r, echo = F}
 
 # choose data for subset of simulations selected in script "fish_growth_size.Rmd"
 # this list has been subset from the overall data using criteria described in "the above script "fish_growth_size_v4.Rmd".
 
 # a.) import sheet with list of simulations subsetted (output table from "fish_growth_size_v4.Rmd")
+
+# 6/27/22 -- this step results in elimination of cohorts that we want to include
+
 sim_size_inputs_list <- read_excel("other/inputs/diet_size_other/sim_size_inputs_v2.xlsx",sheet = "lw_data") %>%
   select(sim)
 

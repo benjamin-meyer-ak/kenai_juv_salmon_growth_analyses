@@ -412,7 +412,7 @@ diet_prop_seasons <- left_join(wm_sum_by_event,sim_extents_by_stream1) %>%
 
 <br>
 
-We want each sim to be the duration of earliest site visit to latest site visit, and for diet props to be the mean of all sample events for that drainage by spp/age.
+We want each sim to be the duration of earliest site visit a consistent end date, and for diet props to be the mean of all sample events for that drainage by spp/age.
 
 ```{r sim.day munging}
 
@@ -553,6 +553,7 @@ diet_prop_tbl <- sim_diet_days %>%
 write.csv(diet_prop_tbl,"other/outputs/diet_props_tbl2.csv",row.names = F)
 ```
 
+<br>
 
 
 
@@ -643,7 +644,7 @@ sim_diet_days <- sim_diet_days %>%
 ```
 
 
-<br>
+<br> working down from here
 
 a.) water temperature csv file export prep
 
@@ -714,6 +715,7 @@ dietprops_list_chnk <- lapply(dietprops_list_chnk, function(x) x[!(names(x) %in%
 <br>
 
 ```{r}
+sim_filepath <- "other/FB4_1.1.3_projected.1/all_projected_sims"
 
 # eliminate overall existing directory and contents if applicable
 unlink(sim_filepath, recursive = T)
@@ -1151,9 +1153,6 @@ b.) using mean 20% +/- Cmax values from empirical sims
 
 <br>
 
-
-<br>
-
 b.) sim inputs for mean and  20% +/- consumption values, NEW PARAMETERS
 ```{r}
 library(janitor)
@@ -1187,8 +1186,18 @@ mean_pvals <- cmax_stats_pct %>%
 
 ## calculate mean initial weight by age, spp, site
 mean_start_w <- cmax_stats_pct %>%
-  filter(season == "Early Summer") %>%
+  # choose whichever weight is earliest observation
+  # wrong filter(season == "Early Summer") %>%
+  # translate season to number n new column, and slice minimum observation, aw jeah
+  mutate(season_num = case_when(
+    season == "Early Summer" ~ 1,
+    season == "Mid-Summer" ~ 2,
+    season == "Late Summer" ~ 3,
+    season == "Fall" ~ 4
+  )) %>%
   group_by(Stream_Name,spp,age,site) %>%
+  slice_min(season_num) %>%
+ # if there are still multiple sites in the watershed, group/average them
   summarise(mean_init_w = mean(initial_w))
 
 # join sim duration, mean p-vals, and start weights
@@ -1360,9 +1369,20 @@ mean_pvals <- cmax_stats_pct %>%
 
 ## calculate mean initial weight by age, spp, site
 mean_start_w <- cmax_stats_pct %>%
-  filter(season == "Early Summer") %>%
+  # choose whichever weight is earliest observation
+  # wrong filter(season == "Early Summer") %>%
+  # translate season to number n new column, and slice minimum observation, aw jeah
+  mutate(season_num = case_when(
+    season == "Early Summer" ~ 1,
+    season == "Mid-Summer" ~ 2,
+    season == "Late Summer" ~ 3,
+    season == "Fall" ~ 4
+  )) %>%
   group_by(Stream_Name,spp,age,site) %>%
+  slice_min(season_num) %>%
+ # if there are still multiple sites in the watershed, group/average them
   summarise(mean_init_w = mean(initial_w))
+
 
 # join sim duration, mean p-vals, and start weights
 init_file_dat <- left_join(mean_start_w,mean_pvals) %>%
@@ -1482,8 +1502,6 @@ design_projected_old_parameters <- sim_size_inputs_FB4.1 %>%
 design_projected_old_parameters %<>%
   mutate(Run_Name = paste0(consumption_scenario,"_",Run_Name))
 
-
-
 # select final column names for input file
 # get all column names design file example
 design_colnames <- read.csv("other/FB4_1.1.3_2015_2016.1/FB4_Design_Bluegill_1.csv") %>% colnames()
@@ -1508,9 +1526,6 @@ write.csv(design_projected_old_parameters, input_csv_dir, row.names = F)
 ```
 
 final result: single input file for FB4.1 listing all the sims, including the % +/- the mean Cmax of each site/spp/age.
-
-
-
 
 
 

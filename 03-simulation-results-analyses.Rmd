@@ -428,6 +428,131 @@ write.csv(pct_chg_summ_tbl,"other/outputs/pct_chg_summ_tbl.csv",row.names = F)
 ```
 
 
+<br>
+
+
+Figure 6
+```{r}
+# read in and prep observed diet prop data
+diet_prop <- read.csv("other/outputs/diet_props_tbl2.csv") %>%
+  pivot_longer(cols = c("FishEggs", 
+                        "InvertAquatic_AqOrigin",
+                        "InvertTerrestrial",
+                        "InvertTerrestrial_AqOrigin",
+                        "SalmonEggs"),
+               names_to = "preycat",
+               values_to = "dietprop")
+
+# plot
+diet_prop %>%
+  mutate(spp_age = paste(spp,"Age",age)) %>%
+  filter(spp_age != "Chinook Age 1") %>%
+  ggplot(aes(spp_age,dietprop,fill = preycat)) +
+  geom_bar(position = "fill", stat = "identity") +
+  facet_grid(.~ Stream_Name, labeller = labeller(Stream_Name = stream_facets)) +
+     scale_fill_discrete(breaks=c("FishEggs", 
+                               "SalmonEggs",
+                               "InvertAquatic_AqOrigin", 
+                               "InvertTerrestrial", 
+                               "InvertTerrestrial_AqOrigin"),
+                         
+                         
+                         # note 6/16/2021 - modified prey category labels here according comments from E Schoen and D Rinella
+                         
+                         labels=c("Fish Eggs",
+                                  "Salmon Eggs",
+                                  "Immature Aquatic",
+                                  "Terrestrial",
+                                  "Adult Aquatic")) +
+  theme_bw() +
+  bm_theme_2 +
+  xlab("") +
+  ylab("Diet Proportion\n(Wet Mass)") +
+  labs(fill = "Prey Category") +
+  theme(strip.background = element_rect(fill="white", 
+                                        colour="black",size=1),
+        strip.text = element_text(size = 12),
+        axis.text.x = element_text(angle = 35, hjust = 1, size = 10)
+        ) 
+ 
+
+ggsave("other/documents/Figure images/Figure 6.png", units = "cm", width = 16, height = 8)
+
+```
+
+<br>
+
+Figure 8
+```{r}
+# read in, prep, and summarise full pct chg results
+pct_chg <- read.csv("other/outputs/pct_chg_tbl.csv") %>%
+  clean_names() %>%
+  filter(climate_scenario == "RCP 8.5") %>%
+  mutate(percent_change_in_mass = as.numeric(str_remove(percent_change_in_mass,"%"))) %>%
+  group_by(watershed,population,simulation_period,food_consumption_scenario) %>%
+  summarise(mean_pct = mean(percent_change_in_mass),
+            se_pct = std.error(percent_change_in_mass))
+
+# recreate figure 8
+## by population among watersheds
+
+## year facets
+year_facets <- c("2030" = "2030-2039",
+                 "2060" = "2060-2069")
+
+# order bars
+pct_chg$food_consumption_scenario <- factor(pct_chg$food_consumption_scenario, levels = c("-20%","Mean","+20%"))
+
+# facet titles
+temp_scen <- c("RCP 6.0" = "Mid-Range\nEmissions (RCP 6.0)",
+              "RCP 8.5"  = "Rapid Increase\nEmissions (RCP 8.5)")
+
+cons_scen <- c("-20%" = "Low\nFeeding Rate (-20%)",
+               "Mean" = "Mean Feeding Rate",
+               "+20%" = "High\n Feeding Rate (+20%)")
+
+
+
+# plot
+pct_chg %>%
+
+  ggplot(aes(watershed,mean_pct,fill = food_consumption_scenario)) +
+  geom_col(position = position_dodge()) +
+  geom_errorbar(aes(ymin = mean_pct - se_pct, ymax = mean_pct + se_pct),  colour="black", width=.2, size=.8, position=position_dodge(.9)) +
+  facet_grid(population ~ simulation_period, labeller = labeller(temp_scen = temp_scen)) +
+  scale_x_discrete(limits=c("Beaver Creek","Russian River","Ptarmigan Creek","Kenai River"),
+                   labels=c("Lowland", "Montane", "Glacial","Main Stem")) +
+  scale_fill_discrete(breaks=c("-20%","Mean","+20%"),
+                         labels=c("-20% Observed P","Mean P","+20% Observed P")) +
+  #scale_fill_grey() +
+  ylab("Mean % Change\nin Final Weight") +
+  labs(fill = "Consumption\nScenario") +
+  xlab("")+
+  theme_bw() +
+  theme(strip.text.x = element_text(size = 14),
+        strip.text.y = element_text(angle = 0, size = 14),
+        legend.title = element_text(size=14, face="bold"),
+        legend.text = element_text(size=12, face="bold")) +
+  bm_theme_3
+
+ggsave("other/documents/Figure images/Figure 8.jpg",
+       width = 9, height = 5)
+
+
+
+
+```
+
+```{r}
+# calculate overall mean chg
+pct_chg <- read.csv("other/outputs/pct_chg_tbl.csv") %>%
+  clean_names() %>%
+  mutate(percent_change_in_mass = as.numeric(str_remove(percent_change_in_mass,"%"))) %>%
+  summarise(mean_pct = mean(percent_change_in_mass),
+            se = std.error(abs(percent_change_in_mass)))
+
+```
+
 
 Notes on choice of parameter values
 
