@@ -1,0 +1,24 @@
+---
+title: "agent_context"
+format: html
+---
+
+9/8/2026
+This repo was last edited in 2022. It contains materials related to preparing the publication Meyer et al 2022 at https://www.researchgate.net/profile/Benjamin-Meyer-2/publication/366050916_Landscape_characteristics_influence_projected_growth_rates_of_stream-resident_juvenile_salmon_in_the_face_of_climate_change_in_the_Kenai_River_watershed_south-central_Alaska/links/642b585d609c170a13f04417/Landscape-characteristics-influence-projected-growth-rates-of-stream-resident-juvenile-salmon-in-the-face-of-climate-change-in-the-Kenai-River-watershed-south-central-Alaska.pdf. Its data is archived at https://knb.ecoinformatics.org/view/doi:10.5063/F1Q52MZF
+
+The current ease of reproducibility is low, but all materials are available to correct this.
+
+I have multiple goals in order of priority:
+
+1) Assess the proposal at other/documents/AKSSF_Proposal_Form_final.docx. I want to work towards ensuring that Kenai Watershed Forum's minimum deliverables have been fulfilled. Interview me to help design this assement and action plan. Some materials related to those deliverables are in this repo and have not been completed, while some are external of this repo and have already been completed.
+
+2) Clean up organization of this repo. It is currently disjointed and requires many manual steps by human memory to execute. Work with me towards preparing presentable code for all results in Meyer et al 2023. Form should be that of a Quarto Book; is is currently in the old Bookdown format as a collection of Rmd files. I want all coding decisions explained to me before executing them. All calculations will documented in R chunks.
+
+3) Prepare summary materials related to juvenile salmon diet composition from the data in this project. Assess existing literature for examples of how these data are prepared and summarised. For example, I want to explore how the proportions of terrestrial and marine subsidies vary across space and time from the data in 2015-2016.
+
+
+Conventions
+
+- Avoid all use of AI tropes such as overuse of em-dashes.
+- Take steps to minimize token usage. For example, when Posit Assistant needs to read a PDF, convert it to an .md first
+- Suggest other ways to minimize token usage as appropriate
