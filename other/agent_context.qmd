@@ -22,3 +22,22 @@ Conventions
 - Avoid all use of AI tropes such as overuse of em-dashes.
 - Take steps to minimize token usage. For example, when Posit Assistant needs to read a PDF, convert it to an .md first
 - Suggest other ways to minimize token usage as appropriate
+
+***
+
+Responses to Additional clarifying questions on 9/8/2026:
+
+q1) Data readiness: Have you already processed the diet data (e.g., converted dry mass to wet mass, calculated proportions), or do we need to start from the raw Excel sheets?
+
+a1) assess code in the existing scripts in this repo and tell me if the dry to wet conversion code is already written, i am uncertain. the tabs "2015 diet content data" and "2016 diet content data" that make extensive use of excel formulas to apply length/weight relationships to calculate dry mass from measured lengths.
+
+
+q2) Scope for Larson: What does "draft summary figures/tables" mean to you? Are you thinking simple proportions by river/season, or more detailed breakdowns (by fish species, size class, etc.)?
+
+a2) a more detailed breakdown is ideal
+
+q3) Literature review: Have you already looked at examples of how diet composition is presented in salmon papers, or should we search for those first?
+
+a3) i have not performed a detailed literature review yet
+
+Note: I would like the new quarto book to serve as as sort of analytical exploratory data analysis "white paper" whose information would have been intaken and applied in the TAFS Meyer et al 2023 paper

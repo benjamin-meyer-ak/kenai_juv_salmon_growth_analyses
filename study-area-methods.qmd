@@ -1,0 +1,113 @@
+---
+title: "Study Area and Field Methods"
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Overview
+
+This chapter describes the study area, sampling design, and field methods underlying all analyses in this white paper. Content is drawn from the Methods section of Meyer et al. 2023 and Chapter 1 of Meyer 2020 (University of Alaska Fairbanks M.S. thesis). Where precise language from those sources is reproduced, it is quoted directly; otherwise this text is a condensed and annotated paraphrase for the purpose of this analytical document.
+
+------------------------------------------------------------------------
+
+## Overall Approach
+
+We measured air temperature, water temperature, and the growth rates and diet composition of juvenile Chinook and Coho Salmon during May through September 2015 and 2016 at ten sites within the Kenai River watershed. Based on these field data, we simulated juvenile growth during summer under current conditions using coupled stream temperature models and bioenergetic models. We then compared the relative changes in growth from a 2010-2019 baseline period to those projected under various future temperature and feeding rate scenarios for the 2030-2039 and 2060-2069 decades.
+
+The stream temperature model generated monthly stream temperatures which were input as daily values to a bioenergetic model that predicted the daily growth rate and size of idealized juvenile Chinook or Coho Salmon. Our model used field-based empirical inputs for food, temperature, and fish size across geographically diverse habitats within the Kenai River watershed, emphasizing the diversity of food and water temperature conditions across space and time.
+
+------------------------------------------------------------------------
+
+## Study Area
+
+The Kenai River drains an area of 5,568 km^2^ in southcentral Alaska, running 182 km west from the Kenai Mountains and emptying into Cook Inlet near the city of Kenai. The watershed supports some of Alaska's most intensively managed and harvested salmon populations, including commercial, sport, subsistence, and personal-use fisheries.
+
+We conducted field sampling in three tributaries of the Kenai River in 2015 and 2016 and in the Kenai River main stem (Table 1 in Meyer et al. 2023). The four study rivers span a gradient of watershed types:
+
+| River | Type | Elevation (m) | Key characteristics |
+|----|----|----|----|
+| Beaver Creek | Lowland | 21-65 | Low gradient, wetland-dominated, long water residence time, early snowmelt; high air-water temperature sensitivity |
+| Russian River | Montane | Intermediate | Intermediate gradient and temperature characteristics |
+| Ptarmigan Creek | Glacial | 166-1000 | High gradient, 7% ice coverage in watershed, late-season snowmelt and glacial melt; low average water temperatures, low air-water temperature sensitivity |
+| Kenai River | Main stem | — | Mainstem sites near mouths of Beaver Creek and Russian River |
+
+The geography of the Kenai River watershed encompasses the range of watershed types found throughout the Gulf of Alaska catchment area (Sergeant et al. 2020), such that results from this study may be relevant to the broader region.
+
+------------------------------------------------------------------------
+
+## Field Sampling
+
+### Stream Temperature
+
+We acquired water temperature data (*n* = 14 sites) and air temperature data (*n* = 11 sites) from HOBO® Temp Pro v2 loggers deployed during summers 2015 and 2016, USGS stream gauge stations at Soldotna (station ID 15266300) and Cooper Landing (station ID 15258000), and National Weather Service archives for the Kenai Airport.
+
+Water and air temperature data were collected at a minimum of three sites per tributary and two sites in the main stem along a longitudinal gradient from lower to upper reaches, following best practices and standards described in Mauger et al. (2015). Site-specific methods for channel transect representativeness, equipment calibration, and logger check procedures are described in Appendix A of Meyer et al. 2023.
+
+### Juvenile Salmon Capture
+
+We sampled juvenile Chinook (*n* = 1,145) and Coho Salmon (*n* = 2,646) within the lower, middle, and upper extent of their documented habitat in each of the three focal tributaries (Reimer 2013). Sites were also sampled in the mainstem Kenai River near the mouths of Beaver Creek and the Russian River. Exploratory sampling was conducted in lentic environments above and below Ptarmigan Creek (Ptarmigan Lake and Kenai Lake, respectively), but target species were not captured and these sites were excluded.
+
+Fish sampling efforts were constrained to a 200-m length of stream centered around each water temperature logger site (modified as needed for low catch success or terrain). Main channel and off-channel habitats were sampled at each site. Sites were visited approximately monthly (31 ± 5 days, mean ± SD) throughout May to August 2015 and May to September 2016.
+
+We used Gee® minnow traps baited with salmon eggs to capture juvenile salmon, an effective passive capture method in Alaska (Magnus 2006; Sethi and Benolkin 2013). Eggs were enclosed in perforated containers to permit scent to escape while preventing consumption. We suspended 12 to 20 traps at water depths of 15 to 45 cm for 2 to 4 hours per set. All salmon eggs used as bait were commercially sterilized or disinfected with a ten-minute soak in a 1/100 Betadyne solution prior to use.
+
+Captured juvenile salmon were anesthetized by submersion in a 20 to 40 mg/L eugenol (AQUI-S^TM^) bath for 2 to 3 minutes. We measured fork length to the nearest mm and weighed to the nearest 0.1 g. Fish recovered in aerated water and were held in-stream in a mesh basket to prevent same-day recaptures. Non-target species were identified, recorded, and released.
+
+### Diet Sampling (Gastric Lavage)
+
+For a subset of juvenile Chinook (*n* = 219) and Coho Salmon (*n* = 553) we sampled scales and stomach contents to determine age and diet composition for bioenergetics models. At each monthly site visit we aimed to sample up to 16 individuals per species with fork lengths ≥ 50 mm, subject to abundance constraints.
+
+Gut contents were flushed out of the mouth using the gastric lavage technique with a modified syringe (Culp et al. 1988) into a 250 μm sieve and preserved in a minimum of 70% ethanol in a Whirl-Pak bag.
+
+### Diet Sample Processing
+
+Stomach content samples were examined under 4.0x dissecting microscopes. Distinguishable invertebrates (*n* = 8,879) were identified to family level or the lowest taxon feasible (112 taxon/lifestage combinations identified), and body lengths were measured to the nearest 1.0 mm (Merritt and Cummins 1996). Lengths of partially digested prey were estimated based on intact individuals of the same taxon that appeared similar in size (Wipfli 1997). When intact individuals of the same taxon were absent in a sample, head and thorax length was assumed to represent 1/3 of total length of partially digested prey (Gonzales 2006). Diet items that could not be positively attributed to ingestion (e.g., exoskeletons, separated wings or legs, empty Trichoptera casings, unidentified head capsules) were recorded but excluded from diet proportions.
+
+### Prey Dry Mass Estimation
+
+Diet composition was characterized in terms of mass, the most applicable metric for energy flow and food web studies (Chipps and Garvey 2007). Dry mass of individual invertebrates was estimated using the allometric formula:
+
+$$W = aL^{b}$$
+
+where $W$ is total dry body mass, $L$ is total body length, and $a$ and $b$ are taxon-specific constants derived from a database of over 100 genera compiled from existing literature and Alaskan stream invertebrates (Meyer 2019). For juvenile fish prey items, regression constants from the length-weight relationship developed from age-0 Coho Salmon captured in this study were used (B.E. Meyer, unpublished data).
+
+These dry mass calculations were performed within the field data workbooks (Excel). The column `Total_Prey_Dry_Mass_mg` in the raw data sheets is the output of these formula-based calculations.
+
+### Prey Wet Mass and Diet Categories
+
+Prey item dry mass was converted to wet mass using the wet/dry mass ratios published by McCarthy (2009) and additional literature sources. This conversion is documented in full in Chapter 3 (Diet Composition).
+
+Diet composition was summarized using five categories for bioenergetics modeling:
+
+| Category | Label in model | Description |
+|----|----|----|
+| 1 | diet2: InvertAquatic_AqOrigin | Immature (larval) aquatic invertebrates |
+| 2 | diet3: InvertTerrestrial | Terrestrial invertebrates |
+| 3 | diet4: InvertTerrestrial_AqOrigin | Adult aquatic invertebrates (emerged/winged) |
+| 4 | diet5: SalmonEggs | Salmon eggs (juvenile fish also grouped here) |
+| 5 | diet1: FishEggs | Non-salmon fish eggs |
+
+Energy density values were assigned to these five categories from literature references (Table 2 in Meyer et al. 2023) for use in bioenergetics modeling.
+
+### Juvenile Salmon Age and Growth
+
+We aged scales from the subset of fish selected for stomach content analysis and used length-age relationships to assign individual fish an age (Quist et al. 2012). Age thresholds for distinguishing age-0 from age-1 fish were determined visually from length-frequency distributions. Methods for scale ageing and age cohort prediction for unaged fish are described in Appendix C of Meyer et al. 2023.
+
+Age-2 Coho Salmon and age-1 Chinook Salmon were excluded from bioenergetics analyses, as these cohorts were anticipated to be almost exclusively pre-smolt outmigrants with small sample sizes (Shields and Dupuis 2017).
+
+------------------------------------------------------------------------
+
+## Sampling Seasons
+
+Sampling events are referred to throughout this document as "seasons" corresponding to the sequential monthly site visits:
+
+| Event number | Season label | Approximate timing           |
+|--------------|--------------|------------------------------|
+| 1            | Early Summer | May-June                     |
+| 2            | Mid-Summer   | June-July                    |
+| 3            | Late Summer  | July-August                  |
+| 4            | Fall         | August-September (2016 only) |
+
+2015 had three sampling seasons; 2016 had four, with the addition of a Fall visit.

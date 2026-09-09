@@ -1,0 +1,500 @@
+---
+title: "Bioenergetics Model Inputs: 2015-2016 Observed Conditions"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r packages}
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(anytime)
+library(janitor)
+```
+
+## Overview
+
+This chapter generates all input files required to run Fish Bioenergetics 4.0 (FB4 v1.1.3) for each fish cohort observed in the 2015-2016 field seasons. A cohort is defined by the combination of river × species × age × year (e.g., "2015 Beaver Creek Age 1 Coho").
+
+FB4 requires five input CSV files per simulation run:
+
+1. **Temperature.csv** — daily mean water temperature (°C), indexed by simulation day
+2. **Predator.csv** — daily predator energy density (J/g; constant across days)
+3. **Prey.csv** — daily energy densities by prey category (J/g; constant across days)
+4. **Indigestible_Prey.csv** — daily indigestible fraction by prey category
+5. **Diet_Prop.csv** — daily diet proportions by prey category
+
+Diet proportions are pooled across both years (2015 and 2016) at the river × species × age scale, following the rationale that gastric lavage provides only a snapshot diet measurement — pooling across years reduces the influence of individual-sample noise.
+
+The workflow is:
+
+1. Prepare temperature and diet inputs
+2. Define the temporal extent of each simulation
+3. Export per-simulation input folders (committed to repo; code below marked `eval: false`)
+4. Generate the FB4 design file
+5. Run FB4 manually (see callout below)
+6. Read back committed FB4 outputs for downstream analysis
+
+---
+
+## Temperature Inputs
+
+Daily mean water temperature was summarized from HOBO temperature loggers deployed at each site (see Chapter 1 for logger deployment details). The processed daily summaries are read here directly.
+
+```{r temperature}
+daily_mean_temps <- read.csv(
+  "other/inputs/temperature/observed_water_temp/daily_temp_metrics.csv"
+) |>
+  select(Stream_Name, Site, year, Date, doy, daily_avg_temp) |>
+  rename(site = Site) |>
+  mutate(
+    year  = as.factor(year),
+    Date  = as.Date(Date)
+  )
+
+glimpse(daily_mean_temps)
+```
+
+---
+
+## Diet Proportion Inputs
+
+Prey wet-mass proportions by bioenergetics category, pooled at river × species × age scale, are available as a committed CSV. These were calculated in Chapter 3 (diet-composition.qmd) and represent the diet proportion inputs to FB4.
+
+The five prey categories and their corresponding diet slot assignments are:
+
+| Slot  | Category                    | Description                              |
+|-------|-----------------------------|------------------------------------------|
+| diet1 | FishEggs                    | Non-salmonid fish eggs                   |
+| diet2 | InvertAquatic_AqOrigin      | Aquatic invertebrates (immature stages)  |
+| diet3 | InvertTerrestrial           | Terrestrial invertebrates                |
+| diet4 | InvertTerrestrial_AqOrigin  | Adult aquatic invertebrates (winged)     |
+| diet5 | SalmonEggs                  | Salmon eggs                              |
+
+```{r diet-props}
+wm_diet_props <- read.csv("other/outputs/diet/wet_mass_diet_proportions.csv")
+wm_diet_props
+```
+
+---
+
+## Simulation Temporal Extents
+
+Each simulation covers the period from the deployment date of one trap-check event to the deployment date of the following event. For the final sampling event of each year, the simulation extends 30 days past the deployment date. Temporal extents are determined from the fishing effort data in the raw Excel workbooks.
+
+The code below derives the temporal extent for each site × year × season. The output is already committed to `other/outputs/observed_diet_proportions.csv`, which joins temporal extent data to diet proportions. The code is shown to document the logic; set `eval: true` if regenerating from scratch.
+
+```{r temporal-extents}
+#| eval: false
+
+SCTC2015 <- "other/inputs/diet_size_other/2015 EPSCoR SCTC.xlsx"
+SCTC2016 <- "other/inputs/diet_size_other/2016_EPSCoR_Aquatic_Ecology_Database.xlsx"
+
+effort2015 <- read_excel(SCTC2015, sheet = "B Fishing Data", skip = 2) |>
+  rename(site.id = Site_ID, sample.event = Sample_Event) |>
+  select(site.id, Reach, River, sample.event, sample.event.num,
+         deploy_dt, collect_dt) |>
+  filter(!is.na(sample.event)) |>
+  mutate(
+    site.id       = as.factor(site.id),
+    sample.event  = as.factor(sample.event),
+    sample.event.num = as.factor(sample.event.num)
+  )
+
+effort2016 <- read_excel(SCTC2016, sheet = "B Fishing Data", skip = 2) |>
+  rename(site.id = Site_ID, sample.event = Sample_Event) |>
+  select(site.id, Reach, River, sample.event, sample.event.num,
+         deploy_dt, collect_dt) |>
+  filter(!is.na(sample.event)) |>
+  mutate(
+    site.id       = as.factor(site.id),
+    sample.event  = as.factor(sample.event),
+    sample.event.num = as.factor(sample.event.num)
+  )
+
+effort <- bind_rows(effort2015, effort2016) |>
+  mutate(
+    collect_dt = anytime(collect_dt),
+    deploy_dt  = anytime(deploy_dt),
+    year       = year(collect_dt),
+    site       = paste(Reach, River)
+  ) |>
+  filter(site != "Upper Ptarmigan Creek")
+
+rm(effort2015, effort2016)
+
+# Define temporal extent for each site × year × sampling event
+sim_extents_by_site <- effort |>
+  group_by(River, site, year, sample.event, sample.event.num) |>
+  nest() |>
+  mutate(
+    season.start = purrr::map_dbl(data, ~min(.$deploy_dt)),
+    season.end   = purrr::map_dbl(data, ~min(.$deploy_dt))
+  ) |>
+  mutate(
+    season.start = anytime(season.start),
+    season.end   = anytime(season.end)
+  ) |>
+  arrange(site, year, sample.event)
+
+# End of each season = start of next; final season = start + 30 days
+make_extents <- function(df_year, final_event_num) {
+  main  <- df_year |>
+    mutate(season.end_x = lead(season.end)) |>
+    select(-season.end) |>
+    filter(sample.event.num != as.factor(final_event_num)) |>
+    rename(season.end = season.end_x)
+  final <- df_year |>
+    filter(sample.event.num == as.factor(final_event_num)) |>
+    mutate(season.end = season.start + lubridate::days(30)) |>
+    select(-any_of("season.end_x"))
+  bind_rows(main, final)
+}
+
+t15 <- sim_extents_by_site |> filter(year == 2015)
+t16 <- sim_extents_by_site |> filter(year == 2016)
+
+# 2016 Middle Ptarmigan Creek had no 4th visit; assign manually
+mpc_2016_3 <- t16 |>
+  filter(sample.event == "MPC-2016-3") |>
+  mutate(season.end = season.start + lubridate::days(30))
+
+t16_no_mpc <- t16 |>
+  filter(sample.event != "MPC-2016-3") |>
+  mutate(season.end_x = lead(season.end)) |>
+  select(-season.end) |>
+  filter(sample.event.num != as.factor(4)) |>
+  rename(season.end = season.end_x)
+
+t16_final <- t16 |>
+  filter(sample.event.num == as.factor(4), sample.event != "MPC-2016-3") |>
+  mutate(season.end = season.start + lubridate::days(30))
+
+sim_extents_by_site <- bind_rows(
+  make_extents(t15, 3),
+  t16_no_mpc,
+  t16_final,
+  mpc_2016_3
+) |>
+  rename(Stream_Name = River, sim.start = season.start, sim.end = season.end) |>
+  mutate(
+    year   = as.factor(year),
+    season = fct_recode(as.factor(sample.event.num),
+                        "Early Summer" = "1",
+                        "Mid-Summer"   = "2",
+                        "Late Summer"  = "3",
+                        "Fall"         = "4"),
+    days   = round(sim.end - sim.start)
+  ) |>
+  select(-data)
+
+rm(t15, t16, t16_no_mpc, t16_final, mpc_2016_3)
+```
+
+The committed output `observed_diet_proportions.csv` joins the diet proportions to the simulation temporal extents. Read it to verify the structure:
+
+```{r obs-diet-proportions}
+obs_diet_props <- read.csv("other/outputs/observed_diet_proportions.csv")
+glimpse(obs_diet_props)
+```
+
+---
+
+## Generating FB4 Input Files
+
+The code below generates the per-simulation Temperature.csv and Diet_prop.csv files, as well as the static Pred_E.csv, Prey_E.csv, and Indigestible_Prey.csv files. This code creates and populates the `other/FB4_1.1.3_2015_2016.1/` directory.
+
+**These files are already committed to the repository.** Run this section only if regenerating inputs from scratch.
+
+### Daily diet and temperature by simulation day
+
+```{r sim-day-data}
+#| eval: false
+
+# Read diet and temporal extent data
+obs_diet_props <- read.csv("other/outputs/observed_diet_proportions.csv") |>
+  mutate(days = as.double(days))
+
+# Expand diet proportions to one row per simulation day
+sim_diet_days <- obs_diet_props[
+  rep(seq_len(nrow(obs_diet_props)), obs_diet_props[, "days"]), ] |>
+  mutate(
+    sim_name = paste0(year, "_", season, "_", site, "_", spp, "_Age_", age)
+  ) |>
+  group_by(sim_name) |>
+  mutate(
+    SimDay = row_number(),
+    Date   = as.Date(sim.start) + lubridate::days(SimDay)
+  ) |>
+  mutate(year_chr = as.character(year(Date)))
+
+# Join daily water temperatures
+sim_diet_days <- left_join(
+  sim_diet_days,
+  daily_mean_temps |> mutate(year_chr = as.character(year)),
+  by = c("Date", "site", "Stream_Name", "year_chr")
+) |>
+  rename(
+    diet1 = FishEggs,
+    diet2 = InvertAquatic_AqOrigin,
+    diet3 = InvertTerrestrial,
+    diet4 = InvertTerrestrial_AqOrigin,
+    diet5 = SalmonEggs,
+    Temp  = daily_avg_temp
+  ) |>
+  mutate(diet6 = 0, diet7 = 0, diet8 = 0, diet9 = 0, diet10 = 0) |>
+  filter(!is.na(Temp)) |>
+  select(SimDay, Temp, diet1, diet2, diet3, diet4, diet5,
+         diet6, diet7, diet8, diet9, diet10, sim_name, spp)
+
+sim_diet_days[is.na(sim_diet_days)] <- 0
+
+# Subset to simulations in sim_size_inputs_v2
+sim_size_list <- read_excel(
+  "other/inputs/diet_size_other/sim_size_inputs_v2.xlsx",
+  sheet = "lw_data"
+) |> select(sim)
+
+sim_diet_days <- sim_diet_days |>
+  rename(sim = sim_name) |>
+  inner_join(sim_size_list, by = "sim") |>
+  rename(sim_name = sim) |>
+  distinct()
+```
+
+### Export per-simulation Temperature.csv and Diet_prop.csv
+
+```{r export-temp-diet}
+#| eval: false
+
+sim_dir  <- "other/FB4_1.1.3_2015_2016.1/"
+chnk_dir <- paste0(sim_dir, "chnk/")
+coho_dir <- paste0(sim_dir, "coho/")
+
+# Create directory structure
+unlink(chnk_dir, recursive = TRUE)
+unlink(coho_dir, recursive = TRUE)
+dir.create(chnk_dir, recursive = TRUE)
+dir.create(coho_dir, recursive = TRUE)
+
+export_sim_files <- function(sim_days, spp_filter, spp_dir, file_prefix) {
+  df <- sim_days |>
+    filter(spp == spp_filter) |>
+    select(-spp)
+
+  # Temperature files
+  temps <- df |>
+    select(SimDay, Temp, sim_name) |>
+    rename(day = SimDay, temperature = Temp) |>
+    group_by(sim_name)
+
+  temps_list <- split(select(temps, -sim_name),
+                      temps$sim_name)
+
+  # Diet proportion files
+  diets <- df |>
+    select(-Temp) |>
+    rename(day = SimDay) |>
+    group_by(sim_name)
+
+  diets_list <- split(select(diets, -sim_name),
+                      diets$sim_name)
+
+  sim_names <- names(temps_list)
+
+  # Create subdirectory for each simulation
+  sim_dirs <- file.path(spp_dir, sim_names)
+  Map(dir.create, sim_dirs, showWarnings = FALSE)
+
+  # Write files
+  mapply(
+    function(dat, nm) {
+      d <- file.path(spp_dir, nm)
+      write.csv(temps_list[[nm]], file.path(d, "Temperature.csv"),
+                row.names = FALSE)
+      write.csv(diets_list[[nm]], file.path(d, "Diet_prop.csv"),
+                row.names = FALSE)
+    },
+    sim_dirs, sim_names
+  )
+}
+
+export_sim_files(sim_diet_days, "Chinook", chnk_dir, "chnk")
+export_sim_files(sim_diet_days, "Coho",    coho_dir, "coho")
+```
+
+### Static input files (Pred_E, Prey_E, Indigestible_Prey)
+
+These files are constant across all simulations. Values are from McCarthy et al. 2009 and the EPSCoR prey energy density reference table.
+
+```{r static-inputs}
+#| eval: false
+
+static_dir <- paste0(sim_dir, "Main_Inputs/")
+unlink(static_dir, recursive = TRUE)
+dir.create(static_dir)
+
+day <- c(1, 365)
+
+# Indigestible fractions by prey category
+Indigestible_Prey <- data.frame(
+  day,
+  diet1  = 0.03,   # FishEggs
+  diet2  = 0.17,   # InvertAquatic_AqOrigin
+  diet3  = 0.17,   # InvertTerrestrial
+  diet4  = 0.17,   # InvertTerrestrial_AqOrigin
+  diet5  = 0.30,   # SalmonEggs
+  diet6  = 0, diet7 = 0, diet8 = 0, diet9 = 0, diet10 = 0
+)
+write.csv(Indigestible_Prey,
+          file.path(static_dir, "Indigestible_Prey.csv"), row.names = FALSE)
+
+# Predator energy density (J/g; constant)
+Pred_E <- data.frame(day, predator = 5000)
+write.csv(Pred_E, file.path(static_dir, "Pred_E.csv"), row.names = FALSE)
+
+# Prey energy densities (J/g)
+Prey_E <- data.frame(
+  day,
+  diet1  = 5235,   # FishEggs
+  diet2  = 3365,   # InvertAquatic_AqOrigin
+  diet3  = 5250,   # InvertTerrestrial
+  diet4  = 4225,   # InvertTerrestrial_AqOrigin
+  diet5  = 9000,   # SalmonEggs
+  diet6  = 0, diet7 = 0, diet8 = 0, diet9 = 0, diet10 = 0
+)
+write.csv(Prey_E, file.path(static_dir, "Prey_E.csv"), row.names = FALSE)
+
+# Copy static files into every simulation subdirectory
+copy_to_all_sims <- function(src, spp_dir, filename) {
+  sim_subdirs <- list.dirs(spp_dir, recursive = FALSE)
+  Map(file.copy, from = src,
+      to = file.path(sim_subdirs, filename), overwrite = TRUE)
+}
+
+for (fname in c("Indigestible_Prey.csv", "Pred_E.csv", "Prey_E.csv")) {
+  src <- file.path(static_dir, fname)
+  copy_to_all_sims(src, chnk_dir, fname)
+  copy_to_all_sims(src, coho_dir, fname)
+}
+```
+
+### FB4 design file
+
+```{r design-file}
+#| eval: false
+
+# Read initial weight and final fitting weights for each simulation
+sim_size_inputs <- read_excel(
+  "other/inputs/diet_size_other/sim_size_inputs_v2.xlsx",
+  sheet = "lw_data"
+) |>
+  inner_join(sim_size_list, by = "sim")
+
+# Get folder directories that were created above
+coho_dirs <- as.data.frame(list.dirs(coho_dir)) |>
+  setNames("dir") |>
+  separate(dir, sep = "/", into = c("a","b","c","sim")) |>
+  filter(!is.na(sim)) |>
+  select(sim)
+chnk_dirs <- as.data.frame(list.dirs(chnk_dir)) |>
+  setNames("dir") |>
+  separate(dir, sep = "/", into = c("a","b","c","sim")) |>
+  filter(!is.na(sim)) |>
+  select(sim)
+folder_dirs <- bind_rows(coho_dirs, chnk_dirs) |>
+  rename(sim_name = sim)
+
+sim_size_inputs <- sim_size_inputs |>
+  inner_join(folder_dirs, by = c("sim" = "sim_name")) |>
+  mutate(spp2 = ifelse(grepl("Coho", sim), "coho", "chnk"))
+
+# Example design file template provides column names
+design_colnames <- read.csv(
+  "other/FB4_1.1.3_2015_2016.1/FB4_Design_Bluegill_1.csv"
+) |> colnames()
+
+design_2015_2016 <- sim_size_inputs |>
+  mutate(
+    NRun        = row_number(),
+    Run_Name    = sim,
+    Species_Num = ifelse(grepl("Coho", sim), "22", "21"),
+    Species_txt = ifelse(grepl("Coho", sim),
+                         "Coho salmon (adult)", "Chinook salmon (adult)"),
+    Initial_W   = wt_start,
+    fit.to      = "Weight",
+    fit.to.value = wt_end,
+    First_day   = 1,
+    Last_day    = sim.end.doy - sim.start.doy,
+    N_indiv     = 1,
+    Oxycal      = 13560,
+    calc.pop_mort = "FALSE", calc.spawn = "FALSE",
+    calc.nut = "FALSE", calc.contaminant = "FALSE",
+    Init_pred_conc = "NA", contam_eq = "NA",
+    T_File              = paste0(spp2, "/", Run_Name, "/Temperature.csv"),
+    Diet_File           = paste0(spp2, "/", Run_Name, "/Diet_prop.csv"),
+    Prey_E_File         = paste0(spp2, "/", Run_Name, "/Prey_E.csv"),
+    Indigest_Prey_File  = paste0(spp2, "/", Run_Name, "/Indigestible_Prey.csv"),
+    Pred_E_File         = paste0(spp2, "/", Run_Name, "/Pred_E.csv"),
+    Mort_File = "NA", Reprod_File = "NA",
+    Contam_Prey_C_File = "NA", Contam_assim_File = "NA",
+    Contam_TE_File = "NA",
+    Phos_Ae_File = "NA", Phos_Co_Pred_File = "NA", Phos_Co_Prey_File = "NA",
+    Nit_Ae_File = "NA", Nit_Co_Pred_File = "NA", Nit_Co_Prey_File = "NA",
+    FB4_Log_File = "FB4_2015_2016_models.csv",
+    .keep = "unused"
+  ) |>
+  select(any_of(design_colnames))
+
+write.csv(design_2015_2016,
+          "other/FB4_1.1.3_2015_2016.1/design_2015_2016.csv",
+          row.names = FALSE)
+```
+
+---
+
+## Running Fish Bioenergetics 4.0
+
+::: {.callout-note}
+## Manual step: Running FB4 v1.1.3
+
+After generating the input files above, simulations are executed using the FB4 v1.1.3 graphical interface:
+
+1. Download FB4 v1.1.3 from [fishbioenergetics.org](http://fishbioenergetics.org/)
+2. Set the working directory inside FB4 to `other/FB4_1.1.3_2015_2016.1/`
+3. Load the design file `design_2015_2016_final.csv` using the multi-simulation interface
+4. Run all simulations; FB4 writes output to `FB4_2015_2016_models.csv`
+
+Two separate runs were performed using:
+
+- **Old parameters**: Stewart & Ibarra (1991) → `FB4_2015_2016_models_old_parameters.csv`
+- **New parameters**: Plumb & Moffitt (2015) → `FB4_2015_2016_models_new_parameters.csv`
+
+Both output files are committed to the repository and read in Chapter 6 (Simulation Results).
+
+Note: one design file was manually edited in two instances to shorten simulation length by one day to match the temporal extent of main input files. The reason for the 1-day mismatch is unclear but is insufficient to meaningfully affect results.
+:::
+
+---
+
+## Committed FB4 Outputs
+
+The FB4 output files below are committed at `other/FB4_1.1.3_2015_2016.1/`. These are the direct inputs to Chapter 6 (Simulation Results).
+
+```{r read-fb4-outputs}
+#| eval: false
+# Verify committed output files exist and show structure.
+# These are read again in simulation-results.qmd.
+
+old_params <- read.csv(
+  "other/FB4_1.1.3_2015_2016.1/FB4_2015_2016_models_old_parameters.csv"
+)
+new_params <- read.csv(
+  "other/FB4_1.1.3_2015_2016.1/FB4_2015_2016_models_new_parameters.csv"
+)
+
+glimpse(old_params)
+```

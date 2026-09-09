@@ -1,0 +1,422 @@
+---
+title: "Bioenergetics Model Inputs: Projected Climate Scenarios"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r packages}
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(anytime)
+library(janitor)
+library(plotrix)
+```
+
+## Overview
+
+This chapter generates FB4 input files for projected future climate scenarios. The approach mirrors Chapter 4 (observed inputs) with two key differences:
+
+1. **Temperatures** come from downscaled projections rather than observed logger data
+2. **Consumption (p-value)** is held fixed at mean, +20%, and −20% of the value estimated from 2015-2016 observed simulations, rather than being fit to a final weight
+
+Three temperature scenarios × three consumption scenarios = nine model runs per cohort.
+
+**Temperature scenarios:**
+
+| Scenario | Period     | Description                          |
+|----------|------------|--------------------------------------|
+| Baseline | 2010-2019  | Near-present reference               |
+| Near     | 2030-2039  | Mid-century                          |
+| Far      | 2060-2069  | Late-century                         |
+
+Each period is simulated under RCP 6.0 and RCP 8.5, giving six temperature × decade combinations.
+
+All input files are committed to `other/FB4_1.1.3_projected.1/`. Code that writes to disk is marked `eval: false`.
+
+---
+
+## Projected Temperature Inputs
+
+Projected air temperatures for each decade × RCP scenario were extracted from downscaled climate rasters at each field site and translated to projected water temperatures using linear air-water relationships derived from 2015-2016 field observations. Projections are available at monthly resolution.
+
+```{r projected-temps}
+projected_temps <- read.csv(
+  "other/inputs/temperature/projected_temps.csv"
+) |>
+  select(-X, -proj_air_Temp_C, -sens_slope, -sens_int, -r_sq, -n_weeks) |>
+  mutate(scenario = str_replace(scenario, "sres", "")) |>
+  select(scenario, decade, month, Site, proj_h2o_Temp_C) |>
+  rename(site = Site) |>
+  group_by(scenario, decade, site, month) |>
+  summarise(
+    proj_dec_h2o_Temp = mean(proj_h2o_Temp_C),
+    h2o_se = plotrix::std.error(proj_h2o_Temp_C, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(scenario_period = paste0(scenario, "_", decade))
+
+glimpse(projected_temps)
+```
+
+The observed temperature data provides the date structure into which projected monthly means are joined. We substitute projected temperatures for observed temperatures.
+
+```{r obs-temp-structure}
+observed_temps <- read.csv(
+  "other/inputs/temperature/observed_water_temp/daily_temp_metrics.csv"
+) |>
+  select(Stream_Name, Site, year, Date, doy, daily_avg_temp) |>
+  rename(site = Site) |>
+  mutate(
+    year  = as.factor(year),
+    Date  = as.Date(Date),
+    month = month(Date)
+  )
+
+# Join projected temps to observed date structure (substituting projected for observed)
+daily_proj_temps <- left_join(
+  observed_temps,
+  projected_temps,
+  by = c("site", "month")
+) |>
+  select(scenario_period, Stream_Name, site, year, Date, doy,
+         proj_dec_h2o_Temp) |>
+  rename(daily_avg_temp = proj_dec_h2o_Temp)
+
+glimpse(daily_proj_temps)
+```
+
+---
+
+## Diet Proportion Inputs
+
+The same wet-mass diet proportions from the observed chapter are used for all projected scenarios. Diet proportions do not change across climate scenarios — only temperature and consumption level change.
+
+```{r diet-props}
+wm_diet_props <- read.csv("other/outputs/diet/wet_mass_diet_proportions.csv")
+wm_diet_props
+```
+
+---
+
+## P-value Inputs from Observed Simulations
+
+For projected simulations, we do not fit to a final weight. Instead, we hold the proportion of maximum consumption (p-value) fixed at the mean value estimated from 2015-2016 observed simulations, and also run at ±20% of that mean.
+
+P-values are extracted from the committed FB4 output from Chapter 4.
+
+```{r pvalue-inputs}
+#| eval: false
+# Requires committed FB4 output from the observed chapter
+fb4_obs <- read.csv(
+  "other/FB4_1.1.3_2015_2016.1/FB4_2015_2016_models_new_parameters.csv"
+) |>
+  clean_names() |>
+  rename(Simulation = run_name) |>
+  separate(Simulation,
+           into = c("year", "season", "site", "spp", "e", "age"),
+           sep  = "_", remove = FALSE) |>
+  separate(site, into = c("reach", "river1", "river2"), remove = FALSE) |>
+  mutate(Stream_Name = paste(river1, river2)) |>
+  select(spp, age, year, season, site, reach, initial_w, p_value, Stream_Name)
+
+# Projected simulation period: May 26 – September 4
+min_sim_doy <- yday(ymd("2015-05-26"))
+max_sim_doy <- yday(ymd("2015-09-04"))
+sim_duration <- max_sim_doy - min_sim_doy
+
+# Mean p-value by watershed × species × age
+mean_pvals <- fb4_obs |>
+  group_by(Stream_Name, spp, age) |>
+  summarise(mean_pval = mean(p_value), .groups = "drop")
+
+# Initial weight = mean weight at earliest sampling event per cohort
+mean_start_w <- fb4_obs |>
+  mutate(season_num = case_when(
+    season == "Early Summer" ~ 1,
+    season == "Mid-Summer"   ~ 2,
+    season == "Late Summer"  ~ 3,
+    season == "Fall"         ~ 4
+  )) |>
+  group_by(Stream_Name, spp, age, site) |>
+  slice_min(season_num) |>
+  summarise(mean_init_w = mean(initial_w), .groups = "drop")
+
+# Build three consumption scenarios per cohort
+init_file_dat <- left_join(mean_start_w, mean_pvals,
+                           by = c("Stream_Name", "spp", "age")) |>
+  mutate(
+    `20plus_pval`  = mean_pval * 1.2,
+    `20minus_pval` = mean_pval * 0.8
+  ) |>
+  pivot_longer(
+    cols = c("mean_pval", "20plus_pval", "20minus_pval"),
+    names_to  = "consumption_scenario",
+    values_to = "value"
+  ) |>
+  mutate(Simulation = paste0(site, "_", spp, "_Age_", age))
+```
+
+---
+
+## Simulation Temporal Extents
+
+For projected scenarios, all cohorts share a common simulation window: **May 26 to September 4** (Julian days 146–247). This is the earliest date with weight data common across all sites and years, through the earliest final sampling visit plus 30 days.
+
+Diet proportions are replicated across simulation days at the scale of river × species × age (no season grouping, unlike the observed simulations).
+
+```{r proj-sim-days}
+#| eval: false
+
+# Temporal extent for projected simulations (one row per site × spp × age)
+obs_diet_ref <- read.csv("other/outputs/observed_diet_proportions.csv") |>
+  group_by(Stream_Name, site, spp, age) |>
+  summarise(
+    sim.start = as.integer(mean(yday(as.Date(sim.start)))),
+    sim.end   = as.integer(mean(yday(as.Date(sim.end)))),
+    .groups   = "drop"
+  ) |>
+  mutate(days = sim.end - sim.start)
+
+diet_prop_proj <- left_join(wm_diet_props, obs_diet_ref,
+                            by = c("Stream_Name", "spp", "age")) |>
+  mutate(days = as.double(days))
+
+sim_diet_days <- diet_prop_proj[
+  rep(seq_len(nrow(diet_prop_proj)), diet_prop_proj[, "days"]), ] |>
+  mutate(sim_name = paste0(site, "_", spp, "_Age_", age)) |>
+  group_by(sim_name) |>
+  mutate(
+    SimDay = row_number(),
+    doy    = sim.start + SimDay
+  )
+
+# Replicate for each scenario period
+scenario_periods <- c(
+  "rcp60_2030_2039", "rcp85_2030_2039",
+  "rcp60_2060_2069", "rcp85_2060_2069",
+  "rcp60_2010_2019", "rcp85_2010_2019"
+)
+
+sim_diet_days <- map_dfr(scenario_periods, function(sp) {
+  sim_diet_days |> mutate(scenario_period = sp)
+})
+
+# Join monthly projected temperatures by month extracted from doy
+sim_diet_days <- sim_diet_days |>
+  mutate(
+    date  = as.Date(doy, origin = as.Date("2015-01-01")),
+    month = month(date)
+  )
+
+proj_temp_monthly <- daily_proj_temps |>
+  filter(year == "2016") |>
+  select(scenario_period, site, Stream_Name, month, daily_avg_temp) |>
+  distinct()
+
+sim_diet_days <- left_join(
+  sim_diet_days, proj_temp_monthly,
+  by = c("site", "scenario_period", "month", "Stream_Name")
+) |>
+  rename(avg_temp = daily_avg_temp) |>
+  filter(!is.na(avg_temp)) |>
+  rename(
+    diet1 = FishEggs,
+    diet2 = InvertAquatic_AqOrigin,
+    diet3 = InvertTerrestrial,
+    diet4 = InvertTerrestrial_AqOrigin,
+    diet5 = SalmonEggs,
+    Temp  = avg_temp
+  ) |>
+  mutate(diet6 = 0, diet7 = 0, diet8 = 0, diet9 = 0, diet10 = 0) |>
+  select(-SimDay) |>
+  group_by(sim_name, scenario_period, spp) |>
+  mutate(SimDay = row_number()) |>
+  ungroup() |>
+  mutate(sim_name = paste0(scenario_period, "_", sim_name)) |>
+  select(SimDay, Temp, diet1, diet2, diet3, diet4, diet5,
+         diet6, diet7, diet8, diet9, diet10, sim_name, spp)
+
+sim_diet_days[is.na(sim_diet_days)] <- 0
+```
+
+---
+
+## Exporting Input Files
+
+```{r export-proj-files}
+#| eval: false
+
+sim_filepath <- "other/FB4_1.1.3_projected.1/all_projected_sims"
+unlink(sim_filepath, recursive = TRUE)
+dir.create(sim_filepath, recursive = TRUE)
+
+chnk_dir <- file.path(sim_filepath, "chnk", "")
+coho_dir <- file.path(sim_filepath, "coho", "")
+dir.create(chnk_dir, recursive = TRUE)
+dir.create(coho_dir, recursive = TRUE)
+
+export_proj_files <- function(sim_days, spp_filter, spp_dir) {
+  df <- sim_days |> filter(spp == spp_filter) |> select(-spp)
+  sim_names <- unique(df$sim_name)
+  sim_subdirs <- file.path(spp_dir, sim_names)
+  Map(dir.create, sim_subdirs, showWarnings = FALSE)
+
+  for (nm in sim_names) {
+    d <- file.path(spp_dir, nm)
+    sub_df <- df |> filter(sim_name == nm) |> select(-sim_name)
+    write.csv(sub_df |> select(SimDay, Temp) |> rename(day = SimDay, temperature = Temp),
+              file.path(d, "Temperature.csv"), row.names = FALSE)
+    write.csv(sub_df |> rename(day = SimDay),
+              file.path(d, "Diet_prop.csv"), row.names = FALSE)
+  }
+}
+
+export_proj_files(sim_diet_days, "Chinook", chnk_dir)
+export_proj_files(sim_diet_days, "Coho",    coho_dir)
+
+# Static inputs
+day  <- c(1, 365)
+dir_main <- "other/FB4_1.1.3_projected.1/projected_main_inputs/"
+unlink(dir_main, recursive = TRUE)
+dir.create(dir_main, recursive = TRUE)
+
+Indigestible_Prey <- data.frame(
+  day,
+  diet1 = 0.03, diet2 = 0.17, diet3 = 0.17,
+  diet4 = 0.17, diet5 = 0.03,
+  diet6 = 0, diet7 = 0, diet8 = 0, diet9 = 0, diet10 = 0
+)
+write.csv(Indigestible_Prey, file.path(dir_main, "Indigestible_Prey.csv"),
+          row.names = FALSE)
+
+Pred_E <- data.frame(day, predator = 5000)
+write.csv(Pred_E, file.path(dir_main, "Pred_E.csv"), row.names = FALSE)
+
+Prey_E <- data.frame(
+  day,
+  diet1 = 5235, diet2 = 3365, diet3 = 5250,
+  diet4 = 4225, diet5 = 9000,
+  diet6 = 0, diet7 = 0, diet8 = 0, diet9 = 0, diet10 = 0
+)
+write.csv(Prey_E, file.path(dir_main, "Prey_E.csv"), row.names = FALSE)
+
+copy_static <- function(src_dir, dest_spp_dir) {
+  sims <- list.dirs(dest_spp_dir, recursive = FALSE)
+  for (fname in c("Indigestible_Prey.csv", "Pred_E.csv", "Prey_E.csv")) {
+    Map(file.copy,
+        from = file.path(src_dir, fname),
+        to   = file.path(sims, fname),
+        overwrite = TRUE)
+  }
+}
+copy_static(dir_main, chnk_dir)
+copy_static(dir_main, coho_dir)
+```
+
+---
+
+## Design File
+
+```{r design-file-projected}
+#| eval: false
+
+folder_dirs <- bind_rows(
+  as.data.frame(list.dirs(coho_dir)) |> setNames("dir"),
+  as.data.frame(list.dirs(chnk_dir)) |> setNames("dir")
+) |>
+  clean_names() |>
+  separate(dir, sep = "/", into = c("a","b","c","d","sim")) |>
+  filter(!is.na(sim)) |>
+  select(sim) |>
+  rename(Simulation = sim)
+
+build_design <- function(init_dat, folder_dirs, param_label) {
+  design_colnames <- read.csv(
+    "other/FB4_1.1.3_2015_2016.1/FB4_Design_Bluegill_1.csv"
+  ) |> colnames()
+
+  dat <- init_dat |>
+    inner_join(folder_dirs, by = "Simulation") |>
+    mutate(
+      spp2 = ifelse(spp == "Coho", "coho", "chnk"),
+      NRun        = row_number(),
+      Run_Name    = paste0(consumption_scenario, "_", Simulation),
+      Species_Num = ifelse(spp == "Coho", "22", "21"),
+      Species_txt = ifelse(spp == "Coho",
+                           "Coho salmon (adult)", "Chinook salmon (adult)"),
+      Initial_W   = mean_init_w,
+      fit.to      = "p-value",
+      fit.to.value = value,
+      First_day   = 1,
+      Last_day    = sim_duration,
+      N_indiv     = 1,
+      Oxycal      = 13560,
+      calc.pop_mort = "FALSE", calc.spawn = "FALSE",
+      calc.nut = "FALSE", calc.contaminant = "FALSE",
+      Init_pred_conc = "NA", contam_eq = "NA",
+      T_File     = paste0("all_projected_sims/", spp2, "/", Simulation, "/Temperature.csv"),
+      Diet_File  = paste0("all_projected_sims/", spp2, "/", Simulation, "/Diet_prop.csv"),
+      Prey_E_File = paste0("all_projected_sims/", spp2, "/", Simulation, "/Prey_E.csv"),
+      Indigest_Prey_File = paste0("all_projected_sims/", spp2, "/",
+                                  Simulation, "/Indigestible_Prey.csv"),
+      Pred_E_File = paste0("all_projected_sims/", spp2, "/", Simulation, "/Pred_E.csv"),
+      Mort_File = "NA", Reprod_File = "NA",
+      Contam_Prey_C_File = "NA", Contam_assim_File = "NA",
+      Contam_TE_File = "NA",
+      Phos_Ae_File = "NA", Phos_Co_Pred_File = "NA", Phos_Co_Prey_File = "NA",
+      Nit_Ae_File = "NA", Nit_Co_Pred_File = "NA", Nit_Co_Prey_File = "NA",
+      FB4_Log_File = "FB4_projected_models.csv",
+      .keep = "unused"
+    ) |>
+    select(any_of(design_colnames))
+
+  out_path <- paste0("other/FB4_1.1.3_projected.1/design_projected_",
+                     param_label, ".csv")
+  file.remove(out_path)
+  write.csv(dat, out_path, row.names = FALSE)
+  dat
+}
+
+# Run for both parameter sets (same design structure; FB4 uses different
+# internal parameter files selected at run time)
+design_new <- build_design(init_file_dat, folder_dirs, "new_parameters")
+design_old <- build_design(init_file_dat, folder_dirs, "old_parameters")
+```
+
+---
+
+## Running Fish Bioenergetics 4.0 (Projected Scenarios)
+
+::: {.callout-note}
+## Manual step: Running FB4 v1.1.3 for projected scenarios
+
+1. Set the FB4 working directory to `other/FB4_1.1.3_projected.1/`
+2. Load `design_projected_new_parameters.csv` (for Plumb & Moffitt parameters)
+3. Run simulations; output written to `FB4_projected_models_new_parameters.csv`
+4. Repeat with `design_projected_old_parameters.csv` (for Stewart & Ibarra parameters)
+
+Both output files are committed and read in Chapter 6 (Simulation Results).
+
+Note: the projected simulations fit to a fixed p-value rather than a final weight.
+:::
+
+---
+
+## Committed FB4 Projected Outputs
+
+```{r proj-outputs}
+#| eval: false
+
+proj_old <- read.csv(
+  "other/FB4_1.1.3_projected.1/FB4_projected_models_old_parameters.csv"
+)
+proj_new <- read.csv(
+  "other/FB4_1.1.3_projected.1/FB4_projected_models_new_parameters.csv"
+)
+
+glimpse(proj_old)
+```

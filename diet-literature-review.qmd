@@ -1,0 +1,207 @@
+# Diet Composition: Literature Review
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Overview
+
+Juvenile Pacific salmon rearing in freshwater streams consume a mix of prey originating from aquatic, terrestrial, and in some rivers, marine sources. The relative contributions of these subsidies vary with season, river type, riparian vegetation, and fish species and size. Understanding how these proportions vary across space and time is central to interpreting the bioenergetics inputs used in Meyer et al. 2023, and to characterizing the prey base available to juvenile Chinook and Coho salmon in the Kenai River watershed.
+
+This chapter reviews published literature on juvenile salmon diet composition, with a focus on:
+
+1. How prey subsidies from terrestrial, freshwater-aquatic, and marine sources are partitioned
+2. How those partitions vary across seasons, rivers, habitats, and fish attributes
+3. How authors have presented these data (metrics, visualization approaches)
+
+Findings from this review directly inform the scope and presentation of the 2015-2016 diet composition summaries developed in subsequent chapters.
+
+---
+
+## Key Papers
+
+### Rine et al. 2016 — Susitna River, Alaska
+
+**Full citation:** Rine, K.M., Wipfli, M.S., Schoen, E.R., Nightengale, T.L., and Stricker, C.A. 2016. Trophic pathways supporting juvenile Chinook and coho salmon in the glacial Susitna River, Alaska: patterns of freshwater, marine, and terrestrial food resource use across a seasonally dynamic habitat mosaic. *Canadian Journal of Fisheries and Aquatic Sciences* 73(11): 1626–1641. https://doi.org/10.1139/cjfas-2015-0555
+
+**Author's note:** B. Meyer was a field technician for this study.
+
+**Relevance:** High. Examines the same two species (Chinook, Coho) in a large south-central Alaska river system (Susitna), across multiple seasons and macrohabitat types. Integrates stable isotope analysis with stomach content data.
+
+**Methods summary:**
+
+- Spatial coverage: 97 km segment of the Susitna River; multiple macrohabitat types (tributary mouths, side sloughs, upland sloughs, side channels, main channel)
+- Temporal coverage: multiple sampling events across the rearing season
+- Analytical methods: stable isotope analysis (δ¹³C, δ¹⁵N) combined with gut content analysis
+- Prey classification: freshwater-derived, marine-derived, and terrestrial-derived
+
+**Key findings:**
+
+- Juvenile salmon were supported primarily by freshwater-derived resources and secondarily by marine and terrestrial sources (Rine et al. 2016).
+- The relative contribution of marine-derived prey was greatest in the fall within off-channel macrohabitats, whereas contributions of terrestrial invertebrate prey were generally greatest during midsummer, across all macrohabitats (Rine et al. 2016).
+
+**Presentation approach:**
+
+- Prey subsidies presented as proportional contributions to diet by source (freshwater, marine, terrestrial)
+- Results disaggregated by macrohabitat type, season, and fish species
+- Both isotope mixing model outputs and stomach content proportions reported
+
+**Notes for our analysis:** Our 2015-2016 data does not include stable isotope data, so we rely entirely on stomach content proportions. We lack the spatial complexity of multiple macrohabitat types within rivers, but we have multiple rivers and reaches within the Kenai watershed and multiple seasons. The three-way categorization (freshwater-aquatic, marine, terrestrial) used by Rine et al. maps reasonably well onto our prey categories (see Chapter XX on diet data).
+
+---
+
+### Wipfli et al. 2019 — Kenai River Watershed, Alaska
+
+**Full citation:** Wipfli, M.S., et al. 2019. Invertebrate prey contributions to juvenile Coho Salmon diet from riparian habitats along three Alaska streams: Implications for environmental change. *Journal of Freshwater Ecology* 34(1). https://doi.org/10.1080/02705060.2019.1642243
+
+**Author's note:** B. Meyer is a co-author on this paper. Its data were collected within the same watershed as the 2015-2016 data in this project, and three of the study streams (Beaver Creek, Ptarmigan Creek, Russian River) are the same rivers sampled here. The Wipfli et al. (2019) dataset provides the most direct published comparator for interpreting our diet composition results.
+
+**Relevance:** Very high. This study was conducted within the Kenai River watershed of southcentral Alaska and determined the proportion of total diet for stream-rearing juvenile Coho Salmon derived from terrestrial and aquatic winged adult invertebrates across three streams representative of habitats found throughout the region (Wipfli et al. 2019). Those streams — Beaver Creek, Ptarmigan Creek, and Russian River — overlap directly with our 2015-2016 study rivers.
+
+**Methods summary:**
+
+- Species: Coho Salmon only
+- Sampling: seasonal stomach content sampling across two years
+- Prey classification: terrestrial invertebrates, aquatic winged adults, benthic aquatic invertebrates
+- Riparian habitat classification: grass/sedge, shrub, tree (using LiDAR)
+
+**Key findings:**
+
+- The proportion of juvenile salmon diet represented by aquatic invertebrates was significantly different among study reaches, representing 62%, 55%, and 37% for Beaver Creek, Ptarmigan Creek, and the Russian River, respectively (Wipfli et al. 2019).
+- Aquatic winged adult prey contributions were significantly lower in the grass/sedge study reach, and cross-ecosystem invertebrate prey represented a significantly higher proportion of diet in the tree study reach (Wipfli et al. 2019).
+
+**Presentation approach:**
+
+- Diet proportions presented by prey origin category (terrestrial, aquatic winged adult, benthic aquatic) across reaches and seasons
+- Statistical comparisons (ANOVA) among reaches for each prey category
+- Results disaggregated by study reach (river), not by fish species, age, or size class
+
+**Notes for our analysis:** This paper provides the most directly comparable context for our data. Our data includes both Chinook and Coho salmon, multiple ages, and two years, whereas Wipfli et al. (2019) focused on Coho only. Differences in terrestrial prey proportions among rivers (BC > PC > RR) are directly interpretable alongside our data.
+
+---
+
+### Milner et al. 2024 — Glacier Bay, Alaska
+
+**Full citation:** Milner, A.M., et al. 2024. Variation in the diet of juvenile salmonids across a gradient of stream development in Glacier Bay, Alaska. *Advances in Ecological Research.* https://doi.org/10.1016/S0065-2504(24)00022-9
+
+**Relevance:** Moderate. Examines Coho salmon and Dolly Varden diets across streams of varying age since deglaciation, using gut content analysis combined with stable isotopes.
+
+**Key findings:**
+
+- Juvenile salmonids, particularly coho salmon, in streams with higher channel sinuosity consumed a higher proportion of terrestrial prey (Milner et al. 2024).
+- Patterns in diet reflected geomorphology, vegetational properties, and periodic disturbances in the watersheds (Milner et al. 2024).
+
+**Presentation approach:** Combines gut content analysis and stable isotope data to characterize dietary niche and prey source contributions across a stream development gradient.
+
+**Notes for our analysis:** Reinforces the expectation that landscape-level factors (channel form, riparian vegetation) mediate terrestrial prey inputs — directly relevant to the landscape ecology framing of Meyer et al. 2023.
+
+---
+
+### Duffy et al. (year TBD) — Puget Sound Chinook Salmon
+
+**Full citation:** \[Author(s) to confirm — ResearchGate: Ontogenetic Diet Shifts of Juvenile Chinook Salmon in Nearshore and Offshore Habitats of Puget Sound\]
+
+**Relevance:** Moderate. Marine setting rather than freshwater, but provides a well-documented example of how diet composition data for Chinook salmon are analyzed and visualized across spatial and temporal groupings.
+
+**Key findings:**
+
+- ANOVA was used to examine the effects of year, month, region, habitat, and size-class on proportions of prey groups in the diet of juvenile Chinook salmon.
+- Monthly diet composition was presented as wet-weight proportions of each prey category, disaggregated by region, with sample size and average fish length annotated on each bar.
+
+**Presentation approach:** Stacked bar charts of wet-weight proportions, faceted by region (north, central, south), with time (month) on the x-axis. This is a clear example of the standard multi-panel format for presenting diet proportions across multiple grouping variables.
+
+**Notes for our analysis:** Wet-weight proportions are the appropriate metric given our dry-to-wet mass conversion (see Chapter XX). The multi-panel stacked bar approach — faceted by a spatial or biological variable, with season on the x-axis — is a strong candidate for our primary visualization format.
+
+---
+
+### Camilla et al. 2018 — Eelgrass Habitat, Pacific Salmon
+
+**Full citation:** \[Author(s) to confirm — Marine and Coastal Fisheries 10(2): 190. https://academic.oup.com/mcf/article/10/2/190/7827032\]
+
+**Relevance:** Low-moderate. Marine context, but documents a common visualization approach.
+
+**Presentation approach:** The proportion of each invertebrate group by count was assessed in juvenile salmon diets using a stacked bar graph. The proportion of total abundance of eelgrass-associated, planktonic, and terrestrial invertebrates in juvenile Chum and Chinook Salmon diets were calculated and presented alongside stable isotope mixing model results.
+
+**Notes for our analysis:** Proportions by count (numerical) are an alternative to proportions by mass. Our raw data include both prey quantity (count) and prey dry mass. On energetic grounds — and for consistency with bioenergetics model inputs — mass-based proportions are the appropriate primary metric.
+
+---
+
+### Quantitative Literature Review — Terrestrial Prey in Salmonid Diets
+
+**Full citation:** \[Author(s) to confirm — Canadian Journal of Fisheries and Aquatic Sciences. https://cdnsciencepub.com/doi/10.1139/f2011-118. Stream salmonids as opportunistic foragers: the importance of terrestrial invertebrates along a stream-size gradient.\]
+
+**Key finding:** In a quantitative literature review, the mean proportion of terrestrial prey in salmonid diets was 17%, being highest for the largest fish (≥15 cm).
+
+**Notes for our analysis:** This provides a useful cross-study baseline. We have fish length data, so we can explore whether terrestrial prey proportion increases with fish size in our dataset, consistent with this pattern.
+
+---
+
+## Summary: Methods and Presentation Conventions
+
+### Metric for proportions
+
+The most common metric is **wet mass** (or wet weight). Proportions by count are also used but are considered less informative for energetic modeling given the large size variation among prey items. Our dry-to-wet mass conversion (Chapter XX) produces the appropriate metric.
+
+### Prey categorization
+
+Studies vary in granularity:
+
+- **Coarse (3 groups):** terrestrial, freshwater-aquatic, marine — used by Rine et al. 2016
+- **Intermediate (4–6 groups):** e.g., separating aquatic larvae from aquatic adults, or distinguishing fish/eggs from invertebrates — common in gut-content-focused studies
+- **Fine (taxon-level):** used in ordination or multivariate analyses, not typically in proportion summaries
+
+Our prey categories (diet1: FishEggs, diet2: InvertAquatic_AqOrigin, diet3: InvertTerrestrial, diet4: InvertTerrestrial_AqOrigin, diet5: SalmonEggs) align with an intermediate scheme. For the AKSSF summary, we will present results at both the coarse level (terrestrial vs. aquatic vs. marine subsidy) and the intermediate level.
+
+### Visualization approach
+
+The dominant visualization is a **stacked bar chart of proportions**, with:
+
+- Season (or month) on the x-axis
+- Proportion (0–1 or 0–100%) on the y-axis
+- Fill representing prey category
+- Facets for spatial groupings (river or reach) or biological groupings (species, age)
+- Sample size (n fish) annotated on or above each bar
+
+This is the format we will adopt as the primary visualization.
+
+### Grouping variables in the literature
+
+| Variable | Rine et al. 2016 | Wipfli et al. 2019 | Puget Sound |
+|---|:---:|:---:|:---:|
+| Season | ✓ | ✓ | ✓ |
+| River / reach | ✓ | ✓ | ✓ |
+| Fish species | ✓ | — | ✓ |
+| Fish age / size | — | — | ✓ |
+| Macrohabitat type | ✓ | — | — |
+
+Our 2015-2016 data allow disaggregation by season, river, species (Chinook, Coho), and age (age 0, age 1), giving us richer breakdowns than most published studies.
+
+### Analytical approaches
+
+Most freshwater studies rely on gut content proportions alone. Stable isotope analysis corroborates or extends gut content findings but requires substantially more resources. Our study used gut content only, which is appropriate and typical for bioenergetics modeling contexts.
+
+---
+
+## Implications for 2015-2016 Diet Composition Analysis
+
+Based on this review, the analysis chapters that follow will:
+
+1. Present diet proportions as **wet-mass-based proportions** (proportion of total wet mass from each prey category per fish or group of fish)
+2. Adopt a **two-level prey grouping**: coarse (terrestrial / freshwater-aquatic / marine) and intermediate (the five bioenergetics diet categories)
+3. Disaggregate results by **season × river × species × age** where sample sizes allow
+4. Present primary visualizations as **stacked bar charts**, faceted by species and/or age, with season on the x-axis
+5. Compare observed proportions against the cross-study baseline (~17% terrestrial, with higher values for larger fish and in late summer)
+6. Compare directly against Wipfli et al. 2019 where possible (same rivers, same watershed)
+
+---
+
+## References to Obtain Full Text
+
+The following papers were identified in this review. Full-text access is needed to confirm figure details and complete citations where noted:
+
+- Rine et al. 2016, CJFAS 73(11):1626–1641 [confirmed via USGS pubs; B. Meyer has direct access as a study participant]
+- Wipfli et al. 2019, J. Freshwater Ecology 34(1) [confirmed via Tandfonline; B. Meyer is co-author]
+- Milner et al. 2024, Advances in Ecological Research [abstract confirmed; full text needed to verify author list and figure format]
+- Puget Sound Chinook ontogenetic diet shifts [ResearchGate PDF available; full author list and year to confirm]
+- Eelgrass study, Marine and Coastal Fisheries 10(2):190 [Oxford Academic; full author list and year to confirm]
+- Stream salmonids as opportunistic foragers, CJFAS [abstract only; confirm author list and year on full text retrieval]

@@ -1,0 +1,408 @@
+---
+title: "Bioenergetics Simulation Results"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r packages}
+library(tidyverse)
+library(janitor)
+library(lubridate)
+library(plotrix)
+```
+
+## Overview
+
+This chapter imports committed Fish Bioenergetics 4.0 output files and reproduces the key tables and figures from Meyer et al. 2023. Results from simulations using two parameter sets are compared:
+
+- **Stewart & Ibarra (1991)**: original parameters, adapted from Coho for Chinook
+- **Plumb & Moffitt (2015)**: updated temperature-dependent consumption parameters
+
+Downstream tables and figures read from committed CSV files. No bioenergetics model re-execution is required.
+
+---
+
+## Import 2015-2016 Observed Simulation Results
+
+```{r obs-results}
+cols_retain <- c("run_name", "first_day", "last_day", "species_txt",
+                 "year", "season", "site", "spp", "age",
+                 "initial_w", "final_weight_g", "fit.to", "fit.to.value",
+                 "p_value", "total_consumption_g", "cum_cons_pop_g")
+
+old_param_results <- read.csv(
+  "other/FB4_1.1.3_2015_2016.1/FB4_2015_2016_models_old_parameters.csv"
+) |>
+  clean_names() |>
+  separate(col = run_name,
+           into = c("year", "season", "site", "spp", "agex", "age"),
+           sep = "_", remove = FALSE) |>
+  select(any_of(cols_retain)) |>
+  mutate(parameters = "stewart_ibarra")
+
+new_param_results <- read.csv(
+  "other/FB4_1.1.3_2015_2016.1/FB4_2015_2016_models_new_parameters.csv"
+) |>
+  clean_names() |>
+  separate(col = run_name,
+           into = c("year", "season", "site", "spp", "agex", "age"),
+           sep = "_", remove = FALSE) |>
+  select(any_of(cols_retain)) |>
+  mutate(parameters = "plumb_moffit")
+
+# Combine and attach simulation julian-day extents
+sim_julian_days <- read.csv("other/outputs/observed_diet_proportions.csv") |>
+  select(spp, age, site, year, season, sim.start, sim.end) |>
+  mutate(
+    sim.start = yday(as.Date(sim.start)),
+    sim.end   = yday(as.Date(sim.end)),
+    run_name  = paste0(year, "_", season, "_", site, "_", spp, "_Age_", age)
+  ) |>
+  select(sim.start, sim.end, run_name)
+
+results <- bind_rows(old_param_results, new_param_results) |>
+  left_join(sim_julian_days, by = "run_name") |>
+  mutate(
+    scenario             = "observed",
+    consumption_scenario = "observed"
+  )
+
+nrow(results)
+```
+
+---
+
+## Import Projected Scenario Simulation Results
+
+```{r proj-results}
+cols_retain_proj <- c(
+  "run_name", "first_day", "last_day", "species_txt",
+  "year", "season", "site", "spp", "age",
+  "initial_w", "fit.to", "fit.to.value", "p_value",
+  "final_weight_g", "total_consumption_g", "cum_cons_pop_g",
+  "scenario", "consumption_scenario", "parameters"
+)
+
+old_proj <- read.csv(
+  "other/FB4_1.1.3_projected.1/FB4_projected_models_old_parameters.csv"
+) |>
+  clean_names() |>
+  mutate(parameters = "stewart_ibarra")
+
+new_proj <- read.csv(
+  "other/FB4_1.1.3_projected.1/FB4_projected_models_new_parameters.csv"
+) |>
+  clean_names() |>
+  mutate(parameters = "plumb_moffit")
+
+results_projected <- bind_rows(old_proj, new_proj) |>
+  separate(
+    col  = run_name,
+    into = c("consumption_scenario", "foo", "scenario",
+             "year1", "year2", "site", "spp", "agex", "age"),
+    sep  = "_", remove = FALSE
+  ) |>
+  mutate(year = paste0(year1, "_", year2)) |>
+  select(any_of(cols_retain_proj))
+
+# Attach mean simulation start day (averaged across 2015 and 2016)
+sim_julian_days_proj <- read.csv("other/outputs/observed_diet_proportions.csv") |>
+  mutate(
+    sim.start = yday(as.Date(sim.start)),
+    sim.end   = yday(as.Date(sim.end))
+  ) |>
+  group_by(spp, age, site) |>
+  summarise(avg_start_day = as.integer(mean(sim.start)), .groups = "drop") |>
+  mutate(age = as.character(age))
+
+results_projected <- results_projected |>
+  left_join(sim_julian_days_proj, by = c("spp", "age", "site")) |>
+  rename(sim.start = avg_start_day) |>
+  mutate(
+    sim.end = sim.start + last_day,
+    season  = "all_seasons"
+  )
+
+nrow(results_projected)
+```
+
+---
+
+## Join Observed and Projected Results
+
+```{r join-results}
+dat <- bind_rows(results, results_projected) |>
+  separate(site,
+           into = c("reach", "river1", "river2"),
+           sep  = " ", remove = FALSE) |>
+  mutate(stream_name = paste(river1, river2)) |>
+  select(-river1, -river2)
+
+glimpse(dat)
+```
+
+---
+
+## Table S3: Observed Simulation Summary
+
+Start/end days and weights, plus estimated p-value, for each 2015-2016 simulation (Stewart & Ibarra parameters).
+
+```{r table-s3}
+obs_sim_results <- dat |>
+  filter(parameters == "stewart_ibarra", year %in% c("2015", "2016")) |>
+  select(stream_name, reach, age, spp, year, season,
+         sim.start, sim.end, initial_w, final_weight_g, p_value) |>
+  arrange(stream_name, reach, spp, age, sim.start) |>
+  rename(
+    Watershed      = stream_name,
+    Reach          = reach,
+    Age            = age,
+    Species        = spp,
+    Year           = year,
+    Season         = season,
+    `Start Day`    = sim.start,
+    `End Day`      = sim.end,
+    `Initial Weight (g)` = initial_w,
+    `End Weight (g)`     = final_weight_g,
+    `P-value`            = p_value
+  )
+
+write.csv(obs_sim_results, "other/outputs/obs_sim_results.csv", row.names = FALSE)
+obs_sim_results
+```
+
+---
+
+## Table S5: Percent Change in Final Mass by Scenario
+
+Change in simulated final mass relative to the 2010-2019 baseline, for each projected scenario (Stewart & Ibarra parameters).
+
+```{r table-s5}
+pct_chg_tbl <- dat |>
+  filter(scenario != "observed", parameters == "stewart_ibarra") |>
+  mutate(population = paste("Age", age, spp)) |>
+  select(stream_name, reach, population, year, scenario,
+         consumption_scenario, final_weight_g) |>
+  pivot_wider(names_from = "year", values_from = "final_weight_g") |>
+  unchop(everything()) |>
+  pivot_longer(
+    cols      = c("2030_2039", "2060_2069"),
+    names_to  = "year",
+    values_to = "final_mass_g"
+  ) |>
+  mutate(
+    pct_chg_mass = ((final_mass_g - `2010_2019`) / `2010_2019`),
+    year = case_when(
+      year == "2030_2039" ~ "2030-2039",
+      year == "2060_2069" ~ "2060-2069"
+    ),
+    consumption_scenario = case_when(
+      consumption_scenario == "mean"     ~ "Mean",
+      consumption_scenario == "20minus"  ~ "-20%",
+      consumption_scenario == "20plus"   ~ "+20%"
+    ),
+    scenario = case_when(
+      scenario == "rcp60" ~ "RCP 6.0",
+      scenario == "rcp85" ~ "RCP 8.5"
+    )
+  ) |>
+  rename(
+    Watershed                  = stream_name,
+    Reach                      = reach,
+    Population                 = population,
+    `Simulation Period`        = year,
+    `Climate Scenario`         = scenario,
+    `Food Consumption Scenario` = consumption_scenario,
+    `Percent Change in Mass`   = pct_chg_mass
+  ) |>
+  select(-`2010_2019`, -final_mass_g) |>
+  relocate(Watershed, Reach, Population,
+           `Simulation Period`, `Climate Scenario`,
+           `Food Consumption Scenario`, `Percent Change in Mass`) |>
+  arrange(Watershed, Reach, Population,
+          `Simulation Period`, `Climate Scenario`, `Food Consumption Scenario`)
+
+pct_chg_tbl_adorn <- pct_chg_tbl |>
+  janitor::adorn_pct_formatting(cols = `Percent Change in Mass`, digits = 2)
+
+write.csv(pct_chg_tbl_adorn, "other/outputs/pct_chg_tbl.csv", row.names = FALSE)
+pct_chg_tbl_adorn
+```
+
+---
+
+## Table 4: Mean Percent Change in Mass by Watershed and Period
+
+```{r table-4}
+pct_chg_summ_tbl <- pct_chg_tbl |>
+  group_by(Watershed, `Simulation Period`) |>
+  summarise(
+    n     = n(),
+    mean  = round(mean(`Percent Change in Mass` * 100), digits = 2),
+    stdev = sd(`Percent Change in Mass`),
+    Max   = max(`Percent Change in Mass`),
+    Min   = min(`Percent Change in Mass`),
+    .groups = "drop"
+  ) |>
+  janitor::adorn_pct_formatting(cols = c("stdev", "Min", "Max"), digits = 2) |>
+  mutate(`Mean ± SD` = paste(mean, "±", stdev)) |>
+  select(-mean, -stdev) |>
+  select(Watershed, `Simulation Period`, n, `Mean ± SD`, Max, Min)
+
+write.csv(pct_chg_summ_tbl, "other/outputs/pct_chg_summ_tbl.csv",
+          row.names = FALSE)
+pct_chg_summ_tbl
+```
+
+---
+
+## Figure 6: Diet Composition by Cohort
+
+```{r figure-6}
+# River labels used in Meyer et al. 2023
+stream_facets <- c(
+  "Beaver Creek"   = "Lowland",
+  "Russian River"  = "Montane",
+  "Ptarmigan Creek" = "Glacial",
+  "Kenai River"    = "Main Stem"
+)
+
+# Diet proportions table (stream × species × age, pooled across years)
+# Source: wet_mass_diet_proportions.csv (committed output from Chapter 4)
+diet_prop <- read.csv("other/outputs/diet/wet_mass_diet_proportions.csv") |>
+  rename(Stream_Name = Stream_Name) |>
+  pivot_longer(
+    cols = c("FishEggs", "InvertAquatic_AqOrigin",
+             "InvertTerrestrial", "InvertTerrestrial_AqOrigin",
+             "SalmonEggs"),
+    names_to  = "preycat",
+    values_to = "dietprop"
+  ) |>
+  filter(!(spp == "Chinook" & age == 1))  # exclude age-1 Chinook
+
+diet_prop |>
+  mutate(spp_age = paste(spp, "Age", age)) |>
+  ggplot(aes(spp_age, dietprop, fill = preycat)) +
+  geom_bar(position = "fill", stat = "identity") +
+  facet_grid(. ~ Stream_Name,
+             labeller = labeller(Stream_Name = stream_facets)) +
+  scale_fill_discrete(
+    breaks = c("FishEggs", "SalmonEggs",
+               "InvertAquatic_AqOrigin",
+               "InvertTerrestrial",
+               "InvertTerrestrial_AqOrigin"),
+    labels = c("Fish Eggs", "Salmon Eggs",
+               "Immature Aquatic", "Terrestrial", "Adult Aquatic")
+  ) +
+  theme_bw() +
+  xlab("") +
+  ylab("Diet Proportion (Wet Mass)") +
+  labs(fill = "Prey Category") +
+  theme(
+    strip.background = element_rect(fill = "white", colour = "black"),
+    strip.text       = element_text(size = 12),
+    axis.text.x      = element_text(angle = 35, hjust = 1, size = 10)
+  )
+```
+
+---
+
+## Figure 8: Projected Change in Final Mass
+
+```{r figure-8}
+pct_chg <- read.csv("other/outputs/pct_chg_tbl.csv") |>
+  clean_names() |>
+  filter(climate_scenario == "RCP 8.5") |>
+  mutate(
+    percent_change_in_mass = as.numeric(
+      str_remove(percent_change_in_mass, "%")
+    )
+  ) |>
+  group_by(watershed, population, simulation_period, food_consumption_scenario) |>
+  summarise(
+    mean_pct = mean(percent_change_in_mass),
+    se_pct   = plotrix::std.error(percent_change_in_mass),
+    .groups  = "drop"
+  )
+
+pct_chg$food_consumption_scenario <- factor(
+  pct_chg$food_consumption_scenario,
+  levels = c("-20%", "Mean", "+20%")
+)
+
+ggplot(pct_chg, aes(watershed, mean_pct, fill = food_consumption_scenario)) +
+  geom_col(position = position_dodge()) +
+  geom_errorbar(
+    aes(ymin = mean_pct - se_pct, ymax = mean_pct + se_pct),
+    colour = "black", width = 0.2, linewidth = 0.8,
+    position = position_dodge(0.9)
+  ) +
+  facet_grid(population ~ simulation_period) +
+  scale_x_discrete(
+    limits = c("Beaver Creek", "Russian River",
+               "Ptarmigan Creek", "Kenai River"),
+    labels = c("Lowland", "Montane", "Glacial", "Main Stem")
+  ) +
+  scale_fill_discrete(
+    breaks = c("-20%", "Mean", "+20%"),
+    labels = c("-20% Observed P", "Mean P", "+20% Observed P")
+  ) +
+  ylab("Mean % Change\nin Final Weight") +
+  labs(fill = "Consumption\nScenario") +
+  xlab("") +
+  theme_bw() +
+  theme(
+    strip.text.x = element_text(size = 12),
+    strip.text.y = element_text(angle = 0, size = 12),
+    legend.title = element_text(size = 12, face = "bold"),
+    legend.text  = element_text(size = 11),
+    axis.text.x  = element_text(angle = 35, hjust = 1)
+  )
+```
+
+---
+
+## Additional Exploratory Analyses
+
+The code below was used in the original manuscript development for additional comparisons (model vs. empirical growth rates, size at common day across scenarios, landscape characteristic relationships). These sections depended on external Google Sheets data sources that are no longer accessible. They are preserved here as `eval: false` for reference and future development.
+
+```{r old-vs-new-params}
+#| eval: false
+
+# Comparison of old vs. new parameter p-values across simulations
+z <- dat |>
+  select(p_value, parameters, scenario, consumption_scenario,
+         year, season, site, spp, age) |>
+  pivot_wider(names_from = "parameters", values_from = "p_value") |>
+  unchop(everything())
+
+# Note: additional visualizations comparing the two parameter sets
+# were generated here. Requires both parameter sets to be loaded
+# into the same data frame (done above).
+```
+
+```{r landscape-correlations}
+#| eval: false
+
+# Landscape characteristic correlations with P-values / growth rates
+# (Figure S1 in Meyer et al. 2023)
+#
+# This section requires site-specific sensitivity values from
+# downscaled air-water temperature regressions, which were previously
+# stored in Google Sheets ("sensitivity_values"). Those data are not
+# currently committed to the repository. TODO: commit sensitivity_values.csv
+# and restore this analysis.
+
+# sens_vals <- read.csv("other/inputs/sensitivity_values.csv") |>
+#   rename(site = Site, reach = Hydrologic_Segment, river = Stream_Name) |>
+#   select(-n_weeks, -sens_int)
+#
+# left_join(pct_long, sens_vals) |>
+#   ggplot(aes(sens_slope, abs(pct_chg), color = cons_scen)) +
+#   geom_point() +
+#   geom_smooth(method = lm) +
+#   facet_grid(. ~ temp_scen)
+```

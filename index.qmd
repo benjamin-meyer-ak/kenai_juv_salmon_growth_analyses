@@ -1,0 +1,42 @@
+---
+title: "Introduction"
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Overview
+
+This document is an analytical white paper supporting Meyer et al. 2023: "Landscape characteristics influence projected growth rates of stream-resident juvenile salmon in the face of climate change in the Kenai River watershed, southcentral Alaska," published in *Transactions of the American Fisheries Society*. The published paper is available at https://www.researchgate.net/publication/366050916. The underlying data are archived at https://knb.ecoinformatics.org/view/doi:10.5063/F1Q52MZF.
+
+The purpose of this document is to provide a full reproducible, narrative account of the analytical decisions, data processing steps, and exploratory findings that informed the published paper. It is not a replication of the paper itself, but rather the documented analytical process that precedes and supports it; an exploratory data analysis record.
+
+## Study Context
+
+Juvenile Pacific salmon rear in freshwater streams before migrating to marine environments. Their growth during this freshwater rearing period has long-term consequences for survival and productivity. In the Kenai River watershed of southcentral Alaska, projected increases in stream temperature under climate change scenarios raise concern about whether current rearing conditions — and the landscape characteristics that shape them — will continue to support productive juvenile salmon growth.
+
+We used a bioenergetics modeling approach to address this question: first parameterizing fish growth models with observed 2015-2016 field data (diet composition, water temperature, and fish size), then simulating growth under projected future water temperature scenarios from 2030-2039 and 2060-2069.
+
+## Structure of This Document
+
+The chapters of this white paper follow the analytical sequence of the study:
+
+1. **Study Area and Field Methods** — the Kenai River watershed, study rivers, and field sampling design
+2. **Diet Composition: Literature Context** — a review of published literature on juvenile salmon diet composition, informing how we categorize, analyze, and present our data
+3. **Diet Composition: 2015-2016 Data** — exploratory analysis and summary of observed diet data from gastric lavage sampling
+4. **Bioenergetics Model Inputs: 2015-2016** — preparation of temperature, diet, and fish size inputs for the Fish Bioenergetics 4.0 model using 2015-2016 observations
+5. **Bioenergetics Model Inputs: Projected Scenarios** — preparation of inputs for simulations under projected future climate conditions
+6. **Simulation Results** — analysis and visualization of bioenergetics model outputs
+
+## Conventions
+
+All code in this document uses base R and the tidyverse. The base R pipe (`|>`) is used throughout; no magrittr pipe. All plots use ggplot2. Where manual steps were required (e.g., running the Fish Bioenergetics 4.0 GUI application), they are documented in callout blocks and their outputs are committed to the repository so that all downstream chapters remain fully reproducible without re-running those steps.
+
+```{r}
+# Packages used throughout this document
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(janitor)
+```
