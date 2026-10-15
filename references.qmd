@@ -2,5 +2,50 @@
 title: "References"
 ---
 
-::: {#refs}
-:::
+Chipps, S.R., and J.E. Garvey. 2007. Assessment of diets and feeding patterns. Pages 473-514 *in* C.S. Guy and M.L. Brown, editors. Analysis and interpretation of freshwater fisheries data. American Fisheries Society, Bethesda, Maryland.
+
+Clitherow, L.R., S.H. Sønderland, F.M. Windsor, and A.M. Milner. 2024. Variation in the diet of juvenile salmonids across a gradient of stream development in Glacier Bay, Alaska. Pages 85-112 *in* A.J. Dumbrell and A.M. Milner, editors. Stream research in Glacier Bay, Alaska from 1977-2024: part 2. *Advances in Ecological Research* 71. Academic Press, London.
+
+Culp, J.M., I. Boyd, and N.E. Glozier. 1988. An improved method for obtaining gut contents from small, live fishes by anal and stomach flushing. *Copeia* 1988(4):1079-1082.
+
+Duffy, E.J., D.A. Beauchamp, R.M. Sweeting, R.J. Beamish, and J.S. Brennan. 2010. Ontogenetic diet shifts of juvenile Chinook salmon in nearshore and offshore habitats of Puget Sound. *Transactions of the American Fisheries Society* 139(3):803-823.
+
+Gonzales, E.J. 2006. Diet and prey consumption of juvenile coho salmon (*Oncorhynchus kisutch*) in three northern California streams. Master's thesis. Humboldt State University, Arcata, California.
+
+Grunblatt, J., B.E. Meyer, and M.S. Wipfli. 2019. Invertebrate prey contributions to juvenile Coho Salmon diet from riparian habitats along three Alaska streams: implications for environmental change. *Journal of Freshwater Ecology* 34(1):617-631.
+
+Kennedy, L.A., F. Juanes, and R. El-Sabaawi. 2018. Eelgrass as valuable nearshore foraging habitat for juvenile Pacific salmon in the early marine period. *Marine and Coastal Fisheries* 10(2):190-203.
+
+Magnus, D.L., D. Brandenburger, K.F. Crabtree, K.A. Pahlke, and S.A. McPherson. 2006. Juvenile salmon capture and coded wire tagging manual. Alaska Department of Fish and Game, Special Publication No. 06-31, Anchorage.
+
+Mauger, S., R. Shaftel, E.J. Trammell, M. Geist, and D. Bogan. 2015. Stream temperature data collection standards for Alaska: minimum standards to generate data useful for regional-scale analyses. *Journal of Hydrology: Regional Studies* 4:431-438.
+
+McCarthy, S.G., J.J. Duda, J.M. Emlen, G.R. Hodgson, and D.A. Beauchamp. 2009. Linking habitat quality with trophic performance of steelhead along forest gradients in the South Fork Trinity River watershed, California. *Transactions of the American Fisheries Society* 138(3):506-521.
+
+Merritt, R.W., and K.W. Cummins, editors. 1996. An introduction to the aquatic insects of North America, 3rd edition. Kendall/Hunt, Dubuque, Iowa.
+
+Meyer, B. 2019. Kenai River (Alaska) juvenile Chinook and Coho temperature, diet, and growth data. KNB Data Repository. https://doi.org/10.5063/F1Q52MZF
+
+Meyer, B.E. 2020. Landscape characteristics influence climate change effects on juvenile Chinook and Coho salmon rearing habitat in the Kenai River watershed. Master's thesis. University of Alaska Fairbanks, Fairbanks.
+
+Meyer, B.E., M.S. Wipfli, E.R. Schoen, D.J. Rinella, and J.A. Falke. 2023. Landscape characteristics influence projected growth rates of stream-resident juvenile salmon in the face of climate change in the Kenai River watershed, south-central Alaska. *Transactions of the American Fisheries Society* 152(2):169-186.
+
+Plumb, J.M., and C.M. Moffitt. 2015. Re-estimating temperature-dependent consumption parameters in bioenergetics models for juvenile Chinook salmon. *Transactions of the American Fisheries Society* 144(2):323-330.
+
+Quist, M.C., M.A. Pegg, and D.R. DeVries. 2012. Age and growth. Pages 677-731 *in* A.V. Zale, D.L. Parrish, and T.M. Sutton, editors. Fisheries techniques, 3rd edition. American Fisheries Society, Bethesda, Maryland.
+
+Reimer, A. 2013. Kenai River Chinook salmon abundance and migratory timing. Alaska Department of Fish and Game, Division of Sport Fish, Regional Operational Plan ROP.SF.2A.2013.14, Soldotna.
+
+Rine, K.M., M.S. Wipfli, E.R. Schoen, T.L. Nightengale, and C.A. Stricker. 2016. Trophic pathways supporting juvenile Chinook and coho salmon in the glacial Susitna River, Alaska: patterns of freshwater, marine, and terrestrial food resource use across a seasonally dynamic habitat mosaic. *Canadian Journal of Fisheries and Aquatic Sciences* 73(11):1626-1641.
+
+Sergeant, C.J., J.A. Falke, R.A. Bellmore, J.R. Bellmore, and R.L. Crumley. 2020. A classification of streamflow patterns across the coastal Gulf of Alaska. *Water Resources Research* 56(2):e2019WR026127.
+
+Sethi, S.A., and E. Benolkin. 2013. Detection efficiency and habitat use to inform inventory and monitoring efforts: juvenile coho salmon in the Knik River basin, Alaska. *Ecology of Freshwater Fish* 22(3):398-411.
+
+Shields, P., and A. Dupuis. 2017. Upper Cook Inlet commercial fisheries annual management report, 2016. Alaska Department of Fish and Game, Fishery Management Report No. 17-05, Anchorage.
+
+Stewart, D.J., and M. Ibarra. 1991. Predation and production by salmonine fishes in Lake Michigan, 1978-88. *Canadian Journal of Fisheries and Aquatic Sciences* 48(5):909-922.
+
+Syrjänen, J., K. Korsu, P. Louhi, R. Paavola, and T. Muotka. 2011. Stream salmonids as opportunistic foragers: the importance of terrestrial invertebrates along a stream-size gradient. *Canadian Journal of Fisheries and Aquatic Sciences* 68(12):2146-2156.
+
+Wipfli, M.S. 1997. Terrestrial invertebrates as salmonid prey and nitrogen sources in streams: contrasting old-growth and young-growth riparian forests in southeastern Alaska, USA. *Canadian Journal of Fisheries and Aquatic Sciences* 54(6):1259-1269.

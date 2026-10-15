@@ -18,25 +18,23 @@ library(janitor)
 
 This chapter documents the exploration and summary of diet composition data collected via gastric lavage from juvenile Chinook and Coho salmon in the Kenai River watershed during the 2015 and 2016 field seasons. The goals of this chapter are:
 
-1. Describe the diet dataset — sample sizes, taxa richness, and data quality
-2. Convert prey dry mass estimates to wet mass using wet/dry ratios from the literature
-3. Calculate prey category proportions (by wet mass) for each fish and at grouped scales
-4. Produce summary figures and tables disaggregated by species, age, river, and season
+1.  Describe the diet dataset: sample sizes, taxa richness, and data quality
+2.  Convert prey dry mass estimates to wet mass using wet/dry ratios from the literature
+3.  Calculate prey category proportions (by wet mass) for each fish and at grouped scales
+4.  Produce summary figures and tables disaggregated by species, age, river, and season
 
-These summaries serve two purposes: (1) they are the primary deliverable for the AKSSF grant (Larson et al., Objective 1: Freshwater Prey Availability Database), and (2) they provide the bioenergetics diet proportion inputs used in Chapter 4.
-
----
+------------------------------------------------------------------------
 
 ## Data Import
 
-We import diet contents data from the two primary field data workbooks. Columns are selected and renamed to a consistent lowercase snake_case schema. Both years are combined into a single data frame before any transformations.
+We import diet contents data from the two primary field data workbooks. Columns are selected and renamed to a consistent lowercase schema. Both years are combined into a single data frame before any transformations.
 
 The two source files are:
 
 - `other/inputs/diet_size_other/2015 EPSCoR SCTC.xlsx` (sheet: "2015 Diet Contents Data")
 - `other/inputs/diet_size_other/2016_EPSCoR_Aquatic_Ecology_Database.xlsx` (sheet: "2016 Diet Contents Data")
 
-Dry mass values in these sheets were estimated from measured prey item lengths using length-weight regressions (W = aL^b), where parameters were drawn from the literature. These calculations were performed within the Excel workbooks using formula-based pipelines. The resulting `Total_Prey_Dry_Mass_mg` column is our starting point.
+Dry mass values in these sheets were estimated from measured prey item lengths using length-weight regressions (W = aL\^b), where parameters were drawn from the literature. These calculations were performed within the Excel workbooks using formula-based pipelines. The resulting `Total_Prey_Dry_Mass_mg` column is our starting point.
 
 ```{r import-diet}
 SCTC2015 <- "other/inputs/diet_size_other/2015 EPSCoR SCTC.xlsx"
@@ -77,7 +75,7 @@ diet <- bind_rows(diet15, diet16) |>
     site       = Site,
     date       = Sample_Date,
     prey       = Prey_Type_Used,
-    preycat    = PreyCategory,
+    preycat_field = PreyCategory,
     quantity   = Quantity,
     dm_mg      = Total_Prey_Dry_Mass_mg
   ) |>
@@ -97,7 +95,7 @@ diet <- bind_rows(diet15, diet16) |>
     date       = lubridate::mdy(date),
     spp        = as.factor(spp),
     quantity   = as.numeric(quantity),
-    preycat    = as.factor(preycat),
+    preycat_field = as.factor(preycat_field),
     year       = as.factor(year),
     season     = fct_recode(event.num,
                             "Early Summer" = "1",
@@ -113,40 +111,39 @@ diet <- bind_rows(diet15, diet16) |>
 rm(diet15, diet16)
 ```
 
----
+------------------------------------------------------------------------
 
 ## Dataset Overview
 
-Before calculating proportions, we characterize the dataset: total sample sizes, taxa richness, and identifiability of prey items.
-
-```{r dataset-overview}
-# Total prey items (by count)
-diet |> summarise(total_items = sum(quantity, na.rm = TRUE))
-
-# Total diet samples (individual fish lavaged)
-diet |> distinct(sample.id) |> summarise(n_fish = n())
-
-# Number of unique prey taxa/lifestage combinations
-diet |> distinct(prey) |> summarise(n_prey_types = n())
-
-# Samples by year, river, species, and season
-diet |>
-  distinct(sample.id, year, river, spp, season) |>
-  count(year, river, spp, season) |>
-  arrange(year, river, spp, season)
+```{r dataset-overview-calc, include=FALSE}
+total_items <- diet |> summarise(n = sum(quantity, na.rm = TRUE)) |> pull(n)
+n_fish      <- diet |> distinct(sample.id) |> nrow()
+n_prey_types <- diet |> distinct(prey) |> nrow()
 ```
 
----
+Before calculating proportions, we characterize the dataset. It includes `r format(total_items, big.mark = ",")` identified prey items (by count) from `r n_fish` individual fish lavaged, spanning `r n_prey_types` unique prey taxa/lifestage combinations.
 
-## Dry Mass to Wet Mass Conversion
+```{r dataset-overview-table}
+diet |>
+  distinct(sample.id, year, river, spp) |>
+  count(year, river, spp) |>
+  arrange(year, river, spp) |>
+  knitr::kable(caption = "Sample counts by year, river, and species")
+```
 
-To express prey item mass in wet weight — the required unit for Fish Bioenergetics 4.0 inputs — we apply wet/dry mass ratios from McCarthy et al. 2009 and additional literature sources. These ratios are stored in `other/outputs/diet/mass_conversion/prey_types_manual_edit.xlsx`.
+------------------------------------------------------------------------
+
+## Dry Mass to Wet Mass Conversion, and Bioenergetics Prey Category Assignment
+
+To express prey item mass in wet weight (the required unit for Fish Bioenergetics 4.0 inputs), we apply wet/dry mass ratios from McCarthy et al. 2009 and additional literature sources. These ratios are stored in `other/outputs/diet/mass_conversion/prey_types_manual_edit.xlsx`.
 
 The general approach:
 
-1. Each unique prey taxon/lifestage in the dataset was manually assigned to one of a set of broader prey type categories (this mapping was done once and is stored in the `prey_types` sheet of the conversion workbook)
-2. Each prey type category has an associated wet/dry ratio from the literature (stored in the `data_validation` sheet)
-3. We join these ratios to the diet data and compute wet mass as: `wm_mg = dm_mg / wet_dry_ratio`
+1.  Each unique prey taxon/lifestage in the dataset was manually assigned to one of a set of broader prey type categories (this mapping was done once and is stored in the `prey_types` sheet of the conversion workbook)
+2.  Each prey type category has an associated wet/dry ratio, energy density, and bioenergetics diet-slot category from the literature (stored in the `data_validation` sheet, columns `wet_dry_ratio`, `energy_density_jg`, and `PreyCategory_ED`)
+3.  We join these values to the diet data and compute wet mass as: `wm_mg = dm_mg / wet_dry_ratio`
+
+Note that the raw `PreyCategory` field recorded in the source workbooks (retained here as `preycat_field`) is a field-level classification (origin: terrestrial/aquatic/unknown) and is not the same as the five-category bioenergetics diet-slot scheme used for FB4 inputs (Diet1-5: FishEggs, InvertAquatic_AqOrigin, InvertTerrestrial, InvertTerrestrial_AqOrigin, SalmonEggs). The latter comes from `PreyCategory_ED` in the conversion workbook, keyed to each prey taxon's assigned `prey_type`. All downstream summaries and figures in this chapter use `PreyCategory_ED` (as `preycat`), not `preycat_field`.
 
 ```{r dm-to-wm}
 dm_convert_prey_types <- read_excel(
@@ -168,10 +165,17 @@ dm_convert_vals <- left_join(dm_convert_prey_types, dm_convert_vals, by = "prey_
 
 diet <- left_join(diet, dm_convert_vals, by = "prey") |>
   filter(!is.na(wet_dry_ratio)) |>
-  mutate(wm_mg = dm_mg / wet_dry_ratio)
+  mutate(
+    wm_mg   = dm_mg / wet_dry_ratio,
+    preycat = factor(PreyCategory_ED, levels = c(
+      "SalmonEggs", "FishEggs",
+      "InvertAquatic_AqOrigin", "InvertTerrestrial_AqOrigin",
+      "InvertTerrestrial"
+    ))
+  )
 ```
 
----
+------------------------------------------------------------------------
 
 ## Fish Age and Size
 
@@ -230,17 +234,21 @@ diet <- left_join(diet, fish_ages |> select(sample.id, wt_g, len_mm, age),
   filter(!is.na(age))
 ```
 
----
+------------------------------------------------------------------------
 
 ## Diet Proportions by Wet Mass
 
 We calculate the proportion of total wet mass contributed by each prey category, at multiple levels of grouping. Results at the fish level (per-fish proportions) are used for summaries; grouped proportions (pooled across fish within a group) are used as bioenergetics model inputs (Chapter 4).
 
+A fish that did not eat a given prey category has no row for that category, not an explicit zero. If left that way, a later group-level average of `prop_wm` (e.g., mean proportion of salmon eggs in a river/season/species/age group) would be computed only over the fish that did eat that category, rather than over all fish in the group. Category means computed this way do not share a common denominator, and can sum to well over 100% when stacked. We fix this by completing each fish's record with explicit zero-mass rows for every prey category it did not eat, so every fish contributes to every category's denominator downstream.
+
 ```{r diet-proportions}
 # Per-fish wet mass by prey bioenergetics category
 diet_per_fish <- diet |>
   group_by(sample.id, spp, age, year, river, season, preycat) |>
-  summarise(wm_mg = sum(wm_mg, na.rm = TRUE), .groups = "drop")
+  summarise(wm_mg = sum(wm_mg, na.rm = TRUE), .groups = "drop") |>
+  # Explicit zeros for uneaten categories; see note above
+  complete(nesting(sample.id, spp, age, year, river, season), preycat, fill = list(wm_mg = 0))
 
 # Per-fish total wet mass (denominator)
 fish_totals <- diet_per_fish |>
@@ -252,58 +260,107 @@ diet_props <- left_join(diet_per_fish, fish_totals, by = "sample.id") |>
   mutate(prop_wm = wm_mg / total_wm_mg)
 ```
 
----
+------------------------------------------------------------------------
 
 ## Summary Figures
 
-### Prey Composition by River, Season, Species, and Age
+### Prey Composition by River, Season, and Age
 
-The primary visualization is a stacked bar chart of mean wet-mass proportions, faceted by species and age class, with season on the x-axis and river distinguished by facet row or fill. See the literature review chapter for context on this presentation format.
+The primary visualization is a stacked bar chart of mean wet-mass proportions, faceted by river (column) and age class (row), with season on the x-axis. We present this three ways: Coho only, Chinook only, and with both species' diet content pooled together, since cross-species comparison is not the focus of this deliverable and faceting by species as well made facet strip labels illegible. Age classes remain separate in all three. See the literature review chapter for context on this presentation format.
 
-```{r diet-plot-main}
-# Summarise proportions: mean across fish within each group
-diet_summary <- diet_props |>
-  group_by(river, season, spp, age, preycat) |>
-  summarise(
-    mean_prop = mean(prop_wm, na.rm = TRUE),
-    n_fish    = n_distinct(sample.id),
-    .groups   = "drop"
-  ) |>
-  mutate(
-    season = factor(season, levels = c(
-      "Early Summer", "Mid-Summer", "Late Summer", "Fall")),
-    age_label = paste0("Age ", age)
-  )
+```{r diet-plot-setup}
+preycat_labels <- c(
+  SalmonEggs                 = "Salmon Eggs",
+  FishEggs                   = "Fish Eggs",
+  InvertAquatic_AqOrigin     = "Immature Aquatic",
+  InvertTerrestrial_AqOrigin = "Adult Aquatic",
+  InvertTerrestrial          = "Terrestrial"
+)
 
-# TODO: confirm preycat labels and color palette before finalizing
-ggplot(diet_summary, aes(x = season, y = mean_prop, fill = preycat)) +
-  geom_col(position = "stack") +
-  geom_text(
-    aes(label = n_fish, group = preycat),
-    stat = "summary", fun = sum,
-    position = position_stack(vjust = 1.05),
-    size = 2.5, check_overlap = TRUE
-  ) +
-  facet_grid(age_label ~ river + spp) +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(
-    x = "Season",
-    y = "Mean proportion of diet (wet mass)",
-    fill = "Prey category"
-  ) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 35, hjust = 1))
+preycat_colors <- c(
+  SalmonEggs                 = "#b2182b",
+  FishEggs                   = "#ef8a62",
+  InvertAquatic_AqOrigin     = "#4393c3",
+  InvertTerrestrial_AqOrigin = "#92c5de",
+  InvertTerrestrial          = "#1a9850"
+)
+
+# Shared summary + plotting helpers for the three diet composition figures below
+summarise_diet <- function(data) {
+  data |>
+    group_by(river, season, age, preycat) |>
+    summarise(
+      mean_prop = mean(prop_wm, na.rm = TRUE),
+      n_fish    = n_distinct(sample.id),
+      .groups   = "drop"
+    ) |>
+    mutate(
+      season = factor(season, levels = c(
+        "Early Summer", "Mid-Summer", "Late Summer", "Fall")),
+      age_label = paste0("Age ", age)
+    )
+}
+
+plot_diet_bars <- function(data) {
+  ggplot(data, aes(x = season, y = mean_prop, fill = preycat)) +
+    geom_col(position = "stack") +
+    geom_text(
+      aes(label = n_fish, group = preycat),
+      stat = "summary", fun = sum,
+      position = position_stack(vjust = 1.05),
+      size = 2.5, check_overlap = TRUE
+    ) +
+    facet_grid(age_label ~ river) +
+    scale_y_continuous(labels = scales::percent_format()) +
+    scale_fill_manual(values = preycat_colors, labels = preycat_labels) +
+    labs(
+      x = "Season",
+      y = "Mean proportion of diet (wet mass)",
+      fill = "Prey category"
+    ) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 35, hjust = 1))
+}
 ```
 
----
+#### Coho
+
+```{r diet-plot-coho}
+diet_summary_coho <- diet_props |>
+  filter(spp == "Coho") |>
+  summarise_diet()
+
+plot_diet_bars(diet_summary_coho)
+```
+
+#### Chinook
+
+```{r diet-plot-chinook}
+diet_summary_chinook <- diet_props |>
+  filter(spp == "Chinook") |>
+  summarise_diet()
+
+plot_diet_bars(diet_summary_chinook)
+```
+
+#### Both Species Combined
+
+Diet content from Coho and Chinook is pooled within each river/season/age group (species is dropped from the grouping, not averaged across it, so every fish contributes individually to the combined denominator).
+
+```{r diet-plot-combined}
+diet_summary_combined <- diet_props |>
+  summarise_diet()
+
+plot_diet_bars(diet_summary_combined)
+```
+
+------------------------------------------------------------------------
 
 ## Coarse-Level Subsidy Summary
 
-We collapse prey categories into three coarse groups (terrestrial, freshwater-aquatic, marine/salmon-derived) to facilitate comparison with Rine et al. 2016 and Wipfli et al. 2019.
+We collapse prey categories into three coarse groups (terrestrial, freshwater-aquatic, marine/salmon-derived) to facilitate comparison with external literature.
 
 ```{r subsidy-classification}
-# TODO: confirm the mapping of preycat values to these three groups
-# once preycat levels are inspected from the data
 subsidy_map <- tibble(
   preycat = c(
     "InvertTerrestrial", "InvertTerrestrial_AqOrigin",
@@ -323,21 +380,24 @@ diet_subsidy <- diet_props |>
   summarise(prop_wm = sum(prop_wm, na.rm = TRUE), .groups = "drop")
 ```
 
----
+------------------------------------------------------------------------
 
 ## Sample Size Table
 
 ```{r sample-size-table}
 diet |>
-  distinct(sample.id, spp, age, year, river, season) |>
-  count(year, river, spp, age, season, name = "n_fish") |>
-  arrange(year, river, spp, age, season)
+  distinct(sample.id, spp, age, river, year) |>
+  count( river, spp, age, year, name = "n_fish") |>
+  arrange(river, year ,spp, age) |>
+  knitr::kable(caption = "Sample sizes by river, species, year, and age")
 ```
 
----
+------------------------------------------------------------------------
 
 ## Notes and Data Quality
 
-- Prey items that could not be assigned a wet/dry ratio (i.e., did not match any entry in the conversion table) are excluded from all wet-mass calculations. The count of excluded items should be documented here once the data are loaded.
+- Prey items that could not be assigned a wet/dry ratio (i.e., did not match any entry in the conversion table) are excluded from all wet-mass calculations. This includes placeholder/non-prey entries recorded as `Bait`, `Bait EGGS`, `Empty`/`EMPTY`, and `0` (empty-stomach or bait-contamination codes), which have no conversion-table match and are dropped naturally at that step.
+- The `preycat` field used throughout this chapter is the bioenergetics diet-slot classification (`PreyCategory_ED`) from the conversion workbook, not the raw field-recorded `PreyCategory` column (kept as `preycat_field`); the two classification schemes disagree for some taxa (e.g., oligochaetes), and only `PreyCategory_ED` is used for FB4 diet-slot inputs.
 - Fish without an assigned age (Age_manual2 = NA) are excluded from age-disaggregated summaries.
+- Per-fish diet proportions are completed with explicit zeros for uneaten prey categories before group-level averaging (see the Diet Proportions section); without this step, stacked group means do not sum to 100%.
 - Age-2 Coho and age-1 Chinook are excluded from the analysis following Meyer et al. 2023 (these cohorts are sparse and likely transitioning out of freshwater rearing).

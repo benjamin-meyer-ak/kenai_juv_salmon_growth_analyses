@@ -21,28 +21,28 @@ This chapter generates all input files required to run Fish Bioenergetics 4.0 (F
 
 FB4 requires five input CSV files per simulation run:
 
-1. **Temperature.csv** — daily mean water temperature (°C), indexed by simulation day
-2. **Predator.csv** — daily predator energy density (J/g; constant across days)
-3. **Prey.csv** — daily energy densities by prey category (J/g; constant across days)
-4. **Indigestible_Prey.csv** — daily indigestible fraction by prey category
-5. **Diet_Prop.csv** — daily diet proportions by prey category
+1.  **Temperature.csv**: daily mean water temperature (°C), indexed by simulation day
+2.  **Predator.csv**: daily predator energy density (J/g; constant across days)
+3.  **Prey.csv**: daily energy densities by prey category (J/g; constant across days)
+4.  **Indigestible_Prey.csv**: daily indigestible fraction by prey category
+5.  **Diet_Prop.csv**: daily diet proportions by prey category
 
-Diet proportions are pooled across both years (2015 and 2016) at the river × species × age scale, following the rationale that gastric lavage provides only a snapshot diet measurement — pooling across years reduces the influence of individual-sample noise.
+Diet proportions are pooled across both years (2015 and 2016) at the river × species × age scale, following the rationale that gastric lavage provides only a snapshot diet measurement. Pooling across years reduces the influence of individual-sample noise.
 
 The workflow is:
 
-1. Prepare temperature and diet inputs
-2. Define the temporal extent of each simulation
-3. Export per-simulation input folders (committed to repo; code below marked `eval: false`)
-4. Generate the FB4 design file
-5. Run FB4 manually (see callout below)
-6. Read back committed FB4 outputs for downstream analysis
+1.  Prepare temperature and diet inputs
+2.  Define the temporal extent of each simulation
+3.  Export per-simulation input folders (committed to repo; code below marked `eval: false`)
+4.  Generate the FB4 design file
+5.  Run FB4 manually (see callout below)
+6.  Read back committed FB4 outputs for downstream analysis
 
----
+------------------------------------------------------------------------
 
 ## Temperature Inputs
 
-Daily mean water temperature was summarized from HOBO temperature loggers deployed at each site (see Chapter 1 for logger deployment details). The processed daily summaries are read here directly.
+Daily mean water temperature was summarized from HOBO temperature loggers deployed at each site. The processed daily summaries are read here directly.
 
 ```{r temperature}
 daily_mean_temps <- read.csv(
@@ -58,7 +58,7 @@ daily_mean_temps <- read.csv(
 glimpse(daily_mean_temps)
 ```
 
----
+------------------------------------------------------------------------
 
 ## Diet Proportion Inputs
 
@@ -66,26 +66,43 @@ Prey wet-mass proportions by bioenergetics category, pooled at river × species 
 
 The five prey categories and their corresponding diet slot assignments are:
 
-| Slot  | Category                    | Description                              |
-|-------|-----------------------------|------------------------------------------|
-| diet1 | FishEggs                    | Non-salmonid fish eggs                   |
-| diet2 | InvertAquatic_AqOrigin      | Aquatic invertebrates (immature stages)  |
-| diet3 | InvertTerrestrial           | Terrestrial invertebrates                |
-| diet4 | InvertTerrestrial_AqOrigin  | Adult aquatic invertebrates (winged)     |
-| diet5 | SalmonEggs                  | Salmon eggs                              |
+| Slot  | Category                   | Description                             |
+|------------------|----------------------|---------------------------------|
+| diet1 | FishEggs                   | Non-salmonid fish eggs                  |
+| diet2 | InvertAquatic_AqOrigin     | Aquatic invertebrates (immature stages) |
+| diet3 | InvertTerrestrial          | Terrestrial invertebrates               |
+| diet4 | InvertTerrestrial_AqOrigin | Adult aquatic invertebrates (winged)    |
+| diet5 | SalmonEggs                 | Salmon eggs                             |
 
 ```{r diet-props}
+library(kableExtra)
+
 wm_diet_props <- read.csv("other/outputs/diet/wet_mass_diet_proportions.csv")
-wm_diet_props
+
+wm_diet_props |>
+  rename(
+    River = Stream_Name,
+    Species = spp,
+    Age = age,
+    `Fish Eggs` = FishEggs,
+    `Immature Aquatic` = InvertAquatic_AqOrigin,
+    Terrestrial = InvertTerrestrial,
+    `Adult Aquatic` = InvertTerrestrial_AqOrigin,
+    `Salmon Eggs` = SalmonEggs
+  ) |>
+  mutate(across(where(is.numeric) & !Age, \(x) round(x, 3))) |>
+  kable(caption = "Diet wet-mass proportions by river, species, and age") |>
+  kable_styling(full_width = FALSE) |>
+  column_spec(4:8, width = "2.5cm")
 ```
 
----
+------------------------------------------------------------------------
 
 ## Simulation Temporal Extents
 
 Each simulation covers the period from the deployment date of one trap-check event to the deployment date of the following event. For the final sampling event of each year, the simulation extends 30 days past the deployment date. Temporal extents are determined from the fishing effort data in the raw Excel workbooks.
 
-The code below derives the temporal extent for each site × year × season. The output is already committed to `other/outputs/observed_diet_proportions.csv`, which joins temporal extent data to diet proportions. The code is shown to document the logic; set `eval: true` if regenerating from scratch.
+The code below derives the temporal extent for each site × year × season. The output is in `other/outputs/observed_diet_proportions.csv`, which joins temporal extent data to diet proportions. The code is shown to document the logic; set `eval: true` if regenerating from scratch.
 
 ```{r temporal-extents}
 #| eval: false
@@ -201,7 +218,7 @@ obs_diet_props <- read.csv("other/outputs/observed_diet_proportions.csv")
 glimpse(obs_diet_props)
 ```
 
----
+------------------------------------------------------------------------
 
 ## Generating FB4 Input Files
 
@@ -454,19 +471,19 @@ write.csv(design_2015_2016,
           row.names = FALSE)
 ```
 
----
+------------------------------------------------------------------------
 
 ## Running Fish Bioenergetics 4.0
 
-::: {.callout-note}
+::: callout-note
 ## Manual step: Running FB4 v1.1.3
 
 After generating the input files above, simulations are executed using the FB4 v1.1.3 graphical interface:
 
-1. Download FB4 v1.1.3 from [fishbioenergetics.org](http://fishbioenergetics.org/)
-2. Set the working directory inside FB4 to `other/FB4_1.1.3_2015_2016.1/`
-3. Load the design file `design_2015_2016_final.csv` using the multi-simulation interface
-4. Run all simulations; FB4 writes output to `FB4_2015_2016_models.csv`
+1.  Download FB4 v1.1.3 from [fishbioenergetics.org](http://fishbioenergetics.org/)
+2.  Set the working directory inside FB4 to `other/FB4_1.1.3_2015_2016.1/`
+3.  Load the design file `design_2015_2016_final.csv` using the multi-simulation interface
+4.  Run all simulations; FB4 writes output to `FB4_2015_2016_models.csv`
 
 Two separate runs were performed using:
 
@@ -475,10 +492,10 @@ Two separate runs were performed using:
 
 Both output files are committed to the repository and read in Chapter 6 (Simulation Results).
 
-Note: one design file was manually edited in two instances to shorten simulation length by one day to match the temporal extent of main input files. The reason for the 1-day mismatch is unclear but is insufficient to meaningfully affect results.
+Note: one design file was manually edited in two instances to shorten simulation length by one day to match the temporal extent of main input files. The reason for the 1-day not clear as of today (October 2026) but is insufficient to meaningfully affect results.
 :::
 
----
+------------------------------------------------------------------------
 
 ## Committed FB4 Outputs
 

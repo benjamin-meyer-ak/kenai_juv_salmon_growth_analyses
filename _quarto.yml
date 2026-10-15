@@ -3,7 +3,7 @@ project:
 
 book:
   title: "Landscape characteristics influence projected growth rates of stream-resident juvenile salmon in the face of climate change in the Kenai River watershed, southcentral Alaska"
-  subtitle: "Analytical white paper supporting Meyer et al. 2023 (Transactions of the American Fisheries Society)"
+  subtitle: "Exploratory Data Analysis supporting Meyer et al. 2023 (Transactions of the American Fisheries Society)"
   author: "Benjamin Meyer"
   date: today
   repo-url: https://github.com/bmeyer/kenai_juv_salmon_growth_analyses

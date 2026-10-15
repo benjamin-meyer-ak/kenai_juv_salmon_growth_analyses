@@ -1,6 +1,6 @@
 # Kenai Juvenile Salmon Growth Analyses — Project Memory
 
-Last updated: 2026-09-08
+Last updated: 2026-10-15
 
 ## Project Overview
 
@@ -56,13 +56,13 @@ Do NOT modify or extract code from FB4.
 /                               # Quarto Book root
   _quarto.yml                   # book config (cosmo theme, code-fold, toc-depth 3)
   index.qmd                     # Introduction
-  study-area-methods.qmd        # Ch 1: study area, field methods
-  diet-literature-review.qmd    # Ch 2: lit review on juvenile salmon diet
-  diet-composition.qmd          # Ch 3: PRIMARY AKSSF deliverable chapter
-  bioenergetics-inputs-observed.qmd  # Ch 4: FB4 inputs from 2015-2016 data
-  bioenergetics-inputs-projected.qmd # Ch 5: FB4 inputs for projected scenarios
-  simulation-results.qmd        # Ch 6: FB4 outputs, Tables S3/S5/4, Figs 6/8
-  references.qmd                # References placeholder
+  study-area-methods.qmd        # Ch 2: study area, field methods
+  diet-literature-review.qmd    # Ch 3: lit review on juvenile salmon diet
+  diet-composition.qmd          # Ch 4: PRIMARY AKSSF deliverable chapter
+  bioenergetics-inputs-observed.qmd  # Ch 5: FB4 inputs from 2015-2016 data
+  bioenergetics-inputs-projected.qmd # Ch 6: FB4 inputs for projected scenarios
+  simulation-results.qmd        # Ch 7: FB4 outputs, Tables S3/S5/4, Figs 6/8
+  references.qmd                # Ch 8: full TAFS-style bibliography (populated 2026-10-15)
   AGENTS.md                     # this file
   kenai_juv_salmon_growth_analyses.Rproj
 
@@ -100,7 +100,7 @@ other/
 
 ## Author's Role in Related Literature
 
-- Co-author on **Wipfli et al. 2019** (J. Freshwater Ecology) — invertebrate prey contributions to juvenile Coho diet in the Kenai watershed (Beaver Creek, Ptarmigan Creek, Russian River). Direct overlap in rivers and time period with the 2015-2016 data in this repo.
+- Co-author on **Grunblatt et al. 2019** (Grunblatt, J., B.E. Meyer, and M.S. Wipfli; *Journal of Freshwater Ecology* 34(1):617-631) — invertebrate prey contributions to juvenile Coho diet in the Kenai watershed (Beaver Creek, Ptarmigan Creek, Russian River). Direct overlap in rivers and time period with the 2015-2016 data in this repo. (Previously mis-recorded here as "Wipfli et al. 2019" — corrected 2026-10-15; same paper, correct lead author is Grunblatt.)
 - Field technician for **Rine et al. 2016** (CJFAS) — trophic pathways of juvenile Chinook and Coho in the Susitna River, Alaska. Stomach content + stable isotope approach.
 
 ## Diet Data Schema
@@ -135,10 +135,18 @@ Seasons: Early Summer (1), Mid-Summer (2), Late Summer (3), Fall (4; 2016 only).
 
 ## Dry mass → wet mass conversion
 
-Prey dry masses → wet mass via ratios from McCarthy 2009 + other sources.
+Prey dry masses → wet mass via ratios from McCarthy et al. 2009 + other sources.
 Mapping file: `other/outputs/diet/mass_conversion/prey_types_manual_edit.xlsx`
 Sheets: "prey_types" (maps each unique prey taxon to a category), "data_validation" (wet/dry ratios and energy densities per category)
 Formula: `wm_mg = dm_mg / wet_dry_ratio`
+
+## References Chapter
+
+`references.qmd` (Ch 8) holds a complete, alphabetized bibliography in Transactions of the American Fisheries Society (TAFS) in-text/reference style, collated from every citation appearing in prose across all chapters (24 entries as of 2026-10-15: published papers, book chapters, ADF&G reports, theses, and the project's own KNB dataset/thesis/TAFS paper). In-text citations remain plain author-year prose (not Quarto `@key` citations -- no `.bib`/CSL is used); full details live only in the References chapter. When adding a new in-text citation to any chapter, add the corresponding full TAFS-style entry to `references.qmd` in alphabetical order by first author surname (grouping same-first-author works by ascending year, single-author before multi-author).
+
+## Table Styling Convention
+
+Bare data-frame printouts in rendered chapters (e.g. `wm_diet_props`, `obs_sim_results`, `pct_chg_tbl_adorn`, `pct_chg_summ_tbl`) have been converted to `knitr::kable()` + `kableExtra::kable_styling(full_width = FALSE)`, with long/multi-word column headers wrapped via `kableExtra::column_spec(<col indices>, width = "2.5cm")` rather than left to overflow. Apply this same pattern to any other raw table printouts found when editing chapters. `library(kableExtra)` must be loaded in the relevant chapter's packages/setup chunk.
 
 ## Conventions
 - No AI tropes (avoid em-dashes, excessive hedging)
@@ -148,3 +156,9 @@ Formula: `wm_mg = dm_mg / wet_dry_ratio`
 - ggplot2 for visualization; no coord_flip(); no dual encoding
 - bslib for any Shiny UI
 - All coding decisions explained before executing
+- Tables: use `kable()` + `kableExtra` styling (see Table Styling Convention above), not bare printouts
+- Citations: full TAFS-style references belong only in `references.qmd`; in-text citations stay as author-year prose
+
+## Editing Tool Note
+
+The `edit` tool intermittently fails with "String not found in file" errors on `.qmd` files in this repo, even when the target text appears to exactly match file contents (verified via `read`/`grep`, no hidden characters found on inspection). Reliable workaround: fall back to `bash` with inline Python scripts (`python3 - <<'EOF' ... EOF`) using `io.open()` read/replace/write with `assert old in content` checks before writing. Default to this approach for `.qmd` edits in this repo if `edit` fails.

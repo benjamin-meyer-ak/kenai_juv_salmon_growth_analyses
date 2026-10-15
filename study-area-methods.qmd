@@ -8,7 +8,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 ## Overview
 
-This chapter describes the study area, sampling design, and field methods underlying all analyses in this white paper. Content is drawn from the Methods section of Meyer et al. 2023 and Chapter 1 of Meyer 2020 (University of Alaska Fairbanks M.S. thesis). Where precise language from those sources is reproduced, it is quoted directly; otherwise this text is a condensed and annotated paraphrase for the purpose of this analytical document.
+This chapter describes the study area, sampling design, and field methods underlying analyses in this white paper. Content is drawn from the Methods section of Meyer et al. 2023 and Chapter 1 of Meyer 2020 (University of Alaska Fairbanks M.S. thesis).
 
 ------------------------------------------------------------------------
 
@@ -22,12 +22,12 @@ The stream temperature model generated monthly stream temperatures which were in
 
 ## Study Area
 
-The Kenai River drains an area of 5,568 km^2^ in southcentral Alaska, running 182 km west from the Kenai Mountains and emptying into Cook Inlet near the city of Kenai. The watershed supports some of Alaska's most intensively managed and harvested salmon populations, including commercial, sport, subsistence, and personal-use fisheries.
+The Kenai River drains an area of 5,568 km^2^ in southcentral Alaska, running 182 km west from the Kenai Mountains and emptying into Cook Inlet near the city of Kenai. The watershed supports commercial, sport, subsistence, and personal-use fisheries.
 
 We conducted field sampling in three tributaries of the Kenai River in 2015 and 2016 and in the Kenai River main stem (Table 1 in Meyer et al. 2023). The four study rivers span a gradient of watershed types:
 
 | River | Type | Elevation (m) | Key characteristics |
-|----|----|----|----|
+|------------------|------------------|------------------|------------------|
 | Beaver Creek | Lowland | 21-65 | Low gradient, wetland-dominated, long water residence time, early snowmelt; high air-water temperature sensitivity |
 | Russian River | Montane | Intermediate | Intermediate gradient and temperature characteristics |
 | Ptarmigan Creek | Glacial | 166-1000 | High gradient, 7% ice coverage in watershed, late-season snowmelt and glacial melt; low average water temperatures, low air-water temperature sensitivity |
@@ -63,7 +63,7 @@ Gut contents were flushed out of the mouth using the gastric lavage technique wi
 
 ### Diet Sample Processing
 
-Stomach content samples were examined under 4.0x dissecting microscopes. Distinguishable invertebrates (*n* = 8,879) were identified to family level or the lowest taxon feasible (112 taxon/lifestage combinations identified), and body lengths were measured to the nearest 1.0 mm (Merritt and Cummins 1996). Lengths of partially digested prey were estimated based on intact individuals of the same taxon that appeared similar in size (Wipfli 1997). When intact individuals of the same taxon were absent in a sample, head and thorax length was assumed to represent 1/3 of total length of partially digested prey (Gonzales 2006). Diet items that could not be positively attributed to ingestion (e.g., exoskeletons, separated wings or legs, empty Trichoptera casings, unidentified head capsules) were recorded but excluded from diet proportions.
+Stomach content samples were examined under 4.0x dissecting microscopes. Distinguishable invertebrates (*n* = 8,879) were identified to family level or the lowest taxon feasible (112 taxon/lifestage combinations identified), and body lengths were measured to the nearest 1.0 mm (Merritt and Cummins 1996). Lengths of partially digested prey were estimated based on intact individuals of the same taxon that appeared similar in size (Wipfli 1997). When intact individuals of the same taxon were absent in a sample, head and thorax length was assumed to represent 1/3 of total length of partially digested prey (Gonzales 2006). Diet items that could not be positively attributed (e.g., exoskeletons, separated wings or legs, empty Trichoptera casings, unidentified head capsules) were recorded but excluded from diet proportions.
 
 ### Prey Dry Mass Estimation
 
@@ -77,12 +77,12 @@ These dry mass calculations were performed within the field data workbooks (Exce
 
 ### Prey Wet Mass and Diet Categories
 
-Prey item dry mass was converted to wet mass using the wet/dry mass ratios published by McCarthy (2009) and additional literature sources. This conversion is documented in full in Chapter 3 (Diet Composition).
+Prey item dry mass was converted to wet mass using the wet/dry mass ratios published by McCarthy et al. (2009) and additional literature sources. This conversion is documented in full in Chapter 3 (Diet Composition).
 
 Diet composition was summarized using five categories for bioenergetics modeling:
 
 | Category | Label in model | Description |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | 1 | diet2: InvertAquatic_AqOrigin | Immature (larval) aquatic invertebrates |
 | 2 | diet3: InvertTerrestrial | Terrestrial invertebrates |
 | 3 | diet4: InvertTerrestrial_AqOrigin | Adult aquatic invertebrates (emerged/winged) |

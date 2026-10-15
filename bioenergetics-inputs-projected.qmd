@@ -20,24 +20,24 @@ library(plotrix)
 
 This chapter generates FB4 input files for projected future climate scenarios. The approach mirrors Chapter 4 (observed inputs) with two key differences:
 
-1. **Temperatures** come from downscaled projections rather than observed logger data
-2. **Consumption (p-value)** is held fixed at mean, +20%, and −20% of the value estimated from 2015-2016 observed simulations, rather than being fit to a final weight
+1.  **Temperatures** come from downscaled projections rather than observed logger data
+2.  **Consumption (p-value)** is held fixed at mean, +20%, and −20% of the value estimated from 2015-2016 observed simulations, rather than being fit to a final weight
 
 Three temperature scenarios × three consumption scenarios = nine model runs per cohort.
 
 **Temperature scenarios:**
 
-| Scenario | Period     | Description                          |
-|----------|------------|--------------------------------------|
-| Baseline | 2010-2019  | Near-present reference               |
-| Near     | 2030-2039  | Mid-century                          |
-| Far      | 2060-2069  | Late-century                         |
+| Scenario | Period    | Description            |
+|----------|-----------|------------------------|
+| Baseline | 2010-2019 | Near-present reference |
+| Near     | 2030-2039 | Mid-century            |
+| Far      | 2060-2069 | Late-century           |
 
 Each period is simulated under RCP 6.0 and RCP 8.5, giving six temperature × decade combinations.
 
 All input files are committed to `other/FB4_1.1.3_projected.1/`. Code that writes to disk is marked `eval: false`.
 
----
+------------------------------------------------------------------------
 
 ## Projected Temperature Inputs
 
@@ -89,18 +89,35 @@ daily_proj_temps <- left_join(
 glimpse(daily_proj_temps)
 ```
 
----
+------------------------------------------------------------------------
 
 ## Diet Proportion Inputs
 
-The same wet-mass diet proportions from the observed chapter are used for all projected scenarios. Diet proportions do not change across climate scenarios — only temperature and consumption level change.
+The same wet-mass diet proportions from the observed chapter are used for all projected scenarios. Diet proportions do not change across climate scenarios; only temperature and consumption level change.
 
 ```{r diet-props}
+library(kableExtra)
+
 wm_diet_props <- read.csv("other/outputs/diet/wet_mass_diet_proportions.csv")
-wm_diet_props
+
+wm_diet_props |>
+  rename(
+    River = Stream_Name,
+    Species = spp,
+    Age = age,
+    `Fish Eggs` = FishEggs,
+    `Immature Aquatic` = InvertAquatic_AqOrigin,
+    Terrestrial = InvertTerrestrial,
+    `Adult Aquatic` = InvertTerrestrial_AqOrigin,
+    `Salmon Eggs` = SalmonEggs
+  ) |>
+  mutate(across(where(is.numeric) & !Age, \(x) round(x, 3))) |>
+  kable(caption = "Diet wet-mass proportions by river, species, and age") |>
+  kable_styling(full_width = FALSE) |>
+  column_spec(4:8, width = "2.5cm")
 ```
 
----
+------------------------------------------------------------------------
 
 ## P-value Inputs from Observed Simulations
 
@@ -160,7 +177,7 @@ init_file_dat <- left_join(mean_start_w, mean_pvals,
   mutate(Simulation = paste0(site, "_", spp, "_Age_", age))
 ```
 
----
+------------------------------------------------------------------------
 
 ## Simulation Temporal Extents
 
@@ -243,7 +260,7 @@ sim_diet_days <- left_join(
 sim_diet_days[is.na(sim_diet_days)] <- 0
 ```
 
----
+------------------------------------------------------------------------
 
 ## Exporting Input Files
 
@@ -317,7 +334,7 @@ copy_static(dir_main, chnk_dir)
 copy_static(dir_main, coho_dir)
 ```
 
----
+------------------------------------------------------------------------
 
 ## Design File
 
@@ -387,24 +404,24 @@ design_new <- build_design(init_file_dat, folder_dirs, "new_parameters")
 design_old <- build_design(init_file_dat, folder_dirs, "old_parameters")
 ```
 
----
+------------------------------------------------------------------------
 
 ## Running Fish Bioenergetics 4.0 (Projected Scenarios)
 
-::: {.callout-note}
+::: callout-note
 ## Manual step: Running FB4 v1.1.3 for projected scenarios
 
-1. Set the FB4 working directory to `other/FB4_1.1.3_projected.1/`
-2. Load `design_projected_new_parameters.csv` (for Plumb & Moffitt parameters)
-3. Run simulations; output written to `FB4_projected_models_new_parameters.csv`
-4. Repeat with `design_projected_old_parameters.csv` (for Stewart & Ibarra parameters)
+1.  Set the FB4 working directory to `other/FB4_1.1.3_projected.1/`
+2.  Load `design_projected_new_parameters.csv` (for Plumb & Moffitt parameters)
+3.  Run simulations; output written to `FB4_projected_models_new_parameters.csv`
+4.  Repeat with `design_projected_old_parameters.csv` (for Stewart & Ibarra parameters)
 
 Both output files are committed and read in Chapter 6 (Simulation Results).
 
 Note: the projected simulations fit to a fixed p-value rather than a final weight.
 :::
 
----
+------------------------------------------------------------------------
 
 ## Committed FB4 Projected Outputs
 

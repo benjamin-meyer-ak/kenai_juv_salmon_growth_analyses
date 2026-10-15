@@ -12,6 +12,7 @@ library(tidyverse)
 library(janitor)
 library(lubridate)
 library(plotrix)
+library(kableExtra)
 ```
 
 ## Overview
@@ -171,7 +172,11 @@ obs_sim_results <- dat |>
   )
 
 write.csv(obs_sim_results, "other/outputs/obs_sim_results.csv", row.names = FALSE)
-obs_sim_results
+
+obs_sim_results |>
+  kable(caption = "Table S3: Observed simulation summary (Stewart & Ibarra parameters)") |>
+  kable_styling(full_width = FALSE) |>
+  column_spec(9:11, width = "2.2cm")
 ```
 
 ---
@@ -229,7 +234,11 @@ pct_chg_tbl_adorn <- pct_chg_tbl |>
   janitor::adorn_pct_formatting(cols = `Percent Change in Mass`, digits = 2)
 
 write.csv(pct_chg_tbl_adorn, "other/outputs/pct_chg_tbl.csv", row.names = FALSE)
-pct_chg_tbl_adorn
+
+pct_chg_tbl_adorn |>
+  kable(caption = "Table S5: Percent change in final mass by scenario (Stewart & Ibarra parameters)") |>
+  kable_styling(full_width = FALSE) |>
+  column_spec(4:7, width = "2.5cm")
 ```
 
 ---
@@ -254,7 +263,11 @@ pct_chg_summ_tbl <- pct_chg_tbl |>
 
 write.csv(pct_chg_summ_tbl, "other/outputs/pct_chg_summ_tbl.csv",
           row.names = FALSE)
-pct_chg_summ_tbl
+
+pct_chg_summ_tbl |>
+  kable(caption = "Table 4: Mean percent change in mass by watershed and period") |>
+  kable_styling(full_width = FALSE) |>
+  column_spec(c(2, 4), width = "2.5cm")
 ```
 
 ---
