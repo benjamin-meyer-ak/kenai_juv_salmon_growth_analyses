@@ -6,7 +6,7 @@ book:
   subtitle: "Exploratory Data Analysis supporting Meyer et al. 2023 (Transactions of the American Fisheries Society)"
   author: "Benjamin Meyer"
   date: today
-  repo-url: https://github.com/bmeyer/kenai_juv_salmon_growth_analyses
+  repo-url: https://github.com/benjamin-meyer-ak/kenai_juv_salmon_growth_analyses
   chapters:
     - index.qmd
     - study-area-methods.qmd
